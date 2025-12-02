@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+       <link rel="stylesheet" href="../../static/css/style.css">
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <title>Search Results for "{{ query }}"</title> {# Dynamic title #}
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+      <link rel="stylesheet" href="../../static/css/style.css">
+      <link rel="stylesheet" href="../../static/css/responsive.css">
+      <link rel="icon" href="../../static/images/fevicon.png" type="image/gif" />
+      <link rel="stylesheet" href="../../static/css/jquery.mCustomScrollbar.min.css">
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+      <link rel="stylesheet" href="../../static/css/owl.carousel.min.css">
+      <link rel="stylesheet" href="../../static/css/owl.theme.default.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+      <style>
+         .shoes_section {
+            background-color: #f8f9fa;
+            padding: 60px 0;
+         }
+         .shoes_section_heading {
+            text-align: center;
+            margin-bottom: 50px;
+         }
+         .shoes_section_heading h2 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #212529;
+         }
+         .shoes_section_heading p {
+            color: #6c757d;
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 16px;
+         }
+         .shoe-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+         }
+         .shoe-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+         }
+         .shoe-img {
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            background: #f5f5f5;
+            text-align: center;
+         }
+         .shoe-img img {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.5s ease;
+         }
+         .shoe-img .sale-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #f12a47;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 3px;
+         }
+         .shoe-img .new-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 3px;
+         }
+         .shoe-info {
+            padding: 20px;
+         }
+         .shoe-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #212529;
+         }
+         .shoe-category {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 10px;
+         }
+         .shoe-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #f12a47;
+            margin-bottom: 15px;
+         }
+         .shoe-price .old-price {
+            text-decoration: line-through;
+            color: #6c757d;
+            font-size: 16px;
+            margin-right: 10px;
+         }
+         .shoe-rating {
+            margin-bottom: 15px;
+         }
+         .shoe-rating i {
+            color: #ffc107;
+            font-size: 14px;
+         }
+         .shoe-actions {
+            display: flex;
+            gap: 10px;
+         }
+         .btn-cart, .btn-wishlist {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+         }
+         .btn-cart {
+            background: #f12a47;
+            color: white;
+         }
+         .btn-cart:hover {
+            background: #d81a37;
+         }
+         .btn-wishlist {
+            background: #e9ecef;
+            color: #212529;
+         }
+         .btn-wishlist:hover {
+            background: #dee2e6;
+         }
+         .btn-wishlist.active {
+            background: #ffc107;
+            color: white;
+         }
+         .shoe-sizes {
+            margin: 15px 0;
+         }
+         .size-options {
+            display: flex;
+            gap: 5px;
+         }
+         .size-option {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+         }
+         .size-option:hover, .size-option.active {
+            background: #f12a47;
+            color: white;
+            border-color: #f12a47;
+         }
+         .added-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
+            transform: translateY(-100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+         }
+         .added-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+         }
+      </style>
+   </head>
+   <body class="main-layout">
+      {% include 'admin/header.html' %}
+
+      <div class="shoes_section">
+         <div class="container">
+            <div class="shoes_section_heading">
+               <h2>Search Results for "{{ query }}"</h2>
+               <p>Here's what we found matching your search query.</p>
+            </div>
+
+            {% if shoes_results or boots_results %}
+                {% if shoes_results %}
+                    <h3 class="mt-5 mb-4">Shoes Found:</h3>
+                    <div class="row">
+                        {% for shoe in shoes_results %}
+                            <div class="col-md-4 col-sm-6">
+                                <div class="shoe-item" data-id="{{ shoe.shoe_id }}">
+                                    <div class="shoe-img">
+                                        {% if shoe.bestseller %}
+                                           <span class="new-tag">Bestseller</span>
+                                        {% endif %}
+                                        <img src="../../static/images/{{ shoe.image }}" alt="{{ shoe.name }}">
+                                    </div>
+                                    <div class="shoe-info">
+                                        <h3 class="shoe-name">{{ shoe.name }}</h3>
+                                        <p class="shoe-category">{{ shoe.category }}</p>
+                                        <div class="shoe-price">
+                                           <span>₹{{ shoe.price }}</span>
+                                        </div>
+                                        <div class="shoe-rating">
+                                           <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i>
+                                           <span>(12 reviews)</span>
+                                        </div>
+                                        <div class="shoe-sizes">
+                                           <p>Size: {{ shoe.size }}</p>
+                                        </div>
+                                        <div class="shoe-actions">
+                                           <button class="btn-cart" data-id="{{ shoe.shoe_id }}"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                                           <button class="btn-wishlist" data-id="{{ shoe.shoe_id }}"><i class="fa fa-heart-o"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center text-muted">No shoes found matching "{{ query }}".</p>
+                {% endif %}
+
+                {% if boots_results %}
+                    <h3 class="mt-5 mb-4">Boots Found:</h3>
+                    <div class="row">
+                        {% for boot in boots_results %}
+                            <div class="col-md-4 col-sm-6">
+                                <div class="shoe-item" data-id="{{ boot.boot_id }}"> {# Using boot_id here #}
+                                    <div class="shoe-img">
+                                        {% if boot.bestseller %}
+                                           <span class="new-tag">Bestseller</span>
+                                        {% endif %}
+                                        <img src="../../static/images/{{ boot.image }}" alt="{{ boot.name }}">
+                                    </div>
+                                    <div class="shoe-info">
+                                        <h3 class="shoe-name">{{ boot.name }}</h3>
+                                        <p class="shoe-category">{{ boot.category }}</p>
+                                        <div class="shoe-price">
+                                           <span>₹{{ boot.price }}</span>
+                                        </div>
+                                        <div class="shoe-rating">
+                                           <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i>
+                                           <span>(12 reviews)</span>
+                                        </div>
+                                        <div class="shoe-sizes">
+                                           <p>Size: {{ boot.size }}</p>
+                                        </div>
+                                        <div class="shoe-actions">
+                                           <button class="btn-cart" data-id="{{ boot.boot_id }}"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                                           <button class="btn-wishlist" data-id="{{ boot.boot_id }}"><i class="fa fa-heart-o"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center text-muted">No boots found matching "{{ query }}".</p>
+                {% endif %}
+            {% else %}
+                <p class="text-center text-info">No products found for "{{ query }}". Try a different search term.</p>
+            {% endif %}
+
+         </div>
+      </div>
+      {% include 'footer.html' %}
+
+      <script src="../../static/js/jquery.min.js"></script>
+      <script src="../../static/js/popper.min.js"></script>
+      <script src="../../static/js/bootstrap.bundle.min.js"></script>
+      <script src="../../static/js/jquery-3.0.0.min.js"></script>
+      <script src="../../static/js/plugin.js"></script>
+      <script src="../../static/js/jquery.mCustomScrollbar.concat.min.js"></script>
+      <script src="../../static/js/custom.js"></script>
+      <script src="../../static/js/owl.carousel.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+      <script>
+         $(document).ready(function(){
+            // Fancybox initialization
+            $(".fancybox").fancybox({
+               openEffect: "none",
+               closeEffect: "none"
+            });
+
+            // Carousel initialization
+            $('#myCarousel').carousel({
+               interval: false
+            });
+
+            // Swipe functionality for carousel
+            $("#myCarousel").on("touchstart", function(event){
+               var yClick = event.originalEvent.touches[0].pageY;
+               $(this).one("touchmove", function(event){
+                  var yMove = event.originalEvent.touches[0].pageY;
+                  if( Math.floor(yClick - yMove) > 1 ){
+                     $(".carousel").carousel('next');
+                  }
+                  else if( Math.floor(yClick - yMove) < -1 ){
+                     $(".carousel").carousel('prev');
+                  }
+               });
+               $(".carousel").on("touchend", function(){
+                  $(this).off("touchmove");
+               });
+            });
+
+            // Cart functionality (re-using from your previous code)
+            $(".btn-cart").click(function(){
+               var productId = $(this).data("id");
+               var productName = $(this).closest(".shoe-item").find(".shoe-name").text();
+               var selectedSize = $(this).closest(".shoe-item").find(".size-option.active").text();
+
+               // Here you would normally send an AJAX request to add the item to the cart
+               // For demo purposes, we'll just show a notification
+               showNotification("Item added to your cart!");
+
+               console.log("Added to cart: " + productName + " (ID: " + productId + ", Size: " + selectedSize + ")");
+            });
+
+            // Wishlist functionality (re-using from your previous code)
+            $(".btn-wishlist").click(function(){
+               var $this = $(this);
+               var productId = $this.data("id");
+               var productName = $this.closest(".shoe-item").find(".shoe-name").text();
+
+               // Toggle wishlist state
+               if ($this.hasClass("active")) {
+                  $this.removeClass("active");
+                  $this->html('<i class="fa fa-heart-o"></i>');
+                  showNotification("Item removed from your wishlist");
+               } else {
+                  $this.addClass("active");
+                  $this->html('<i class="fa fa-heart"></i>');
+                  showNotification("Item added to your wishlist");
+               }
+
+               console.log("Wishlist toggled for: " + productName + " (ID: " + productId + ")");
+            });
+
+            // Size selection functionality (re-using from your previous code)
+            $(".size-option").click(function(){
+               $(this).siblings().removeClass("active");
+               $(this).addClass("active");
+            });
+
+            // Notification function (re-using from your previous code)
+            function showNotification(message) {
+               $("#notification").text(message);
+               $("#notification").addClass("show");
+
+               setTimeout(function(){
+                  $("#notification").removeClass("show");
+               }, 3000);
+            }
+         });
+      </script>
+   </body>
+</html>

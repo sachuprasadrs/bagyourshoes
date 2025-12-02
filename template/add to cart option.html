@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <style>
+        .admin-header {
+            background-color: #212529;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .admin-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .admin-title {
+            color: #f12a47;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .customer-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-inactive {
+            background-color: #6c757d;
+            color: white;
+        }
+        .status-vip {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .customer-details-row {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .custom-table th, .custom-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .custom-table th {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-weight: bold;
+            text-align: left;
+        }
+        .custom-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .order-status-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .order-completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .order-processing {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .order-shipped {
+            background-color: #6f42c1;
+            color: white;
+        }
+        .order-cancelled {
+            background-color: #dc3545;
+            color: white;
+        }
+        .action-btn {
+            background-color: #f12a47;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 5px;
+        }
+        .action-btn:hover {
+            background-color: #d12340;
+        }
+        .secondary-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .secondary-btn:hover {
+            background-color: #5a6268;
+        }
+        .customer-stats {
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .customer-stats:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .stat-title {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .bg-orders {
+            background-color: #e2f0fd;
+        }
+        .bg-spent {
+            background-color: #e0f7ed;
+        }
+        .bg-wishlisted {
+            background-color: #fff2e0;
+        }
+        .bg-returns {
+            background-color: #fee5e7;
+        }
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+        }
+        .nav-tabs .nav-link.active {
+            color: #f12a47;
+            font-weight: bold;
+        }
+        .address-card {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .address-type {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #eee;
+        }
+      </style>
+
+<div class="tab-pane fade" id="wishlists" role="tabpanel">
+               <h4>Wishlist Items</h4>
+               <div class="row">
+                  <!-- Wishlist Item 1 -->
+                  <div class="col-md-6 mb-4">
+                     <div class="card">
+                        <div class="card-body">
+                           <div class="row">
+                              <div class="col-md-4">
+                                 <img src="{% static 'images/shoes-img1.png' %}" alt="Men Sports Shoes" class="img-fluid">
+                              </div>
+                              <div class="col-md-8">
+                                 <h5>Men's Running Pro Shoes</h5>
+                                 <p class="text-muted">Added on: April 28, 2025</p>
+                                 <p><strong>$120.00</strong></p>
+                                 <p>Available in stock: Yes</p>
+                                 <button class="btn btn-sm btn-outline-primary">Move to Cart</button>
+                                 <button class="btn btn-sm btn-outline-danger">Remove</button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Wishlist Item 2 -->
+                  <div class="col-md-6 mb-4">
+                     <div class="card">
+                        <div class="card-body">
+                           <div class="row">
+                              <div class="col-md-4">
+                                 <img src="{% static 'images/shoes-img2.png' %}" alt="Men Sports Shoes" class="img-fluid">
+                              </div>
+                              <div class="col-md-8">
+                                 <h5>Men's Classic Sneakers</h5>
+                                 <p class="text-muted">Added on: April 20, 2025</p>
+                                 <p><strong>$95.00</strong></p>
+                                 <p>Available in stock: Yes</p>
+                                 <button class="btn btn-sm btn-outline-primary">Move to Cart</button>
+                                 <button class="btn btn-sm btn-outline-danger">Remove</button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Wishlist Item 3 -->
+                  <div class="col-md-6 mb-4">
+                     <div class="card">
+                        <div class="card-body">
+                           <div class="row">
+                              <div class="col-md-4">
+                                 <img src="/api/placeholder/100/100" alt="Basketball Shoes" class="img-fluid">
+                              </div>
+                              <div class="col-md-8">
+                                 <h5>Premium Basketball Shoes</h5>
+                                 <p class="text-muted">Added on: March 15, 2025</p>
+                                 <p><strong>$150.00</strong></p>
+                                 <p>Available in stock: Yes</p>
+                                 <button class="btn btn-sm btn-outline-primary">Move to Cart</button>
+                                 <button class="btn btn-sm btn-outline-danger">Remove</button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+</body>
+</html>

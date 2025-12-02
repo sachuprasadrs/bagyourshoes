@@ -1,0 +1,489 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <title>Payment - BagYourShoe</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+      <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
+      <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+      <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+      <style>
+         body {
+             margin: 0;
+             padding: 0;
+             background-color: #f8f9fa;
+         }
+
+         .header_section {
+             margin-top: 0 !important;
+             padding-top: 0 !important;
+             z-index: 1000 !important;
+             position: relative !important;
+         }
+
+         .navbar-nav .nav-link {
+             padding: 0.75rem 1rem !important;
+             margin: 0 0.25rem !important;
+             border-radius: 4px !important;
+             transition: all 0.2s ease !important;
+             min-height: 40px !important;
+             display: flex !important;
+             align-items: center !important;
+             text-decoration: none !important;
+             position: relative !important;
+             z-index: 10 !important;
+         }
+
+         .navbar-nav .nav-link:hover {
+             background-color: rgba(0,0,0,0.08) !important;
+             transform: translateY(-1px) !important;
+         }
+
+         .nav-link img {
+             pointer-events: none !important;
+         }
+
+         .payment-container {
+             background-color: #fff;
+             padding: 40px;
+             border-radius: 10px;
+             box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+             margin-bottom: 30px;
+             margin-top: 30px;
+         }
+
+         .payment-container h2 {
+             text-align: center;
+             margin-bottom: 30px;
+             color: #212529;
+             font-weight: bold;
+         }
+
+         .payment-method-card {
+             border: 2px solid #e9ecef;
+             border-radius: 10px;
+             padding: 30px;
+             text-align: center;
+             transition: all 0.3s ease;
+         }
+
+         .payment-method-card:hover {
+             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+             transform: translateY(-3px);
+         }
+
+         .razorpay-container h3,
+         .cod-container h3 {
+             font-size: 2rem;
+             margin-bottom: 20px;
+         }
+
+         .razorpay-container h3 {
+             color: #f12a47;
+         }
+
+         .cod-container h3 {
+             color: #28a745;
+         }
+
+         .razorpay-container p,
+         .cod-container p {
+             font-size: 1.1rem;
+             color: #6c757d;
+             margin-bottom: 20px;
+             line-height: 1.6;
+         }
+
+         .payment-summary {
+             background-color: #fff;
+             padding: 25px;
+             border-radius: 10px;
+             box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+             margin-bottom: 20px;
+             margin-top: 30px;
+         }
+
+         .payment-summary h4 {
+             color: #212529;
+             margin-bottom: 20px;
+             font-weight: bold;
+             border-bottom: 2px solid #f12a47;
+             padding-bottom: 10px;
+         }
+
+         .payment-summary .list-group-item {
+             background-color: transparent;
+             border: none;
+             padding: 12px 0;
+             display: flex;
+             justify-content: space-between;
+         }
+
+         .secure-payment-info {
+             font-size: 0.95rem;
+             color: #6c757d;
+             margin-top: 25px;
+             padding: 15px 20px;
+             background-color: #e8f5e9;
+             border-radius: 8px;
+             border-left: 4px solid #28a745;
+         }
+
+         .secure-payment-info i {
+             color: #28a745;
+             margin-right: 10px;
+         }
+
+         .btn-primary-custom {
+             background: linear-gradient(135deg, #f12a47 0%, #d81a37 100%);
+             border: none;
+             color: white;
+             padding: 15px 40px;
+             font-size: 1.1rem;
+             font-weight: 600;
+             border-radius: 8px;
+             transition: all 0.3s ease;
+             text-decoration: none;
+             display: inline-block;
+             box-shadow: 0 4px 15px rgba(241, 42, 71, 0.3);
+         }
+
+         .btn-primary-custom:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 6px 20px rgba(241, 42, 71, 0.4);
+             color: white;
+             text-decoration: none;
+         }
+
+         .order-details {
+             background-color: #f8f9fa;
+             padding: 20px;
+             border-radius: 8px;
+             margin: 20px 0;
+             border-left: 4px solid #007bff;
+         }
+
+         .order-details h5 {
+             color: #212529;
+             margin-bottom: 15px;
+             font-weight: 600;
+         }
+
+         .address-display {
+             background-color: #fff;
+             padding: 15px;
+             border-radius: 5px;
+             color: #495057;
+             border: 1px solid #dee2e6;
+         }
+
+         .messages .alert {
+             border-radius: 8px;
+             padding: 15px 20px;
+             margin-bottom: 15px;
+             border: none;
+             position: relative;
+         }
+
+         .close-btn {
+             position: absolute;
+             top: 10px;
+             right: 15px;
+             background: none;
+             border: none;
+             font-size: 1.5rem;
+             cursor: pointer;
+             opacity: 0.7;
+         }
+
+         .close-btn:hover {
+             opacity: 1;
+         }
+
+         .loading-overlay {
+             display: none;
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background: rgba(0,0,0,0.7);
+             z-index: 9999;
+             justify-content: center;
+             align-items: center;
+         }
+
+         .loading-overlay.active {
+             display: flex;
+         }
+
+         .loading-content {
+             background: white;
+             padding: 30px;
+             border-radius: 10px;
+             text-align: center;
+         }
+
+         .spinner {
+             border: 4px solid #f3f3f3;
+             border-top: 4px solid #f12a47;
+             border-radius: 50%;
+             width: 50px;
+             height: 50px;
+             animation: spin 1s linear infinite;
+             margin: 0 auto 20px;
+         }
+
+         @keyframes spin {
+             0% { transform: rotate(0deg); }
+             100% { transform: rotate(360deg); }
+         }
+
+         @media (max-width: 768px) {
+             .payment-container {
+                 padding: 20px;
+                 margin: 15px;
+             }
+
+             .payment-method-card {
+                 padding: 20px;
+             }
+         }
+      </style>
+   </head>
+   <body class="main-layout">
+      {% include 'header.html' %}
+
+      <!-- Loading Overlay -->
+      <div class="loading-overlay" id="loadingOverlay">
+         <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing your payment...</p>
+         </div>
+      </div>
+
+      <div class="container">
+         <div class="payment-container">
+            <h2>Complete Your Payment</h2>
+
+            {% if messages %}
+            <div class="messages mb-4">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                    <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="row">
+               <div class="col-lg-8">
+                  {% if payment_method == 'razorpay' %}
+                  <div class="payment-method-card razorpay-container">
+                     <h3><i class="fa fa-credit-card"></i> Online Payment</h3>
+                     <p>Secure payment powered by Razorpay</p>
+                     <p style="font-size: 0.95rem; color: #999;">The payment window will open automatically. Please complete your payment.</p>
+
+                     <div class="secure-payment-info">
+                        <i class="fa fa-lock"></i> <strong>Secure Payment:</strong> Your payment information is encrypted and secure. We use industry-standard SSL encryption.
+                     </div>
+
+                     <p style="margin-top: 20px; font-size: 0.9rem; color: #999;">
+                        <i class="fa fa-info-circle"></i> If the payment window doesn't open, please disable your popup blocker and refresh the page.
+                     </p>
+                  </div>
+                  {% else %}
+                  <div class="payment-method-card cod-container">
+                     <h3><i class="fa fa-money"></i> Cash on Delivery</h3>
+                     <p><i class="fa fa-check-circle" style="color: #28a745; font-size: 3rem;"></i></p>
+                     <p style="font-size: 1.3rem; color: #28a745; font-weight: bold;">Order Placed Successfully!</p>
+                     <p>You will pay <strong style="color: #f12a47; font-size: 1.4rem;">₹{{ total_amount|floatformat:2 }}</strong> when the order is delivered.</p>
+
+                     <div class="order-details">
+                        <h5><i class="fa fa-map-marker"></i> Delivery Address</h5>
+                        <div class="address-display">{{ address }}</div>
+                     </div>
+
+                     <a href="{% url 'myorder' %}" class="btn-primary-custom">
+                        <i class="fa fa-eye"></i> View My Orders
+                     </a>
+
+                     <div class="secure-payment-info">
+                        <i class="fa fa-truck"></i> <strong>Delivery Info:</strong> Your order will be delivered within 3-7 business days. Our delivery partner will contact you before delivery.
+                     </div>
+                  </div>
+                  {% endif %}
+               </div>
+
+               <div class="col-lg-4">
+                  <div class="payment-summary">
+                     <h4><i class="fa fa-shopping-cart"></i> Order Summary</h4>
+                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                           <span>Subtotal</span>
+                           <span>₹{{ total_amount|floatformat:2 }}</span>
+                        </li>
+                        <li class="list-group-item">
+                           <span>Shipping</span>
+                           <span>₹0.00</span>
+                        </li>
+                        <li class="list-group-item" style="border-top: 2px solid #dee2e6; padding-top: 15px;">
+                           <strong style="font-size: 1.1rem;">Total</strong>
+                           <strong style="color: #f12a47; font-size: 1.3rem;">₹{{ total_amount|floatformat:2 }}</strong>
+                        </li>
+                     </ul>
+                  </div>
+
+                  <div class="payment-summary">
+                     <h4><i class="fa fa-info-circle"></i> Payment Details</h4>
+                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                           <span><strong>Payment Method</strong></span>
+                           <span>{{ payment_method|title }}</span>
+                        </li>
+                        <li class="list-group-item">
+                           <span><strong>Order ID</strong></span>
+                           <span>#{{ order_id }}</span>
+                        </li>
+                        {% if payment_method == 'cod' %}
+                        <li class="list-group-item">
+                           <span><strong>Status</strong></span>
+                           <span style="color: #28a745;"><i class="fa fa-check-circle"></i> Confirmed</span>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item">
+                           <span><strong>Status</strong></span>
+                           <span style="color: #ffc107;"><i class="fa fa-clock-o"></i> Pending Payment</span>
+                        </li>
+                        {% endif %}
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      {% include 'footer.html' %}
+
+      <script src="{% static 'js/jquery.min.js' %}"></script>
+      <script src="{% static 'js/popper.min.js' %}"></script>
+      <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
+      <script src="{% static 'js/plugin.js' %}"></script>
+      <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+      <script src="{% static 'js/custom.js' %}"></script>
+      <script src="{% static 'js/owl.carousel.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+      <!-- Razorpay SDK - Load only for online payments -->
+      {% if payment_method == 'razorpay' %}
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      {% endif %}
+
+      <script>
+         $(document).ready(function(){
+            // Auto-hide alerts
+            setTimeout(function() {
+               $('.alert').fadeOut('slow');
+            }, 5000);
+
+            // ========================================
+            // RAZORPAY PAYMENT INTEGRATION
+            // ========================================
+            {% if payment_method == 'razorpay' %}
+            console.log('Initializing Razorpay payment...');
+
+            var options = {
+               "key": "{{ razorpay_key }}",
+               "amount": "{{ razorpay_amount }}",  // Amount in paise
+               "currency": "INR",
+               "name": "BagYourShoe",
+               "description": "Order #{{ order_id }}",
+               "order_id": "{{ payment.id }}",
+               "image": "{% static 'images/fevicon.png' %}",
+               "handler": function (response) {
+                  console.log('Payment successful:', response);
+
+                  // Show loading overlay
+                  $('#loadingOverlay').addClass('active');
+
+                  // Create form to POST to payment_success view
+                  var form = $('<form>', {
+                     'method': 'POST',
+                     'action': "{% url 'payment_success' %}"
+                  });
+
+                  // Add all required fields
+                  form.append($('<input>', {'type': 'hidden', 'name': 'order_id', 'value': '{{ order_id }}'}));
+                  form.append($('<input>', {'type': 'hidden', 'name': 'razorpay_payment_id', 'value': response.razorpay_payment_id}));
+                  form.append($('<input>', {'type': 'hidden', 'name': 'razorpay_order_id', 'value': response.razorpay_order_id}));
+                  form.append($('<input>', {'type': 'hidden', 'name': 'razorpay_signature', 'value': response.razorpay_signature}));
+                  form.append($('<input>', {'type': 'hidden', 'name': 'csrfmiddlewaretoken', 'value': '{{ csrf_token }}'}));
+
+                  // Append to body and submit
+                  $('body').append(form);
+                  form.submit();
+               },
+               "prefill": {
+                  "name": "{{ user.name }}",
+                  "email": "{{ user.email }}",
+                  "contact": "{{ user.phoneno }}"
+               },
+               "notes": {
+                  "order_id": "{{ order_id }}",
+                  "address": "{{ address }}"
+               },
+               "theme": {
+                  "color": "#f12a47"
+               },
+               "modal": {
+                  "ondismiss": function() {
+                     console.log('Payment dismissed by user');
+                     alert('Payment was cancelled. Your cart items are still saved. You can retry from the cart page.');
+                     window.location.href = "{% url 'cart' %}";
+                  }
+               }
+            };
+
+            // Create Razorpay instance
+            var rzp = new Razorpay(options);
+
+            // Handle payment errors
+            rzp.on('payment.failed', function (response){
+               console.error('Payment failed:', response.error);
+               alert('Payment failed: ' + response.error.description + '\n\nYour cart is still saved. Please try again.');
+               window.location.href = "{% url 'cart' %}";
+            });
+
+            // Open Razorpay modal automatically after 1 second
+            setTimeout(function() {
+               rzp.open();
+            }, 1000);
+            {% endif %}
+
+            // ========================================
+            // COD AUTO-REDIRECT
+            // ========================================
+            {% if payment_method == 'cod' %}
+            // Auto-redirect to orders page after 5 seconds
+            setTimeout(function() {
+               window.location.href = "{% url 'myorder' %}";
+            }, 5000);
+            {% endif %}
+         });
+      </script>
+   </body>
+</html>

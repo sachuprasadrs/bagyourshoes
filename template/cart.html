@@ -1,0 +1,882 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <title>My Cart & Wishlist - BagYourShoe</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+      <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
+      <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+      <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+      <style>
+         body {
+             margin: 0;
+             padding: 0;
+             background-color: #f8f9fa;
+         }
+
+         .cart-container {
+             margin-top: 2rem;
+             margin-bottom: 3rem;
+         }
+
+         /* Tab Navigation */
+         .cart-tabs {
+             background: white;
+             border-radius: 8px 8px 0 0;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             margin-bottom: 0;
+         }
+
+         .cart-tabs .nav-tabs {
+             border-bottom: none;
+             padding: 10px 20px 0;
+         }
+
+         .cart-tabs .nav-tabs .nav-link {
+             border: none;
+             color: #6c757d;
+             font-weight: 600;
+             font-size: 16px;
+             padding: 12px 20px;
+             margin-right: 10px;
+             border-radius: 8px 8px 0 0;
+             transition: all 0.3s ease;
+         }
+
+         .cart-tabs .nav-tabs .nav-link:hover {
+             color: #f12a47;
+             background: #fff5f7;
+         }
+
+         .cart-tabs .nav-tabs .nav-link.active {
+             color: #f12a47;
+             background: white;
+             border-bottom: 3px solid #f12a47;
+         }
+
+         .cart-tabs .nav-tabs .nav-link .badge {
+             background: #f12a47;
+             color: white;
+             padding: 3px 8px;
+             border-radius: 12px;
+             font-size: 12px;
+             margin-left: 5px;
+         }
+
+         .tab-content {
+             background: white;
+             padding: 20px;
+             border-radius: 0 0 8px 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+         }
+
+         /* Cart Styles */
+         .cart-item-image {
+             width: 80px;
+             height: 80px;
+             object-fit: cover;
+             border-radius: 5px;
+         }
+
+         .cart-table {
+             background: white;
+         }
+
+         .cart-table th {
+             background-color: #f8f9fa;
+             color: #212529;
+             font-weight: 600;
+             padding: 15px;
+             border-top: none;
+         }
+
+         .cart-table td {
+             vertical-align: middle;
+             padding: 15px;
+         }
+
+         .quantity-input {
+             width: 60px;
+             text-align: center;
+             padding: 5px;
+             border: 1px solid #ced4da;
+             border-radius: 4px;
+         }
+
+         .update-qty-btn {
+             margin-left: 5px;
+             padding: 5px 12px;
+             font-size: 14px;
+         }
+
+         .remove-item-btn, .move-to-wishlist-btn {
+             padding: 5px 15px;
+             font-size: 14px;
+             margin-right: 5px;
+         }
+
+         .move-to-wishlist-btn {
+             background: #ffc107;
+             border-color: #ffc107;
+         }
+
+         .move-to-wishlist-btn:hover {
+             background: #ffb300;
+             border-color: #ffb300;
+         }
+
+         .cart-summary {
+             background-color: #fff;
+             padding: 25px;
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             margin-bottom: 20px;
+         }
+
+         .cart-summary h4 {
+             color: #212529;
+             margin-bottom: 20px;
+             font-weight: bold;
+             border-bottom: 2px solid #f12a47;
+             padding-bottom: 10px;
+         }
+
+         .cart-summary .list-group-item {
+             background-color: transparent;
+             border: none;
+             padding: 10px 0;
+             display: flex;
+             justify-content: space-between;
+         }
+
+         .cart-summary .list-group-item strong {
+             color: #f12a47;
+         }
+
+         /* Wishlist Styles */
+         .wishlist-item-card {
+             background: white;
+             border: 1px solid #e9ecef;
+             border-radius: 8px;
+             padding: 15px;
+             margin-bottom: 15px;
+             transition: all 0.3s ease;
+         }
+
+         .wishlist-item-card:hover {
+             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+         }
+
+         .wishlist-item-image {
+             width: 100px;
+             height: 100px;
+             object-fit: cover;
+             border-radius: 5px;
+         }
+
+         .wishlist-item-info {
+             flex: 1;
+             padding-left: 20px;
+         }
+
+         .wishlist-item-name {
+             font-size: 16px;
+             font-weight: bold;
+             color: #212529;
+             margin-bottom: 5px;
+         }
+
+         .wishlist-item-category {
+             font-size: 13px;
+             color: #6c757d;
+             margin-bottom: 8px;
+         }
+
+         .wishlist-item-price {
+             font-size: 18px;
+             font-weight: bold;
+             color: #f12a47;
+             margin-bottom: 10px;
+         }
+
+         .wishlist-size-selector {
+             max-width: 150px;
+             padding: 5px;
+             font-size: 13px;
+             margin-bottom: 10px;
+         }
+
+         .wishlist-actions {
+             display: flex;
+             gap: 10px;
+             flex-wrap: wrap;
+         }
+
+         .btn-add-to-cart-wishlist {
+             background: #f12a47;
+             color: white;
+             padding: 8px 15px;
+             border: none;
+             border-radius: 4px;
+             font-size: 14px;
+             font-weight: 600;
+         }
+
+         .btn-add-to-cart-wishlist:hover {
+             background: #d81a37;
+             color: white;
+         }
+
+         .btn-remove-wishlist {
+             background: #e9ecef;
+             color: #212529;
+             padding: 8px 15px;
+             border: none;
+             border-radius: 4px;
+             font-size: 14px;
+             font-weight: 600;
+         }
+
+         .btn-remove-wishlist:hover {
+             background: #dc3545;
+             color: white;
+         }
+
+         .payment-options-card {
+             border: 1px solid #e9ecef;
+             border-radius: 8px;
+             padding: 20px;
+             margin-top: 20px;
+             background-color: #fff;
+         }
+
+         .payment-option {
+             margin-bottom: 15px;
+         }
+
+         .payment-option label {
+             font-weight: 600;
+             margin-left: 8px;
+             cursor: pointer;
+         }
+
+         .payment-option input[type="radio"] {
+             cursor: pointer;
+         }
+
+         .secure-payment-info {
+             font-size: 0.9em;
+             color: #6c757d;
+             margin-top: 15px;
+             padding: 12px;
+             background-color: #e8f5e9;
+             border-radius: 5px;
+             border-left: 4px solid #28a745;
+         }
+
+         .secure-payment-info i {
+             color: #28a745;
+             margin-right: 8px;
+         }
+
+         .btn-checkout {
+             width: 100%;
+             padding: 12px;
+             font-size: 16px;
+             font-weight: bold;
+             background: linear-gradient(135deg, #f12a47 0%, #d81a37 100%);
+             border: none;
+             color: white;
+             border-radius: 5px;
+             transition: all 0.3s ease;
+         }
+
+         .btn-checkout:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 4px 15px rgba(241, 42, 71, 0.3);
+             color: white;
+         }
+
+         .empty-state {
+             text-align: center;
+             padding: 60px 20px;
+         }
+
+         .empty-state i {
+             font-size: 80px;
+             color: #dee2e6;
+             margin-bottom: 20px;
+         }
+
+         .empty-state h3 {
+             color: #212529;
+             margin-bottom: 15px;
+         }
+
+         .empty-state p {
+             color: #6c757d;
+             margin-bottom: 25px;
+         }
+
+         /* Notification styles */
+         .notification {
+             position: fixed;
+             top: 20px;
+             right: 20px;
+             padding: 15px 20px;
+             border-radius: 5px;
+             color: white;
+             z-index: 9999;
+             transform: translateY(-100px);
+             opacity: 0;
+             transition: all 0.5s ease;
+             min-width: 250px;
+             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+         }
+
+         .notification.show {
+             transform: translateY(0);
+             opacity: 1;
+         }
+
+         .notification.success {
+             background: #28a745;
+         }
+
+         .notification.error {
+             background: #dc3545;
+         }
+      </style>
+   </head>
+
+   <body class="main-layout">
+      {% include 'header.html' %}
+
+      <div class="container cart-container">
+         <h2 class="mb-4 text-center">My Cart & Wishlist</h2>
+
+         {% if messages %}
+            <div class="messages mb-4">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+         {% endif %}
+
+         <!-- Tabs Navigation -->
+         <div class="cart-tabs">
+            <ul class="nav nav-tabs" id="cartTabs" role="tablist">
+               <li class="nav-item">
+                  <a class="nav-link active" id="cart-tab" data-toggle="tab" href="#cart" role="tab">
+                     <i class="fa fa-shopping-cart"></i> My Cart
+                     {% if cart_items %}
+                        <span class="badge">{{ cart_items|length }}</span>
+                     {% endif %}
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" id="wishlist-tab" data-toggle="tab" href="#wishlist" role="tab">
+                     <i class="fa fa-heart"></i> My Wishlist
+                     {% if wishlist_items %}
+                        <span class="badge">{{ wishlist_items|length }}</span>
+                     {% endif %}
+                  </a>
+               </li>
+            </ul>
+         </div>
+
+         <!-- Tab Content -->
+         <div class="tab-content" id="cartTabContent">
+            <!-- CART TAB -->
+            <div class="tab-pane fade show active" id="cart" role="tabpanel">
+               {% if cart_items %}
+                  <div class="row">
+                     <div class="col-lg-8">
+                        <div class="table-responsive">
+                           <table class="table cart-table">
+                              <thead>
+                                 <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Size</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Action</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {% for item in cart_items %}
+                                 <tr id="cart-item-{{ item.id }}" data-item-id="{{ item.id }}">
+                                    <td>
+                                       <div class="d-flex align-items-center">
+                                          <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-item-image mr-3">
+                                          <span>{{ item.name }}</span>
+                                       </div>
+                                    </td>
+                                    <td>₹{{ item.price|floatformat:2 }}</td>
+                                    <td>{{ item.size }}</td>
+                                    <td>
+                                       <div class="form-inline">
+                                          <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" class="form-control quantity-input" data-item-id="{{ item.id }}">
+                                          <button type="button" class="btn btn-sm btn-info update-qty-btn" data-item-id="{{ item.id }}">
+                                             <i class="fa fa-refresh"></i> Update
+                                          </button>
+                                       </div>
+                                    </td>
+                                    <td class="item-subtotal" data-price="{{ item.price }}">₹{{ item.subtotal|floatformat:2 }}</td>
+                                    <td>
+                                       <button type="button" class="btn btn-sm btn-warning move-to-wishlist-btn" data-item-id="{{ item.id }}" data-product-type="{{ item.product_type }}" data-product-id="{{ item.product_id }}">
+                                          <i class="fa fa-heart"></i>
+                                       </button>
+                                       <button type="button" class="btn btn-sm btn-danger remove-item-btn" data-item-id="{{ item.id }}">
+                                          <i class="fa fa-trash"></i>
+                                       </button>
+                                    </td>
+                                 </tr>
+                                 {% endfor %}
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+
+                     <div class="col-lg-4">
+                        <div class="cart-summary">
+                           <h4><i class="fa fa-shopping-cart"></i> Cart Summary</h4>
+                           <ul class="list-group list-group-flush">
+                              <li class="list-group-item">
+                                 <span>Subtotal</span>
+                                 <span id="cart-subtotal">₹{{ total_amount|floatformat:2 }}</span>
+                              </li>
+                              <li class="list-group-item">
+                                 <span>Shipping</span>
+                                 <span>₹0.00</span>
+                              </li>
+                              <li class="list-group-item">
+                                 <strong>Total</strong>
+                                 <strong id="cart-total">₹{{ total_amount|floatformat:2 }}</strong>
+                              </li>
+                           </ul>
+                        </div>
+
+                        <div class="payment-options-card">
+                           <h5><i class="fa fa-credit-card"></i> Payment Method</h5>
+                           <div class="payment-option">
+                              <input type="radio" id="payment_cod" name="payment_method" value="COD" checked>
+                              <label for="payment_cod">Cash on Delivery</label>
+                           </div>
+                           <div class="payment-option">
+                              <input type="radio" id="payment_online" name="payment_method" value="Online">
+                              <label for="payment_online">Online Payment (Razorpay)</label>
+                           </div>
+                           <button type="button" class="btn btn-checkout" onclick="proceedToCheckout()">
+                              <i class="fa fa-check-circle"></i> Proceed to Checkout
+                           </button>
+                           <div class="secure-payment-info">
+                              <i class="fa fa-lock"></i> Your payment information is secure and encrypted
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               {% else %}
+                  <div class="empty-state">
+                     <i class="fa fa-shopping-cart"></i>
+                     <h3>Your cart is empty</h3>
+                     <p>Add some items to your cart to get started!</p>
+                     <a href="/" class="btn btn-primary btn-lg">
+                        <i class="fa fa-shopping-bag"></i> Continue Shopping
+                     </a>
+                  </div>
+               {% endif %}
+            </div>
+
+            <!-- WISHLIST TAB -->
+            <div class="tab-pane fade" id="wishlist" role="tabpanel">
+               {% if wishlist_items %}
+                  <div class="row">
+                     {% for item in wishlist_items %}
+                     <div class="col-lg-6">
+                        <div class="wishlist-item-card d-flex" id="wishlist-item-{{ item.id }}">
+                           <img src="{{ item.image_url }}" alt="{{ item.name }}" class="wishlist-item-image">
+
+                           <div class="wishlist-item-info">
+                              <h5 class="wishlist-item-name">{{ item.name }}</h5>
+                              <p class="wishlist-item-category">{{ item.category }}</p>
+                              <div class="wishlist-item-price">₹{{ item.price|floatformat:2 }}</div>
+
+                              <form class="add-to-cart-form" data-product-type="{{ item.product_type }}" data-product-id="{{ item.product_id }}">
+                                 {% csrf_token %}
+
+                                 <select name="size" class="form-control wishlist-size-selector" required>
+                                    <option value="" disabled selected>Select Size</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                 </select>
+
+                                 <input type="hidden" name="quantity" value="1">
+
+                                 <div class="wishlist-actions">
+                                    <button type="submit" class="btn btn-add-to-cart-wishlist">
+                                       <i class="fa fa-shopping-cart"></i> Add to Cart
+                                    </button>
+                                    <button type="button" class="btn btn-remove-wishlist remove-wishlist-btn" data-item-id="{{ item.id }}" data-product-type="{{ item.product_type }}" data-product-id="{{ item.product_id }}">
+                                       <i class="fa fa-trash"></i> Remove
+                                    </button>
+                                 </div>
+                              </form>
+                           </div>
+                        </div>
+                     </div>
+                     {% endfor %}
+                  </div>
+                  <div class="text-center mt-4 mb-3">
+                     <a href="{% url 'wishlist' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fa fa-expand"></i> View Full Wishlist Page
+                     </a>
+                  </div>
+               {% else %}
+                  <div class="empty-state">
+                     <i class="fa fa-heart-o"></i>
+                     <h3>Your wishlist is empty</h3>
+                     <p>Save your favorite items by clicking the heart icon!</p>
+                     <a href="/" class="btn btn-primary btn-lg">
+                        <i class="fa fa-shopping-bag"></i> Browse Products
+                     </a>
+                  </div>
+               {% endif %}
+            </div>
+         </div>
+      </div>
+
+      <!-- Notification Element -->
+      <div class="notification" id="notification"></div>
+
+      {% include 'footer.html' %}
+
+      <!-- Javascript files -->
+      <script src="{% static 'js/jquery.min.js' %}"></script>
+      <script src="{% static 'js/popper.min.js' %}"></script>
+      <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
+      <script src="{% static 'js/plugin.js' %}"></script>
+      <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+      <script src="{% static 'js/custom.js' %}"></script>
+      <script src="{% static 'js/owl.carousel.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+      <script>
+         $(document).ready(function(){
+
+         // ==================== HELPER FUNCTIONS (Defined First) ====================
+
+         function showNotification(message, type) {
+            const notification = $('<div class="alert-notification"></div>')
+               .text(message)
+               .addClass(type === 'error' ? 'alert-error' : 'alert-success');
+
+            $('body').append(notification);
+
+            setTimeout(function() {
+               notification.addClass('show');
+            }, 100);
+
+            setTimeout(function() {
+               notification.removeClass('show');
+               setTimeout(function() {
+                  notification.remove();
+               }, 300);
+            }, 3000);
+         }
+
+         function updateCartCount() {
+            $.ajax({
+               url: '/get-cart-count/',
+               method: 'GET',
+               success: function(response) {
+                  if (response.count !== undefined) {
+                     $('.cart-count').text(response.count);
+                     if (response.count > 0) {
+                        $('.cart-count').show();
+                     } else {
+                        $('.cart-count').hide();
+                     }
+                  }
+               },
+               error: function() {
+                  console.log('Failed to update cart count');
+               }
+            });
+         }
+
+         /* ORIGINAL getCookie - Now defined at top
+function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+               const cookies = document.cookie.split(';');
+               for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                     break;
+                  }
+               }
+            }
+            return cookieValue;
+         }
+*/
+
+         // ==================== END HELPER FUNCTIONS ====================
+
+            // Fancybox initialization
+            $(".fancybox").fancybox({
+               openEffect: "none",
+               closeEffect: "none"
+            });
+
+            // Update quantity in cart
+            $('.update-qty-btn').on('click', function(e) {
+               e.preventDefault();
+               var $button = $(this);
+               var itemId = $button.data('item-id');
+               var $quantityInput = $button.siblings('input[name="quantity"]');
+               var quantity = parseInt($quantityInput.val());
+
+               if (quantity < 1) {
+                  showNotification('Quantity must be at least 1', 'error');
+                  return;
+               }
+
+               $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+
+               $.ajax({
+                  url: '/update-cart/' + itemId + '/',
+                  method: 'POST',
+                  data: {
+                     quantity: quantity,
+                     csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val() || getCookie('csrftoken')
+                  },
+                  success: function(response) {
+                     if (response.success) {
+                        var subtotal = (response.price * quantity).toFixed(2);
+                        $('#cart-item-' + itemId + ' .item-subtotal').text('₹' + subtotal);
+                        $('#cart-subtotal').text('₹' + response.cart_total.toFixed(2));
+                        $('#cart-total').text('₹' + response.cart_total.toFixed(2));
+                        showNotification(response.message || 'Cart updated successfully', 'success');
+                     } else {
+                        showNotification(response.error || 'Failed to update cart', 'error');
+                     }
+                  },
+                  error: function(xhr) {
+                     var errorMsg = 'Error updating cart';
+                     try {
+                        var response = JSON.parse(xhr.responseText);
+                        errorMsg = response.error || errorMsg;
+                     } catch(e) {}
+                     showNotification(errorMsg, 'error');
+                  },
+                  complete: function() {
+                     $button.prop('disabled', false).html('<i class="fa fa-refresh"></i> Update');
+                  }
+               });
+            });
+
+            // Remove item from cart
+            $('.remove-item-btn').on('click', function(e) {
+               e.preventDefault();
+               var $button = $(this);
+               var itemId = $button.data('item-id');
+
+               if (!confirm('Remove this item from cart?')) {
+                  return;
+               }
+
+               $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+
+               $.ajax({
+                  url: '/remove-from-cart/' + itemId + '/',
+                  method: 'POST',
+                  data: {
+                     csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val() || getCookie('csrftoken')
+                  },
+                  success: function(response) {
+                     if (response.success) {
+                        $('#cart-item-' + itemId).fadeOut(300, function() {
+                           $(this).remove();
+                           $('#cart-subtotal').text('₹' + response.cart_total.toFixed(2));
+                           $('#cart-total').text('₹' + response.cart_total.toFixed(2));
+                           if (response.cart_total === 0) {
+                              location.reload();
+                           }
+                        });
+                        showNotification(response.message || 'Item removed from cart', 'success');
+                     } else {
+                        showNotification(response.error || 'Failed to remove item', 'error');
+                        $button.prop('disabled', false).html('<i class="fa fa-trash"></i>');
+                     }
+                  },
+                  error: function(xhr) {
+                     showNotification('Error removing item', 'error');
+                     $button.prop('disabled', false).html('<i class="fa fa-trash"></i>');
+                  }
+               });
+            });
+
+            // Move to wishlist from cart
+            $('.move-to-wishlist-btn').on('click', function(e) {
+               e.preventDefault();
+               var $button = $(this);
+               var itemId = $button.data('item-id');
+               var productType = $button.data('product-type');
+               var productId = $button.data('product-id');
+
+               $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+
+               // First add to wishlist
+               $.ajax({
+                  url: '/add-to-wishlist/' + productType + '/' + productId + '/',
+                  method: 'POST',
+                  data: {
+                     csrfmiddlewaretoken: getCookie('csrftoken')
+                  },
+                  success: function(response) {
+                     if (response.success) {
+                        // Then remove from cart
+                        $.ajax({
+                           url: '/remove-from-cart/' + itemId + '/',
+                           method: 'POST',
+                           data: {
+                              csrfmiddlewaretoken: getCookie('csrftoken')
+                           },
+                           success: function(res) {
+                              showNotification('Moved to wishlist successfully!', 'success');
+                              setTimeout(function() {
+                                 location.reload();
+                              }, 1000);
+                           }
+                        });
+                     } else {
+                        showNotification(response.error || 'Failed to move to wishlist', 'error');
+                        $button.prop('disabled', false).html('<i class="fa fa-heart"></i>');
+                     }
+                  },
+                  error: function() {
+                     showNotification('Error moving to wishlist', 'error');
+                     $button.prop('disabled', false).html('<i class="fa fa-heart"></i>');
+                  }
+               });
+            });
+
+            // Remove from wishlist
+            $('.remove-wishlist-btn').on('click', function(e) {
+               e.preventDefault();
+               var $button = $(this);
+               var itemId = $button.data('item-id');
+               var productType = $button.data('product-type');
+               var productId = $button.data('product-id');
+
+               if (!confirm('Remove this item from wishlist?')) {
+                  return;
+               }
+
+               $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+
+               $.ajax({
+                  url: '/remove-from-wishlist/' + productType + '/' + productId + '/',
+                  method: 'POST',
+                  data: {
+                     csrfmiddlewaretoken: getCookie('csrftoken')
+                  },
+                  success: function(response) {
+                     if (response.success) {
+                        $('#wishlist-item-' + itemId).fadeOut(300, function() {
+                           $(this).remove();
+                           if ($('.wishlist-item-card').length === 0) {
+                              location.reload();
+                           }
+                        });
+                        showNotification(response.message || 'Item removed from wishlist', 'success');
+                     } else {
+                        showNotification(response.error || 'Failed to remove item', 'error');
+                        $button.prop('disabled', false).html('<i class="fa fa-trash"></i> Remove');
+                     }
+                  },
+                  error: function() {
+                     showNotification('Error removing item', 'error');
+                     $button.prop('disabled', false).html('<i class="fa fa-trash"></i> Remove');
+                  }
+               });
+            });
+         });
+
+         // Proceed to checkout
+         function proceedToCheckout() {
+            var paymentMethod = $('input[name="payment_method"]:checked').val();
+
+            if (!paymentMethod) {
+               showNotification('Please select a payment method', 'error');
+               return;
+            }
+
+            if (paymentMethod === 'COD') {
+               window.location.href = "{% url 'checkout_page' %}";
+            } else if (paymentMethod === 'Online') {
+               window.location.href = "{% url 'payment' %}";
+            }
+         }
+
+         // Helper functions
+         function showNotification(message, type) {
+            var $notification = $('#notification');
+            $notification.text(message);
+            $notification.removeClass('success error').addClass(type);
+            $notification.addClass('show');
+
+            setTimeout(function() {
+               $notification.removeClass('show');
+            }, 3000);
+         }
+
+         /* ORIGINAL getCookie - Now defined at top
+function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+               const cookies = document.cookie.split(';');
+               for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                     break;
+                  }
+               }
+            }
+            return cookieValue;
+         }
+*/
+      </script>
+
+      <!-- Unified Shop Script - Handles Add to Cart from Wishlist -->
+      <script src="{% static 'js/shop.js' %}"></script>
+   </body>
+</html>

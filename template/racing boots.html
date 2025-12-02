@@ -1,0 +1,333 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>Racing Boots - BagYourShoe</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- bootstrap css -->
+      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+      <!-- style css -->
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <!-- Responsive-->
+      <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+      <!-- fevicon -->
+      <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
+      <!-- Scrollbar Custom CSS -->
+      <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
+      <!-- Tweaks for older IEs-->
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+      <!-- owl stylesheets -->
+      <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+      <!-- Custom CSS for boot display -->
+      <style>
+         .shoes_section {
+            background-color: #f8f9fa;
+            padding: 60px 0;
+         }
+         .shoes_section_heading {
+            text-align: center;
+            margin-bottom: 50px;
+         }
+         .shoes_section_heading h2 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #212529;
+         }
+         .shoes_section_heading p {
+            color: #6c757d;
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 16px;
+         }
+         .shoe-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+         }
+         .shoe-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+         }
+         .shoe-img {
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            background: #f5f5f5;
+            text-align: center;
+         }
+         .shoe-img img {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.5s ease;
+         }
+         .shoe-img .new-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 3px;
+         }
+         .shoe-info {
+            padding: 20px;
+         }
+         .shoe-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #212529;
+         }
+         .shoe-category {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+         }
+         .shoe-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #f12a47;
+            margin-bottom: 15px;
+         }
+         .shoe-rating {
+            margin-bottom: 15px;
+         }
+         .shoe-rating label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #495057;
+         }
+         .shoe-rating select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+         }
+         .shoe-rating input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+         }
+         .shoe-sizes {
+            margin: 10px 0 15px;
+            font-size: 13px;
+            color: #6c757d;
+         }
+         .shoe-actions {
+            display: flex;
+            gap: 10px;
+         }
+         .btn-cart, .btn-wishlist {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+         }
+         .btn-cart {
+            background: #f12a47;
+            color: white;
+         }
+         .btn-cart:hover {
+            background: #d81a37;
+         }
+         .btn-cart:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+         }
+         .btn-wishlist {
+            background: #e9ecef;
+            color: #212529;
+         }
+         .btn-wishlist:hover {
+            background: #dee2e6;
+         }
+         .btn-wishlist.active {
+            background: #ffc107;
+            color: white;
+         }
+
+         /* Notification styles */
+         .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            z-index: 9999;
+            transform: translateY(-100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            min-width: 250px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+         }
+         .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+         }
+         .notification.success {
+            background: #28a745;
+         }
+         .notification.error {
+            background: #dc3545;
+         }
+
+         .show-more-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 40px;
+         }
+         .show-more-section .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+         }
+      </style>
+   </head>
+
+   <body class="main-layout">
+      <!-- Include header -->
+      {% include 'header.html' %}
+
+      <!-- Racing Boots Section Start -->
+      <div class="shoes_section">
+         <div class="container">
+            <div class="shoes_section_heading">
+               <h2>Racing Boots</h2>
+               <p>Browse our handpicked selection of premium racing boots designed for performance, comfort, and durability.</p>
+            </div>
+
+            <div class="row" id="boots-list">
+               {% for boot in boots %}
+               <div class="col-md-4 col-sm-6">
+                  <div class="shoe-item boot-item" data-id="{{ boot.boot_id }}">
+                     <div class="shoe-img">
+                        {% if boot.bestseller %}
+                           <span class="new-tag">Bestseller</span>
+                        {% endif %}
+                        <img src="{{ boot.image.url }}" alt="{{ boot.name }}">
+                     </div>
+
+                     <div class="shoe-info">
+                        <h3 class="shoe-name">{{ boot.name }}</h3>
+                        <p class="shoe-category">{{ boot.category }}</p>
+
+                        <div class="shoe-price">
+                           <span>₹{{ boot.price|floatformat:2 }}</span>
+                        </div>
+
+                        <!-- Add to Cart Form -->
+                        <form class="add-to-cart-form" data-product-type="boots" data-product-id="{{ boot.boot_id }}">
+                           {% csrf_token %}
+
+                           <div class="shoe-rating">
+                              <label for="size-{{ boot.boot_id }}">Select Size:</label>
+                              <select name="size" id="size-{{ boot.boot_id }}" required>
+                                 <option value="" disabled selected>Choose Size</option>
+                                 <option value="6">6</option>
+                                 <option value="7">7</option>
+                                 <option value="8">8</option>
+                                 <option value="9">9</option>
+                                 <option value="10">10</option>
+                                 <option value="11">11</option>
+                                 <option value="12">12</option>
+                              </select>
+
+                              <label for="qty-{{ boot.boot_id }}">Quantity:</label>
+                              <input type="number" name="quantity" id="qty-{{ boot.boot_id }}" value="1" min="1" max="10">
+                           </div>
+
+                           <div class="shoe-sizes">
+                              <p><i class="fa fa-info-circle"></i> Available sizes: {{ boot.size }}</p>
+                           </div>
+
+                           <div class="shoe-actions">
+                              <button type="submit" class="btn-cart">
+                                 <i class="fa fa-shopping-cart"></i> Add to Cart
+                              </button>
+                              <button type="button" class="btn-wishlist" data-id="{{ boot.boot_id }}" data-type="boots">
+                                 <i class="fa fa-heart-o"></i>
+                              </button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+               {% empty %}
+               <div class="col-12">
+                  <div class="alert alert-info text-center">
+                     <p>No racing boots available at the moment. Check back soon!</p>
+                  </div>
+               </div>
+               {% endfor %}
+            </div>
+
+            <!-- Show More Button -->
+            <div class="show-more-section">
+               <a href="{% url 'all_boots' %}" class="btn btn-primary">
+                  <i class="fa fa-th"></i> Show More Racing Boots
+               </a>
+            </div>
+         </div>
+      </div>
+      <!-- Racing Boots Section End -->
+
+      <!-- Notification Element -->
+      <div class="notification" id="notification"></div>
+
+      <!-- Include footer -->
+      {% include 'footer.html' %}
+
+      <!-- Javascript files -->
+      <script src="{% static 'js/jquery.min.js' %}"></script>
+      <script src="{% static 'js/popper.min.js' %}"></script>
+      <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
+      <script src="{% static 'js/plugin.js' %}"></script>
+      <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+      <script src="{% static 'js/custom.js' %}"></script>
+      <script src="{% static 'js/owl.carousel.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+      <script>
+         $(document).ready(function(){
+            // Fancybox initialization
+            $(".fancybox").fancybox({
+               openEffect: "none",
+               closeEffect: "none"
+            });
+         });
+      </script>
+
+      <!-- Unified Shop Script - Handles Cart & Wishlist -->
+      <script src="{% static 'js/shop.js' %}"></script>
+   </body>
+</html>

@@ -1,0 +1,125 @@
+{% load static %}
+<!-- header section start -->
+<div class="header_section header_main">
+    <div class="container">
+       <div class="row">
+          <div class="col-sm-3">
+             <div class="logo"><a href="#"><img src="{% static 'images/logo.png' %}"></a></div>
+          </div>
+          <div class="col-sm-9">
+             <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                   aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                   <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                   <div class="navbar-nav align-items-center">
+                      <a class="nav-item nav-link" href="../indexed">Home</a>
+                      <a class="nav-item nav-link" href="../collection">Collection</a>
+                      <a class="nav-item nav-link" href="../shoes">Shoes</a>
+                      <a class="nav-item nav-link" href="../sports">Racing Boots</a>
+                      <a class="nav-item nav-link" href="../contact">Contact</a>
+
+                      <!-- Search form with better spacing -->
+                      <div class="nav-item">
+                         <form class="form-inline d-flex align-items-center ml-2" method="get" action="{% url 'search' %}">
+                            <input type="text" name="query" class="form-control form-control-sm mr-1" placeholder="Search" style="width: 120px;">
+                            <button type="submit" class="btn btn-link p-1" style="min-width: 32px; min-height: 32px;">
+                               <img src="{% static 'images/search_icon.png' %}" alt="Search" style="height: 20px; width: 20px;">
+                            </button>
+                         </form>
+                      </div>
+
+                      <!-- Cart link with better click area -->
+                      <a class="nav-item nav-link d-flex align-items-center" href="../cart" style="min-width: 50px; justify-content: center;">
+                         <img src="{% static 'images/shop_icon.png' %}" alt="Shopping Cart" style="height: 24px; width: 24px;">
+                      </a>
+
+                      <!-- User authentication section -->
+                      {% if request.session.username %}
+                       <span class="nav-item nav-link text-muted d-flex align-items-center">Hello, {{ request.session.username }}</span>
+                       <a class="nav-item nav-link" href="../logout">Logout</a>
+                      {% else %}
+                       <a class="nav-item nav-link" href="../login">Login</a>
+                      {% endif %}
+                   </div>
+                </div>
+             </nav>
+          </div>
+       </div>
+    </div>
+</div>
+<!-- header section end -->
+
+<style>
+/* Enhanced navigation styles for better usability */
+.navbar-nav .nav-link {
+    padding: 0.75rem 1rem !important;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    min-height: 40px;
+    display: flex !important;
+    align-items: center;
+    text-decoration: none;
+    position: relative;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+}
+
+.navbar-nav .nav-link:active {
+    transform: translateY(0);
+}
+
+/* Ensure images within nav links don't interfere with click area */
+.nav-link img {
+    pointer-events: none;
+    transition: transform 0.2s ease;
+}
+
+.nav-link:hover img {
+    transform: scale(1.1);
+}
+
+/* Better mobile responsiveness */
+@media (max-width: 768px) {
+    .navbar-nav .nav-link {
+        padding: 0.5rem 0.75rem !important;
+        margin: 0.1rem 0;
+        min-height: 44px; /* iOS recommended touch target size */
+    }
+
+    .form-inline {
+        margin: 0.5rem 0 !important;
+    }
+
+    .navbar-nav {
+        width: 100%;
+    }
+}
+
+/* Search button improvements */
+.btn-link {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.btn-link:hover {
+    border-color: #ddd;
+    background-color: rgba(0,0,0,0.05);
+}
+
+/* Logo hover effect */
+.logo a {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.logo a:hover {
+    transform: scale(1.05);
+}
+</style>

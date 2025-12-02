@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+</head>
+<body>
+    <h2>Order Confirmation</h2>
+    <p>Dear {{ user.name|default:"Customer" }},</p>
+    <p>Thank you for your order #{{ order.orderid }} at Shoe Store!</p>
+    <h3>Order Details</h3>
+    <p><strong>Shipping Address:</strong> {{ order.useraddress }}</p>
+    <p><strong>Phone Number:</strong> {{ order.phnno }}</p>
+    <p><strong>Pincode:</strong> {{ order.pincode }}</p>
+    <h3>Items Ordered</h3>
+    <ul>
+        {% for item in items %}
+        <li>
+            {{ item.content_type.model|title }}: {{ item.product.name }} (Size: {{ item.size }}, Quantity: {{ item.quantity }}, Price: ₹{{ item.price|floatformat:2 }})
+        </li>
+        {% endfor %}
+    </ul>
+    <p>We will notify you once your order has been shipped.</p>
+    <p>Best regards,<br>Shoe Store Team</p>
+</body>
+</html>

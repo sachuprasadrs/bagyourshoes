@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Shoe | Admin Panel</title>
+
+    <!-- Bootstrap + Font Awesome -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="main-layout">
+
+    <!-- Page Header -->
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Add New Shoe</h2>
+        <div class="card p-4 shadow-sm">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Shoe Name -->
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-shoe-prints text-primary"></i> Shoe Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter shoe name" required>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description"><i class="fas fa-align-left text-info"></i> Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Shoe description..." required></textarea>
+                </div>
+
+                <!-- Price -->
+                <div class="form-group">
+                    <label for="price"><i class="fas fa-tag text-success"></i> Price</label>
+                    <input type="number" class="form-control" id="price" name="price" placeholder="Enter price" required>
+                </div>
+
+                <!-- Quantity -->
+                <div class="form-group">
+                    <label for="quantity"><i class="fas fa-boxes text-muted"></i> Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" min="0" placeholder="Enter quantity" required>
+                </div>
+
+                <!-- Category -->
+                <div class="form-group">
+                    <label for="category"><i class="fas fa-list text-warning"></i> Category</label>
+                    <select class="form-control" id="category" name="category" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="casual">Casual</option>
+                        <option value="sports">Sports</option>
+                    </select>
+                </div>
+
+                <!-- Size -->
+                <div class="form-group">
+                    <label for="size"><i class="fas fa-ruler-combined text-danger"></i> Size</label>
+                    <input type="text" class="form-control" id="size" name="size" placeholder="e.g., 8, 9.5, 10" required>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-group">
+                    <label for="image"><i class="fas fa-image text-secondary"></i> Shoe Image</label>
+                    <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
+                </div>
+
+                <!-- Bestseller -->
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="bestseller" name="bestseller">
+                    <label class="form-check-label" for="bestseller"><i class="fas fa-star text-warning"></i> Mark as Bestseller</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary mt-3"><i class="fas fa-plus-circle"></i> Add Shoe</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

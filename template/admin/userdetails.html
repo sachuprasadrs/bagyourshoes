@@ -1,0 +1,313 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>Admin - Customer Details</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- bootstrap css -->
+      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+      <!-- style css -->
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <!-- Responsive-->
+      <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+      <!-- fevicon -->
+      <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
+      <!-- Scrollbar Custom CSS -->
+      <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
+      <!-- Tweaks for older IEs-->
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+      <!-- Admin specific styles -->
+      <style>
+        .admin-header {
+            background-color: #212529;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .admin-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .admin-title {
+            color: #f12a47;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .customer-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-inactive {
+            background-color: #6c757d;
+            color: white;
+        }
+        .status-vip {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .customer-details-row {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .custom-table th, .custom-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .custom-table th {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-weight: bold;
+            text-align: left;
+        }
+        .custom-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .order-status-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .order-completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .order-processing {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .order-shipped {
+            background-color: #6f42c1;
+            color: white;
+        }
+        .order-cancelled {
+            background-color: #dc3545;
+            color: white;
+        }
+        .action-btn {
+            background-color: #f12a47;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 5px;
+        }
+        .action-btn:hover {
+            background-color: #d12340;
+        }
+        .secondary-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .secondary-btn:hover {
+            background-color: #5a6268;
+        }
+        .customer-stats {
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .customer-stats:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .stat-title {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .bg-orders {
+            background-color: #e2f0fd;
+        }
+        .bg-spent {
+            background-color: #e0f7ed;
+        }
+        .bg-wishlisted {
+            background-color: #fff2e0;
+        }
+        .bg-returns {
+            background-color: #fee5e7;
+        }
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+        }
+        .nav-tabs .nav-link.active {
+            color: #f12a47;
+            font-weight: bold;
+        }
+        .address-card {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .address-type {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #eee;
+        }
+      </style>
+   </head>
+   <!-- body -->
+   <body>
+
+      <!-- Include header -->
+      {% include 'admin/header.html' %}
+
+      <!-- Customer details section -->
+      <div class="container admin-container">
+         <div class="row">
+            <div class="col-md-12">
+               <div class="admin-header">
+                  <h2 class="text-center" style="color: white;">All Registered Users</h2>
+               </div>
+               <div class="table-responsive">
+                  <table class="table custom-table">
+                     <thead>
+                        <tr>
+                           <th>UserID</th>
+                           <th>Name</th>
+                           <th>Email</th>
+                           <th>Phone No</th>
+                           <th>DOB</th>
+                           <th>Address</th>
+                           <th>Pincode</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for user in users %}
+                        <tr>
+                           <td>{{ user.userid }}</td>
+                           <td>{{ user.name }}</td>
+                           <td>{{ user.email }}</td>
+                           <td>{{ user.phoneno }}</td>
+                           <td>{{ user.dob }}</td>
+                           <td>{{ user.address }}</td>
+                           <td>{{ user.pincode }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                           <td colspan="7" class="text-center">No users found.</td>
+                        </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      {% include 'admin/footer.html' %}
+      <!-- Javascript files-->
+      <script src="{% static 'js/jquery.min.js' %}"></script>
+      <script src="{% static 'js/popper.min.js' %}"></script>
+      <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
+      <script src="{% static 'js/plugin.js' %}"></script>
+      <!-- sidebar -->
+      <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+      <script src="{% static 'js/custom.js' %}"></script>
+
+      <!-- Admin specific JavaScript -->
+      <script>
+         $(document).ready(function(){
+            // Tab functionality
+            $('#customerTab a').on('click', function (e) {
+               e.preventDefault();
+               $(this).tab('show');
+            });
+
+            // Add note form submission
+            $("form").submit(function(e){
+               e.preventDefault();
+
+               const noteText = $(this).find("textarea").val();
+               if (!noteText.trim()) {
+                  alert("Please enter a note before submitting");
+                  return;
+               }
+
+               // Add new note (in production this would be an AJAX call)
+               const now = new Date();
+               const dateStr = now.toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric'
+               });
+
+               const newNote = `
+                  <div class="card mb-3">
+                     <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                           <h5>New Note</h5>
+                           <small class="text-muted">Added by Admin on ${dateStr}</small>
+                        </div>
+                        <p>${noteText}</p>
+                     </div>
+                  </div>
+               `;
+
+               $(newNote).insertAfter("h4:contains('Customer Notes')");
+               $(this).find("textarea").val("");
+
+               alert("Note added successfully!");
+            });
+         });
+      </script>
+   </body>
+</html>

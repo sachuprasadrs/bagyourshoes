@@ -1,0 +1,6 @@
+razorpay>=1.4.1
+setuptools<81
+Django>=4.2,<5.0
+Pillow>=9.0.0
+django-crispy-forms>=2.0
+crispy-bootstrap5>=0.7

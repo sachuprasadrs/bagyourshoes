@@ -1,0 +1,302 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>New Collection - BagYourShoe</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- bootstrap css -->
+      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+      <!-- style css -->
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <!-- Responsive-->
+      <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+      <!-- fevicon -->
+      <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
+      <!-- Scrollbar Custom CSS -->
+      <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
+      <!-- Tweaks for older IEs-->
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+      <!-- owl stylesheets -->
+      <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+      <style>
+         /* Enhanced collection styles with cart functionality */
+         .collection_section {
+            background-color: #f8f9fa;
+         }
+         .collection_section_2 .col-md-6 {
+            margin-bottom: 30px;
+         }
+         .about-img {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+         }
+         .about-img:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+         }
+         .new_bt {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+         }
+         .shoes-img {
+            text-align: center;
+            padding: 20px 0;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 15px;
+         }
+         .shoes-img img {
+            max-width: 100%;
+            height: auto;
+         }
+         .sport_text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #212529;
+            margin: 15px 0 10px;
+         }
+         .dolar_text {
+            font-size: 24px;
+            margin-bottom: 15px;
+         }
+         .star_icon ul {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+         }
+         .star_icon ul li a img {
+            width: 20px;
+            height: 20px;
+         }
+
+         /* Cart form styling */
+         .cart-form {
+            margin-top: 15px;
+         }
+         .cart-form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+         }
+         .cart-form input[type="number"] {
+            width: 70px;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 10px;
+         }
+         .cart-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+         }
+         .btn-cart, .btn-wishlist {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+         }
+         .btn-cart {
+            background: #f12a47;
+            color: white;
+         }
+         .btn-cart:hover {
+            background: #d81a37;
+         }
+         .btn-cart:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+         }
+         .btn-wishlist {
+            background: #e9ecef;
+            color: #212529;
+            max-width: 50px;
+         }
+         .btn-wishlist:hover {
+            background: #dee2e6;
+         }
+         .btn-wishlist.active {
+            background: #ffc107;
+            color: white;
+         }
+         .seemore_bt {
+            display: none; /* Hidden since we have cart functionality now */
+         }
+
+         /* Notification styles */
+         .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            z-index: 9999;
+            transform: translateY(-100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            min-width: 250px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+         }
+         .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+         }
+         .notification.success {
+            background: #28a745;
+         }
+         .notification.error {
+            background: #dc3545;
+         }
+      </style>
+   </head>
+
+   <body class="main-layout">
+      <!-- Include header -->
+      {% include 'header.html' %}
+
+      <!-- new collection section start -->
+      <div class="collection_text">Collection</div>
+      <div class="layout_padding collection_section">
+         <div class="container">
+            <h1 class="new_text"><strong>New Collection</strong></h1>
+            <p class="consectetur_text">Check out our latest arrivals!</p>
+
+            <div class="collection_section_2">
+               <div class="row">
+                  {% for shoe in shoes %}
+                  <div class="col-md-6">
+                     <div class="about-img">
+                        {% if shoe.bestseller %}
+                        <button class="new_bt">Bestseller</button>
+                        {% else %}
+                        <button class="new_bt">New</button>
+                        {% endif %}
+
+                        <div class="shoes-img">
+                           <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+                        </div>
+
+                        <p class="sport_text">{{ shoe.name }}</p>
+
+                        <div class="dolar_text">
+                           ₹<strong style="color: #f12a47;">{{ shoe.price|floatformat:2 }}</strong>
+                        </div>
+
+                        <div class="star_icon">
+                           <ul>
+                              {% for i in "12345" %}
+                              <li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
+                              {% endfor %}
+                           </ul>
+                        </div>
+
+                        <!-- Add to Cart Form -->
+                        <form class="add-to-cart-form cart-form" data-product-type="shoes" data-product-id="{{ shoe.shoe_id }}">
+                           {% csrf_token %}
+
+                           <label for="size-{{ shoe.shoe_id }}" style="font-size: 13px; font-weight: 600;">Select Size:</label>
+                           <select name="size" id="size-{{ shoe.shoe_id }}" required>
+                              <option value="" disabled selected>Choose Size</option>
+                              <option value="6">6</option>
+                              <option value="7">7</option>
+                              <option value="8">8</option>
+                              <option value="9">9</option>
+                              <option value="10">10</option>
+                              <option value="11">11</option>
+                              <option value="12">12</option>
+                           </select>
+
+                           <label for="qty-{{ shoe.shoe_id }}" style="font-size: 13px; font-weight: 600;">Quantity:</label>
+                           <input type="number" name="quantity" id="qty-{{ shoe.shoe_id }}" value="1" min="1" max="10">
+
+                           <div class="cart-actions">
+                              <button type="submit" class="btn-cart">
+                                 <i class="fa fa-shopping-cart"></i> Add to Cart
+                              </button>
+                              <button type="button" class="btn-wishlist" data-id="{{ shoe.shoe_id }}" data-type="shoes">
+                                 <i class="fa fa-heart-o"></i>
+                              </button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+                  {% empty %}
+                  <div class="col-12">
+                     <div class="alert alert-info text-center">
+                        <p>No items in the new collection yet. Check back soon!</p>
+                     </div>
+                  </div>
+                  {% endfor %}
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- new collection section end -->
+
+      <!-- Notification Element -->
+      <div class="notification" id="notification"></div>
+
+      <!-- Include footer -->
+      {% include 'footer.html' %}
+
+      <!-- Javascript files -->
+      <script src="{% static 'js/jquery.min.js' %}"></script>
+      <script src="{% static 'js/popper.min.js' %}"></script>
+      <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
+      <script src="{% static 'js/plugin.js' %}"></script>
+      <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+      <script src="{% static 'js/custom.js' %}"></script>
+      <script src="{% static 'js/owl.carousel.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+      <script>
+         $(document).ready(function(){
+            // Fancybox initialization
+            $(".fancybox").fancybox({
+               openEffect: "none",
+               closeEffect: "none"
+            });
+         });
+      </script>
+
+      <!-- Unified Shop Script - Handles Cart & Wishlist -->
+      <script src="{% static 'js/shop.js' %}"></script>
+   </body>
+</html>
