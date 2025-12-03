@@ -386,14 +386,36 @@ def adminhome(request):
 
 
 def adminshoes(request):
-    casual_shoes = Shoes.objects.all().order_by('-shoe_id')
-    sports_shoes = Boots.objects.all().order_by('-boot_id')
+    """Admin shoes view with search functionality"""
+    if 'admin' not in request.session:
+        return redirect('login')
+
+    # Get search query
+    search_query = request.GET.get('search', '').strip()
+
+    # Base querysets
+    casualshoes = Shoes.objects.all().order_by('-shoe_id')
+    sportsshoes = Boots.objects.all().order_by('-boot_id')
+
+    # Apply search filter if query exists
+    if search_query:
+        from django.db.models import Q
+        casualshoes = casualshoes.filter(
+            Q(name__icontains=search_query) |
+            Q(category__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+        sportsshoes = sportsshoes.filter(
+            Q(name__icontains=search_query) |
+            Q(category__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
 
     context = {
-        'casual_shoes': casual_shoes,
-        'sports_shoes': sports_shoes
+        'casualshoes': casualshoes,
+        'sportsshoes': sportsshoes,
+        'search_query': search_query,
     }
-
     return render(request, 'admin/adminshoes.html', context)
 
 
@@ -1606,13 +1628,30 @@ def ad_sports(request):
 
 
 def ad_search(request):
+    """Admin search view with empty query handling"""
     if 'admin' not in request.session:
         return redirect('login')
-    query = request.GET.get('query', '')
-    shoes_results = Shoes.objects.filter(name__icontains=query)
-    boots_results = Boots.objects.filter(name__icontains=query)
+
+    query = request.GET.get('query', '').strip()
+
+    # Initialize empty results
+    shoes_results = []
+    boots_results = []
+
+    # Only search if query is not empty
+    if query:
+        from django.db.models import Q
+        shoes_results = Shoes.objects.filter(
+            Q(name__icontains=query) |
+            Q(category__icontains=query)
+        )
+        boots_results = Boots.objects.filter(
+            Q(name__icontains=query) |
+            Q(category__icontains=query)
+        )
+
     return render(request, 'admin/ADsearch.html', {
         'query': query,
         'shoes_results': shoes_results,
-        'boots_results': boots_results,
+        'boots_results': boots_results
     })

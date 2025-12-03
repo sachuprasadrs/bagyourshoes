@@ -12956,3 +12956,217 @@ Watching for file changes with StatReloader
 "GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
 "GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
 "GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /adminshoes/ HTTP/1.1" 200 14157
+"GET /media/shoes/shoes3_Vjii4D3.png HTTP/1.1" 304 0
+"GET /static/images/star-icon.png HTTP/1.1" 304 0
+"GET /media/boots/shoes2.png HTTP/1.1" 304 0
+"GET /media/boots/shoes1_w24l6w1.png HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+Watching for file changes with StatReloader
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+Not Found: /admin/
+"GET /admin/ HTTP/1.1" 404 8095
+"GET /django-admin/ HTTP/1.1" 302 0
+"GET /django-admin/login/?next=/django-admin/ HTTP/1.1" 200 6638
+Not Found: /admin
+"GET /admin HTTP/1.1" 404 8092
+Not Found: /admin/orderdetails/
+"GET /admin/orderdetails/ HTTP/1.1" 404 8134
+Not Found: /admin/
+"GET /admin/ HTTP/1.1" 404 8095
+"GET /django-admin/ HTTP/1.1" 302 0
+"GET /django-admin/login/?next=/django-admin/ HTTP/1.1" 200 6638
+"POST /django-admin/login/?next=/django-admin/ HTTP/1.1" 200 6799
+"POST /django-admin/login/?next=/django-admin/ HTTP/1.1" 200 6797
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 14218
+"GET /static/css/bootstrap.min.css HTTP/1.1" 304 0
+"GET /static/css/responsive.css%20 HTTP/1.1" 304 0
+"GET /static/css/owl.carousel.min.css HTTP/1.1" 304 0
+"GET /static/js/jquery.min.js HTTP/1.1" 304 0
+"GET /static/images/logo.png HTTP/1.1" 304 0
+"GET /static/css/style.css HTTP/1.1" 304 0
+"GET /static/css/jquery.mCustomScrollbar.min.css HTTP/1.1" 304 0
+"GET /static/images/running-shoes.png HTTP/1.1" 304 0
+"GET /static/js/popper.min.js HTTP/1.1" 304 0
+"GET /static/js/jquery-3.0.0.min.js HTTP/1.1" 304 0
+"GET /static/js/plugin.js HTTP/1.1" 304 0
+"GET /static/js/bootstrap.bundle.min.js HTTP/1.1" 304 0
+"GET /static/js/jquery.mCustomScrollbar.concat.min.js HTTP/1.1" 304 0
+"GET /static/js/custom.js HTTP/1.1" 304 0
+"GET /static/images/footer-logo.png HTTP/1.1" 304 0
+"GET /static/images/phone-icon.png HTTP/1.1" 304 0
+"GET /static/images/email-icon.png HTTP/1.1" 304 0
+"GET /static/images/fb-icon.png HTTP/1.1" 304 0
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/images/twitter-icon.png HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/in-icon.png HTTP/1.1" 304 0
+"GET /static/images/google-icon.png HTTP/1.1" 304 0
+"GET /static/images/search-icon.png HTTP/1.1" 404 1825
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/animate.min.css HTTP/1.1" 304 0
+"GET /static/css/normalize.css HTTP/1.1" 304 0
+"GET /static/css/meanmenu.css HTTP/1.1" 304 0
+"GET /static/css/slick.css HTTP/1.1" 304 0
+"GET /static/css/jquery-ui.css HTTP/1.1" 304 0
+"GET /static/css/nice-select.css HTTP/1.1" 304 0
+"GET /static/images/banner.png HTTP/1.1" 304 0
+"GET /static/images/fevicon.png HTTP/1.1" 404 1813
+"GET /login/ HTTP/1.1" 200 10911
+"GET /static/css/responsive.css HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/images/search-icon.png HTTP/1.1" 404 1825
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/fevicon.png'%20%%7D HTTP/1.1" 404 1846
+"POST /login/ HTTP/1.1" 302 0
+"GET /adminhome/ HTTP/1.1" 200 25000
+"GET /static/images/shoes-img1.png HTTP/1.1" 304 0
+"GET /static/images/shoes-img2.png HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/star-icon.png HTTP/1.1" 304 0
+"GET /static/images/shoes-img3.png HTTP/1.1" 304 0
+"GET /static/images/shoes-img4.png HTTP/1.1" 304 0
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/shoes-img5.png HTTP/1.1" 304 0
+"GET /static/images/shoes-img7.png HTTP/1.1" 304 0
+"GET /static/images/shoes-img6.png HTTP/1.1" 304 0
+"GET /static/images/shoes-img9.png HTTP/1.1" 304 0
+"GET /static/images/shoes-img8.png HTTP/1.1" 304 0
+"GET /static/images/about-img2.png HTTP/1.1" 304 0
+"GET /static/images/shop-banner.png HTTP/1.1" 304 0
+"GET /manage-orders/ HTTP/1.1" 200 28534
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 8110
+"GET /order-detail/16/ HTTP/1.1" 200 11861
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /order-detail/16/ HTTP/1.1" 200 11861
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/?status=cancelled HTTP/1.1" 200 10826
+"GET /manage-orders/?status=delivered HTTP/1.1" 200 10826
+"GET /order-detail/13/ HTTP/1.1" 200 11864
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /ADsearch/ HTTP/1.1" 200 12776
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /ADsearch/?query=jap HTTP/1.1" 200 18998
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /userdetails/ HTTP/1.1" 200 15806
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /adminshoes/ HTTP/1.1" 200 14157
+"GET /media/shoes/shoes3_Vjii4D3.png HTTP/1.1" 304 0
+"GET /media/boots/shoes2.png HTTP/1.1" 304 0
+"GET /media/boots/shoes1_w24l6w1.png HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /ADsearch/ HTTP/1.1" 200 12776
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /ADsearch/?query=jap HTTP/1.1" 200 18998
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+Internal Server Error: /ADsearch/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 1631, in ad_search
+    return render(request, 'admin/ADsearch.html', {
+        'query': query,
+        'shoes_results': shoes_results,
+        'boots_results': boots_results
+    })
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\defaulttags.py", line 238, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'deleteshoes' not found. 'deleteshoes' is not a valid view function or pattern name.
+"GET /ADsearch/?query=jap HTTP/1.1" 500 176417
+"GET /ADsearch/?query=jap HTTP/1.1" 200 21107
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /ADsearch/?query=jap HTTP/1.1" 200 21107
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /editshoes/casual/2/ HTTP/1.1" 200 10775
+"GET /editshoes/sports/3/ HTTP/1.1" 200 10777
+"GET /addshoes/ HTTP/1.1" 200 4104
+"GET /adminshoes/ HTTP/1.1" 200 14157
+"GET /media/shoes/shoes3_Vjii4D3.png HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /media/boots/shoes2.png HTTP/1.1" 304 0
+"GET /media/boots/shoes1_w24l6w1.png HTTP/1.1" 304 0
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
