@@ -134,7 +134,7 @@
                 <p><strong>Name:</strong> {{ order.username }}</p>
                 <p><strong>Email:</strong> {{ order.user.email|default:"N/A" }}</p>
                 <p><strong>Phone:</strong> {{ order.phnno }}</p>
-                <p><strong>Address:</strong> {{ order.address|default:"Not provided" }}</p>
+                <p><strong>Address:</strong> {{ order.useraddress|default:"Not provided" }}</p>
             </div>
         </div>
 
@@ -172,10 +172,10 @@
                         <tbody>
                             {% for item in items %}
                             <tr>
-                                <td>{{ item.product_name|default:"Unknown Product" }}</td>
+                                <td>{{ item.product_name }}</td>
                                 <td>{{ item.quantity }}</td>
                                 <td>₹{{ item.price }}</td>
-                                <td>₹{{ item.total }}</td>
+                                <td>₹{{ item.subtotal }}</td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -186,7 +186,7 @@
                         <tfoot>
                             <tr>
                                 <th colspan="3" class="text-right">Total:</th>
-                                <th>₹{{ order.total_amount }}</th>
+                                <th>₹{{ total_amount }}</th>
                             </tr>
                         </tfoot>
                     </table>

@@ -424,21 +424,35 @@ def orderdetails(request, order_id):
     customer = order.user
     items = MyOrders.objects.filter(order=order)
 
-    if request.method == "POST":
-        new_status = request.POST.get("status")
-        note = request.POST.get("note", "")
+    # Calculate total amount and prepare items with subtotals
+    total_amount = 0
+    items_with_subtotal = []
+    for item in items:
+        subtotal = item.price * item.quantity
+        total_amount += subtotal
+        items_with_subtotal.append({
+            'product_name': item.product.name if item.product else 'Unknown Product',
+            'quantity': item.quantity,
+            'price': item.price,
+            'subtotal': subtotal
+        })
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        note = request.POST.get('note', '')
         if new_status:
             order.status = new_status
             order.status_note = note
             order.status_updated_at = timezone.now()
             order.save()
-            messages.success(request, f"Order status updated to '{new_status.capitalize()}'.")
+            messages.success(request, f'Order status updated to {new_status.capitalize()}.')
             return redirect('admin_order_detail', order_id=order_id)
 
     context = {
         'order': order,
         'customer': customer,
-        'items': items,
+        'items': items_with_subtotal,
+        'total_amount': total_amount,
     }
     return render(request, 'admin/order_detail.html', context)
 
@@ -1576,8 +1590,16 @@ def admin_manage_orders(request):
             Q(phnno__icontains=search_query)
         )
 
+    # Calculate total for each order
+    orders_with_totals = []
+    for order in orders:
+        items = MyOrders.objects.filter(order=order)
+        total = sum(item.price * item.quantity for item in items)
+        order.calculated_total = total  # Add calculated total to order object
+        orders_with_totals.append(order)
+
     # Pagination
-    paginator = Paginator(orders, 20)
+    paginator = Paginator(orders_with_totals, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

@@ -13170,3 +13170,270 @@ D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
 Watching for file changes with StatReloader
 D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
 Watching for file changes with StatReloader
+Internal Server Error: /adminshoes/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 505, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'else'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 419, in adminshoes
+    return render(request, 'admin/adminshoes.html', context)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\backends\django.py", line 33, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\engine.py", line 175, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\engine.py", line 157, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 200, in compile_nodelist
+    return parser.parse()
+           ~~~~~~~~~~~~^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 513, in parse
+    raise self.error(token, e)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\defaulttags.py", line 853, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 507, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 558, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 117: 'else', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+"GET /adminshoes/ HTTP/1.1" 500 199262
+Internal Server Error: /adminshoes/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 505, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'else'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 419, in adminshoes
+    return render(request, 'admin/adminshoes.html', context)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\backends\django.py", line 33, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\engine.py", line 175, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\engine.py", line 157, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 200, in compile_nodelist
+    return parser.parse()
+           ~~~~~~~~~~~~^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 513, in parse
+    raise self.error(token, e)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\defaulttags.py", line 853, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 507, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 558, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 117: 'else', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+"GET /adminshoes/ HTTP/1.1" 500 199262
+"GET /adminshoes/ HTTP/1.1" 200 12173
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /adminshoes/ HTTP/1.1" 200 12173
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+Internal Server Error: /adminshoes/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 419, in adminshoes
+    return render(request, 'admin/adminshoes.html', context)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\template\defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\urls\base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\urls\resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'editshoes' with arguments '('casual', '')' not found. 1 pattern(s) tried: ['editshoes/(?P<category>[^/]+)/(?P<shoe_id>[0-9]+)/\\Z']
+"GET /adminshoes/ HTTP/1.1" 500 126962
+"GET /adminshoes/ HTTP/1.1" 200 13508
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /adminshoes/ HTTP/1.1" 200 13500
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /adminshoes/ HTTP/1.1" 200 13500
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /adminshoes/ HTTP/1.1" 200 13500
+"GET /static/images/boots/shoes2.png HTTP/1.1" 404 1828
+"GET /static/images/shoes/shoes3_Vjii4D3.png HTTP/1.1" 404 1852
+"GET /static/images/boots/shoes1_w24l6w1.png HTTP/1.1" 404 1852
+"GET /adminshoes/ HTTP/1.1" 200 13427
+"GET /media/shoes/shoes3_Vjii4D3.png HTTP/1.1" 304 0
+Not Found: /media/boots/shoes2.png
+"GET /media/boots/shoes2.png HTTP/1.1" 404 8347
+"GET /media/boots/shoes1_w24l6w1.png HTTP/1.1" 304 0
+"GET /editshoes/sports/3/ HTTP/1.1" 200 10777
+Not Found: /media/boots/shoes2.png
+"GET /media/boots/shoes2.png HTTP/1.1" 404 8347
+"POST /editshoes/sports/3/ HTTP/1.1" 302 0
+"GET /adminshoes/ HTTP/1.1" 200 13427
+"GET /media/boots/shoes2.png HTTP/1.1" 200 38600
+"GET /adminshoes/ HTTP/1.1" 200 13419
+"GET /media/boots/shoes2.png HTTP/1.1" 304 0
+"GET /ADsearch/ HTTP/1.1" 200 12776
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /userdetails/ HTTP/1.1" 200 15806
+"GET /ADsearch/ HTTP/1.1" 200 12776
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /adminshoes/ HTTP/1.1" 200 13419
+"GET /media/boots/shoes2.png HTTP/1.1" 304 0
+"GET /adminshoes/ HTTP/1.1" 200 13419
+"GET /media/boots/shoes2.png HTTP/1.1" 304 0
+"GET /userdetails/ HTTP/1.1" 200 15806
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /adminshoes/ HTTP/1.1" 200 13419
+"GET /addshoes/ HTTP/1.1" 200 4104
+"GET /ADshoes/ HTTP/1.1" 200 20090
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /ADsports/ HTTP/1.1" 200 21567
+"GET /media/boots/shoes2.png HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /userdetails/ HTTP/1.1" 200 15806
+"GET /ADsearch/ HTTP/1.1" 200 12776
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /userdetails/ HTTP/1.1" 200 15806
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/?status=delivered HTTP/1.1" 200 10826
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+"GET /order-detail/16/ HTTP/1.1" 200 11861
+"GET /order-detail/16/ HTTP/1.1" 200 11861
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+"GET /manage-orders/?status=delivered HTTP/1.1" 200 10826
+"GET /manage-orders/?status=cancelled HTTP/1.1" 200 10826
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+"GET /manage-orders/?status=delivered HTTP/1.1" 200 10826
+"GET /manage-orders/?status=delivered HTTP/1.1" 200 10826
+"GET /manage-orders/?status=cancelled HTTP/1.1" 200 10826
+"GET /order-detail/15/ HTTP/1.1" 200 11870
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/?status=delivered HTTP/1.1" 200 10826
+"GET /order-detail/13/ HTTP/1.1" 200 11872
+"GET /order-detail/16/ HTTP/1.1" 200 11868
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/?status=delivered HTTP/1.1" 200 10826
+"GET /order-detail/13/ HTTP/1.1" 200 11892
+"GET /manage-orders/ HTTP/1.1" 200 28534
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10822
+"GET /order-detail/16/ HTTP/1.1" 200 11889
+"GET /manage-orders/ HTTP/1.1" 200 28534
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
