@@ -443,7 +443,7 @@ def add_to_cart(request, product_type, product_id):
         # Log the request for debugging
         logger.info(f"Add to cart request: product_type={product_type}, product_id={product_id}")
         logger.info(f"POST data: {request.POST}")
-        logger.info(f"User session: {request.session.get('user_id', 'No user')}")
+        logger.info(f"User session: {request.session.get('userid', 'No user')}")
 
         # Get and validate inputs
         try:
@@ -484,9 +484,9 @@ def add_to_cart(request, product_type, product_id):
             }, status=400)
 
         # Handle logged-in users
-        if 'user_id' in request.session:
+        if 'userid' in request.session:
             try:
-                user = UserDetails.objects.get(userid=request.session['user_id'])
+                user = UserDetails.objects.get(userid=request.session['userid'])
                 logger.info(f"Found user: {user.name}")
 
                 # Check for existing cart item
@@ -522,7 +522,7 @@ def add_to_cart(request, product_type, product_id):
                     logger.info(f"Created new cart item: {cart_item.id}")
 
             except UserDetails.DoesNotExist:
-                logger.error(f"User not found with userid: {request.session['user_id']}")
+                logger.error(f"User not found with userid: {request.session['userid']}")
                 return JsonResponse({'error': 'User session expired'}, status=401)
 
         # Handle guest users
@@ -582,8 +582,8 @@ def add_to_cart(request, product_type, product_id):
 
 def get_cart_count(request):
     count = 0
-    if 'user_id' in request.session:
-        user = UserDetails.objects.get(userid=request.session['user_id'])
+    if 'userid' in request.session:
+        user = UserDetails.objects.get(userid=request.session['userid'])
         count = Cart.objects.filter(user_details=user).count()
     else:
         guest_cart = request.session.get('guest_cart', [])
@@ -649,8 +649,8 @@ def add_to_cart_v2(request, product_type, product_id):
 
     try:
         # Process cart addition
-        if 'user_id' in request.session:
-            user = UserDetails.objects.get(userid=request.session['user_id'])
+        if 'userid' in request.session:
+            user = UserDetails.objects.get(userid=request.session['userid'])
 
             existing_item = Cart.objects.filter(
                 user_details=user,
@@ -744,8 +744,8 @@ def add_to_wishlist(request, product_type, product_id):
         # Composite key
         composite_itemid = f"{normalized_type}_{product_id}"
 
-        if 'user_id' in request.session:
-            user = get_object_or_404(UserDetails, userid=request.session['user_id'])
+        if 'userid' in request.session:
+            user = get_object_or_404(UserDetails, userid=request.session['userid'])
             existing = Wishlist.objects.filter(itemid=composite_itemid, user_details=user).first()
 
             if existing:
@@ -784,9 +784,9 @@ def cart(request):
 
     # ==================== CART ITEMS ====================
     # Logged-in user cart
-    if 'user_id' in request.session:
+    if 'userid' in request.session:
         try:
-            user = UserDetails.objects.get(userid=request.session['user_id'])
+            user = UserDetails.objects.get(userid=request.session['userid'])
             cart_data_queryset = Cart.objects.filter(user_details=user).select_related('user_details')
 
             if not cart_data_queryset.exists():
@@ -965,9 +965,9 @@ def wishlist(request):
     wishlist_items_display = []
 
     # Logged-in user wishlist
-    if 'user_id' in request.session:
+    if 'userid' in request.session:
         try:
-            user = get_object_or_404(UserDetails, userid=request.session['user_id'])
+            user = get_object_or_404(UserDetails, userid=request.session['userid'])
             wishlist_data_queryset = Wishlist.objects.filter(user_details=user)
 
             for wishlist_item in wishlist_data_queryset:
@@ -1039,8 +1039,8 @@ def update_cart_quantity(request, cart_id):
             new_quantity = int(request.POST.get('quantity', 1))
 
             # For logged-in users
-            if 'user_id' in request.session:
-                user = get_object_or_404(UserDetails, userid=request.session['user_id'])
+            if 'userid' in request.session:
+                user = get_object_or_404(UserDetails, userid=request.session['userid'])
                 cart_item = get_object_or_404(Cart, pk=cart_id, user_details=user)
 
                 if new_quantity > 0:
@@ -1079,8 +1079,8 @@ def remove_from_cart(request, cart_id):
     if request.method == 'POST':
         try:
             # For logged-in users
-            if 'user_id' in request.session:
-                user = get_object_or_404(UserDetails, userid=request.session['user_id'])
+            if 'userid' in request.session:
+                user = get_object_or_404(UserDetails, userid=request.session['userid'])
                 cart_item = get_object_or_404(Cart, pk=cart_id, user_details=user)
                 cart_item.delete()
                 return JsonResponse({'success': True, 'message': 'Item removed from cart'})
@@ -1106,7 +1106,7 @@ def remove_from_cart(request, cart_id):
 
 def checkout_page(request):
     # Check if user is authenticated - redirect to login if not
-    if 'user_id' not in request.session:
+    if 'userid' not in request.session:
         messages.info(request, "Please log in to checkout.")
         return redirect('login')
 
@@ -1114,7 +1114,7 @@ def checkout_page(request):
     total_price = 0
 
     try:
-        user = UserDetails.objects.get(userid=request.session['user_id'])
+        user = UserDetails.objects.get(userid=request.session['userid'])
         cart_data_queryset = Cart.objects.filter(user_details=user)
 
         # If cart is empty, redirect to cart page
@@ -1168,7 +1168,7 @@ def checkout_page(request):
 
 def payment(request):
     """Handle payment and send order confirmation email"""
-    if 'user_id' not in request.session:  # ✅ FIXED: user_id
+    if 'userid' not in request.session:
         messages.info(request, 'Please log in to complete your purchase.')
         return redirect('login')
 
@@ -1184,23 +1184,23 @@ def payment(request):
 
             if not address.strip():
                 messages.error(request, 'Shipping address is required.')
-                return redirect('checkout_page')  # ✅ FIXED: checkout_page
+                return redirect('checkout_page')
 
             # Get user
-            user = get_object_or_404(UserDetails, userid=request.session['user_id'])  # ✅ FIXED
+            user = get_object_or_404(UserDetails, userid=request.session['userid'])
 
             # Get cart items
-            cart_data_queryset = Cart.objects.filter(user_details=user)  # ✅ FIXED: user_details
+            cart_data_queryset = Cart.objects.filter(user_details=user)
 
             if not cart_data_queryset.exists():
                 messages.error(request, 'Your cart is empty.')
                 return redirect('cart')
 
-            # Create order
+            # ✅ Create order - OrderDetails uses username, useraddress (NO underscores)
             order = OrderDetails.objects.create(
                 user=user,
-                username=user.name,
-                useraddress=address,
+                username=user.name,           # ✅ NO underscore
+                useraddress=address,          # ✅ NO underscore
                 phnno=request.POST.get('phone', user.phoneno if user.phoneno else 'N/A'),
                 pincode=request.POST.get('pincode', user.pincode if user.pincode else 'N/A'),
                 status='pending'
@@ -1209,25 +1209,24 @@ def payment(request):
             # Create order items
             order_items = []
             for cart_item in cart_data_queryset:
-                # Get product based on type
                 product = None
-                if cart_item.product_type == 'shoe':  # ✅ FIXED: product_type
-                    product = Shoes.objects.get(shoe_id=cart_item.itemid)  # ✅ FIXED: shoe_id
+                if cart_item.product_type == 'shoe':
+                    product = Shoes.objects.get(shoe_id=cart_item.itemid)
                     content_type = ContentType.objects.get_for_model(Shoes)
                     object_id = cart_item.itemid
-                elif cart_item.product_type == 'boot':  # ✅ FIXED: product_type
-                    product = Boots.objects.get(boot_id=cart_item.itemid)  # ✅ FIXED: boot_id
+                elif cart_item.product_type == 'boot':
+                    product = Boots.objects.get(boot_id=cart_item.itemid)
                     content_type = ContentType.objects.get_for_model(Boots)
                     object_id = cart_item.itemid
 
                 if product:
-                    # Create MyOrders entry
+                    # ✅ Create MyOrders entry - MyOrders uses user_name, user_address (WITH underscores)
                     order_item = MyOrders.objects.create(
                         order=order,
                         content_type=content_type,
                         object_id=object_id,
-                        username=user.name,
-                        useraddress=address,
+                        user_name=user.name,          # ✅ WITH underscore
+                        user_address=address,         # ✅ WITH underscore
                         phno=request.POST.get('phone', user.phoneno if user.phoneno else 'N/A'),
                         pincode=request.POST.get('pincode', user.pincode if user.pincode else 'N/A'),
                         quantity=cart_item.quantity,
@@ -1250,33 +1249,26 @@ def payment(request):
                 # Clear cart
                 cart_data_queryset.delete()
 
-                # SEND ORDER CONFIRMATION EMAIL
+                # Send order confirmation email
                 try:
                     subject = f"Order Confirmation - Order #{order.orderid}"
-
-                    # Render email template
                     html_message = render_to_string('order_confirmation_email.html', {
                         'user': user,
                         'order': order,
                         'items': order_items,
                     })
-
-                    # Send email
                     send_mail(
                         subject=subject,
-                        message='',  # Plain text version (optional)
+                        message='',
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[user.email],
                         html_message=html_message,
-                        fail_silently=True,  # Don't fail order if email fails
+                        fail_silently=True,
                     )
-
                     print(f"✅ Order confirmation email sent to {user.email}")
                     messages.info(request, f'Order confirmation sent to {user.email}')
-
                 except Exception as e:
                     print(f"❌ Failed to send order confirmation email: {e}")
-                    # Don't fail the order if email fails
 
                 # Clear pending order from session
                 if 'pending_order_id' in request.session:
@@ -1296,10 +1288,13 @@ def payment(request):
             elif payment_method == 'razorpay':
                 try:
                     razorpay_order = razorpay_client.order.create({
-                        'amount': int(total_amount * 100),  # Convert to paise
+                        'amount': int(total_amount * 100),
                         'currency': 'INR',
                         'payment_capture': 1
                     })
+
+                    # Store order_id in session for Razorpay callback
+                    request.session['pending_order_id'] = order.orderid
 
                     context = {
                         'razorpay_key': settings.RAZORPAY_KEY_ID,
@@ -1317,7 +1312,7 @@ def payment(request):
                 except Exception as e:
                     messages.error(request, 'Failed to initialize payment gateway. Please try again.')
                     print(f'Razorpay error: {e}')
-                    order.delete()  # Delete the pending order if Razorpay fails
+                    order.delete()
                     return redirect('checkout_page')
 
         except UserDetails.DoesNotExist:
@@ -1349,8 +1344,8 @@ def payment_success(request):
             order.save()
 
             # NOW clear the cart after successful payment
-            if 'user_id' in request.session:
-                user = get_object_or_404(UserDetails, userid=request.session['user_id'])
+            if 'userid' in request.session:
+                user = get_object_or_404(UserDetails, userid=request.session['userid'])
                 Cart.objects.filter(user_details=user).delete()
 
             # Clear pending order from session
@@ -1389,8 +1384,8 @@ def remove_from_wishlist(request, wishlist_id):
     if request.method == 'POST':
         try:
             # For logged-in users
-            if 'user_id' in request.session:
-                user = get_object_or_404(UserDetails, userid=request.session['user_id'])
+            if 'userid' in request.session:
+                user = get_object_or_404(UserDetails, userid=request.session['userid'])
                 wishlist_item = get_object_or_404(Wishlist, pk=wishlist_id, user_details=user)
                 wishlist_item.delete()
                 return JsonResponse({'success': True, 'message': 'Item removed from wishlist'})
