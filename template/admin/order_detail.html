@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details #{{ order.pk }}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+        }
+        .card {
+            background-color: #16213e;
+            border: 1px solid #0f3460;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #0f3460;
+            border-bottom: 1px solid #533483;
+            color: #fff;
+        }
+        .card-body {
+            color: #e8e8e8;
+        }
+        .btn-secondary {
+            background-color: #533483;
+            border-color: #533483;
+        }
+        .btn-secondary:hover {
+            background-color: #6a3fa5;
+            border-color: #6a3fa5;
+        }
+        .btn-primary {
+            background-color: #e94560;
+            border-color: #e94560;
+        }
+        .btn-primary:hover {
+            background-color: #ff6b81;
+            border-color: #ff6b81;
+        }
+        .table {
+            color: #e8e8e8;
+        }
+        .table thead th {
+            border-bottom: 2px solid #533483;
+            background-color: #0f3460;
+        }
+        .table td, .table th {
+            border-color: #0f3460;
+        }
+        .badge-info {
+            background-color: #17a2b8;
+        }
+        h2, h5 {
+            color: #fff;
+        }
+        .form-control {
+            background-color: #0f3460;
+            border-color: #533483;
+            color: #fff;
+        }
+        .form-control:focus {
+            background-color: #16213e;
+            border-color: #e94560;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+{% include 'admin/header.html' %}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <a href="{% url 'admin_manage_orders' %}" class="btn btn-secondary mb-3">
+                    <i class="fas fa-arrow-left"></i> Back to Orders
+                </a>
+                <h2><i class="fas fa-receipt"></i> Order Details #{{ order.pk }}</h2>
+            </div>
+        </div>
+
+        <!-- Order Status Update Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Update Order Status</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select name="status" id="status" class="form-control">
+                                    <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                    <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                    <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Processing</option>
+                                    <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                                    <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                    <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="note">Status Note (Optional)</label>
+                                <input type="text" name="note" id="note" class="form-control" placeholder="Add a note...">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Status
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Customer Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ order.username }}</p>
+                <p><strong>Email:</strong> {{ order.user.email|default:"N/A" }}</p>
+                <p><strong>Phone:</strong> {{ order.phnno }}</p>
+                <p><strong>Address:</strong> {{ order.address|default:"Not provided" }}</p>
+            </div>
+        </div>
+
+        <!-- Order Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Order Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Order Date:</strong> {{ order.created_at|date:"d M Y, h:i A" }}</p>
+                <p><strong>Status:</strong> <span class="badge badge-info">{{ order.status|title }}</span></p>
+                <p><strong>Payment Method:</strong> {{ order.payment_method|default:"N/A" }}</p>
+                {% if order.status_note %}
+                <p><strong>Status Note:</strong> {{ order.status_note }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Order Items</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>{{ item.product_name|default:"Unknown Product" }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ item.price }}</td>
+                                <td>₹{{ item.total }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No items found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-right">Total:</th>
+                                <th>₹{{ order.total_amount }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

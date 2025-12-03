@@ -283,9 +283,11 @@ def addshoes(request):
 
 
 def editshoes(request, category, shoe_id):
+    """Edit shoes/boots with proper validation"""
     if 'admin' not in request.session:
         return redirect('login')
 
+    # Get the correct product based on category
     if category == 'casual':
         shoe = get_object_or_404(Shoes, shoe_id=shoe_id)
     elif category == 'sports':
@@ -295,22 +297,79 @@ def editshoes(request, category, shoe_id):
         return redirect('adminshoes')
 
     if request.method == 'POST':
-        shoe.name = request.POST.get('name')
-        shoe.size = request.POST.get('size')
-        shoe.quantity = request.POST.get('quantity')
-        shoe.price = request.POST.get('price')
-        shoe.description = request.POST.get('description')
-        shoe.bestseller = request.POST.get('bestseller') == 'on'
-        shoe.category = request.POST.get('category')
+        try:
+            # Get all form data with validation
+            name = request.POST.get('name', '').strip()
+            size = request.POST.get('size', '').strip()
+            quantity = request.POST.get('quantity', '').strip()
+            price = request.POST.get('price', '').strip()
+            description = request.POST.get('description', '').strip()
+            bestseller = request.POST.get('bestseller') == 'on'
+            new_category = request.POST.get('category', category)
 
-        if request.FILES.get('image'):
-            shoe.image = request.FILES.get('image')
+            # Validate required fields
+            if not name:
+                messages.error(request, "Product name is required.")
+                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
 
-        shoe.save()
-        messages.success(request, f"{category.title()} shoe updated successfully.")
-        return redirect('adminshoes')
+            if not quantity:
+                messages.error(request, "Quantity is required.")
+                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
 
-    return render(request, 'admin/editshoes.html', {'shoe': shoe})
+            if not price:
+                messages.error(request, "Price is required.")
+                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
+
+            # Convert to proper types with validation
+            try:
+                quantity = int(quantity)
+                if quantity < 0:
+                    messages.error(request, "Quantity cannot be negative.")
+                    return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
+            except ValueError:
+                messages.error(request, "Invalid quantity value.")
+                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
+
+            try:
+                price = float(price)
+                if price < 0:
+                    messages.error(request, "Price cannot be negative.")
+                    return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
+            except ValueError:
+                messages.error(request, "Invalid price value.")
+                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
+
+            # Update the product
+            shoe.name = name
+            shoe.size = size
+            shoe.quantity = quantity
+            shoe.price = price
+            shoe.description = description
+            shoe.bestseller = bestseller
+            shoe.category = new_category
+
+            # Handle image upload (only if new image provided)
+            if request.FILES.get('image'):
+                shoe.image = request.FILES.get('image')
+
+            shoe.save()
+
+            messages.success(request, f"{category.title()} product updated successfully.")
+            return redirect('adminshoes')
+
+        except Exception as e:
+            messages.error(request, f"Error updating product: {str(e)}")
+            print(f"Edit shoe error: {e}")
+            import traceback
+            traceback.print_exc()
+            return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
+
+    # GET request - show form
+    context = {
+        'shoe': shoe,
+        'category': category
+    }
+    return render(request, 'admin/editshoes.html', context)
 
 
 def userdetails(request):
@@ -327,25 +386,22 @@ def adminhome(request):
 
 
 def adminshoes(request):
-    casual_shoes_list = Shoes.objects.all()
-    sports_shoes_list = Boots.objects.all()
-    casual_paginator = Paginator(casual_shoes_list, 3)
-    sports_paginator = Paginator(sports_shoes_list, 3)
-    casual_page_number = request.GET.get('casual_page')
-    sports_page_number = request.GET.get('sports_page')
-    casual_page = casual_paginator.get_page(casual_page_number)
-    sports_page = sports_paginator.get_page(sports_page_number)
+    casual_shoes = Shoes.objects.all().order_by('-shoe_id')
+    sports_shoes = Boots.objects.all().order_by('-boot_id')
+
     context = {
-        'casual_shoes': casual_page,
-        'sports_shoes': sports_page,
+        'casual_shoes': casual_shoes,
+        'sports_shoes': sports_shoes
     }
+
     return render(request, 'admin/adminshoes.html', context)
 
 
 def orderdetails(request, order_id):
-    order = get_object_or_404(OrderDetails, orderid=order_id)
-    customer = get_object_or_404(UserDetails, id=order.user.id)
+    order = get_object_or_404(OrderDetails, pk=order_id)
+    customer = order.user
     items = MyOrders.objects.filter(order=order)
+
     if request.method == "POST":
         new_status = request.POST.get("status")
         note = request.POST.get("note", "")
@@ -356,12 +412,78 @@ def orderdetails(request, order_id):
             order.save()
             messages.success(request, f"Order status updated to '{new_status.capitalize()}'.")
             return redirect('admin_order_detail', order_id=order_id)
+
     context = {
-        "order": order,
-        "customer": customer,
-        "items": items,
+        'order': order,
+        'customer': customer,
+        'items': items,
     }
-    return render(request, 'admin/orderdetails.html', context)
+    return render(request, 'admin/order_detail.html', context)
+
+
+def track_order(request):
+    """Track order by order ID"""
+    if 'userid' not in request.session:
+        messages.info(request, 'Please log in to track your orders.')
+        return redirect('login')
+
+    user = get_object_or_404(UserDetails, userid=request.session['userid'])
+    order = None
+    order_items = []
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id', '').strip()
+
+        if order_id:
+            try:
+                # Get order for this user only
+                order = OrderDetails.objects.get(orderid=order_id, user=user)
+                order_items = MyOrders.objects.filter(order=order)
+
+                if not order_items:
+                    messages.warning(request, 'No items found for this order.')
+            except OrderDetails.DoesNotExist:
+                messages.error(request, 'Order not found or does not belong to you.')
+        else:
+            messages.error(request, 'Please enter an order ID.')
+
+    # Get all user orders for display
+    user_orders = OrderDetails.objects.filter(user=user).order_by('-created_at')
+
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'user_orders': user_orders,
+        'user': user
+    }
+
+    return render(request, 'track_order.html', context)
+
+
+def my_orders(request):
+    """View all orders for logged-in user"""
+    if 'userid' not in request.session:
+        messages.info(request, 'Please log in to view your orders.')
+        return redirect('login')
+
+    user = get_object_or_404(UserDetails, userid=request.session['userid'])
+    orders = OrderDetails.objects.filter(user=user).order_by('-created_at')
+
+    # Get items for each order
+    orders_with_items = []
+    for order in orders:
+        items = MyOrders.objects.filter(order=order)
+        orders_with_items.append({
+            'order': order,
+            'items': items
+        })
+
+    context = {
+        'orders_with_items': orders_with_items,
+        'user': user
+    }
+
+    return render(request, 'my_orders.html', context)
 
 
 def delete_shoes(request, category, shoe_id):
@@ -1407,6 +1529,55 @@ def remove_from_wishlist(request, wishlist_id):
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+def admin_manage_orders(request):
+    """Admin view to manage all orders with filters and search"""
+    if 'admin' not in request.session:
+        return redirect('login')
+
+    # Get filter parameters
+    status_filter = request.GET.get('status', '')
+    search_query = request.GET.get('search', '')
+
+    orders = OrderDetails.objects.all().order_by('-created_at')
+
+    # Apply filters
+    if status_filter:
+        orders = orders.filter(status=status_filter)
+
+    if search_query:
+        from django.db.models import Q
+        orders = orders.filter(
+            Q(orderid__icontains=search_query) |
+            Q(username__icontains=search_query) |
+            Q(phnno__icontains=search_query)
+        )
+
+    # Pagination
+    paginator = Paginator(orders, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Get status counts
+    status_counts = {
+        'all': OrderDetails.objects.count(),
+        'pending': OrderDetails.objects.filter(status='pending').count(),
+        'confirmed': OrderDetails.objects.filter(status='confirmed').count(),
+        'processing': OrderDetails.objects.filter(status='processing').count(),
+        'shipped': OrderDetails.objects.filter(status='shipped').count(),
+        'delivered': OrderDetails.objects.filter(status='delivered').count(),
+        'cancelled': OrderDetails.objects.filter(status='cancelled').count(),
+    }
+
+    context = {
+        'page_obj': page_obj,
+        'status_counts': status_counts,
+        'current_status': status_filter,
+        'search_query': search_query,
+    }
+
+    return render(request, 'admin/manage_orders.html', context)
 
 
 def myorder(request):

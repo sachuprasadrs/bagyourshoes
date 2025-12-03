@@ -1,379 +1,147 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-      <!-- basic -->
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <!-- mobile metas -->
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-      <!-- site metas -->
-      <title>Admin - Order Details</title>
-      <meta name="keywords" content="">
-      <meta name="description" content="">
-      <meta name="author" content="">
-      <!-- bootstrap css -->
-      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-      <!-- style css -->
-      <link rel="stylesheet" href="{% static 'css/style.css' %}">
-      <!-- Responsive-->
-      <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-      <!-- fevicon -->
-      <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
-      <!-- Scrollbar Custom CSS -->
-      <link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
-      <!-- Tweaks for older IEs-->
-      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-      <!-- Admin specific styles -->
-      <style>
-        .admin-header {
-            background-color: #212529;
-            color: white;
-            padding: 20px 0;
-            margin-bottom: 30px;
-        }
-        .admin-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        .status-dropdown {
-            padding: 8px 12px;
-            border-radius: 4px;
-            border: 1px solid #ced4da;
-        }
-        .order-detail-row {
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .order-items {
-            margin-top: 20px;
-        }
-        .order-item {
-            border: 1px solid #eee;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-        .update-btn {
-            background-color: #f12a47;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .update-btn:hover {
-            background-color: #d12340;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .status-pending {
-            background-color: #ffc107;
-            color: #212529;
-        }
-        .status-processing {
-            background-color: #17a2b8;
-            color: white;
-        }
-        .status-packing {
-            background-color: #6f42c1;
-            color: white;
-        }
-        .status-shipped {
-            background-color: #28a745;
-            color: white;
-        }
-        .status-delivered {
-            background-color: #343a40;
-            color: white;
-        }
-        .status-cancelled {
-            background-color: #dc3545;
-            color: white;
-        }
-        .admin-title {
-            color: #f12a47;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-      </style>
-   </head>
-   <!-- body -->
-   <body>
-      <!-- Include header -->
-      {% include 'admin/header.html' %}
-      <!-- Order details section -->
-      <div class="container admin-container">
-         <div class="row">
-            <div class="col-md-12">
-               <h1 class="admin-title">Order Details</h1>
-               <nav aria-label="breadcrumb">
-                  <ol class="breadcrumb">
-                     <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                     <li class="breadcrumb-item"><a href="#">Orders</a></li>
-                     <li class="breadcrumb-item active" aria-current="page">Order #ORD-10234</li>
-                  </ol>
-               </nav>
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Orders - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manage Orders</h2>
+        <a href="{% url 'adminhome' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Status Filter Tabs -->
+    <ul class="nav nav-pills mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if not current_status %}active{% endif %}"
+               href="?">All ({{ status_counts.all }})</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_status == 'pending' %}active{% endif %}"
+               href="?status=pending">Pending ({{ status_counts.pending }})</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_status == 'confirmed' %}active{% endif %}"
+               href="?status=confirmed">Confirmed ({{ status_counts.confirmed }})</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_status == 'processing' %}active{% endif %}"
+               href="?status=processing">Processing ({{ status_counts.processing }})</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_status == 'shipped' %}active{% endif %}"
+               href="?status=shipped">Shipped ({{ status_counts.shipped }})</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_status == 'delivered' %}active{% endif %}"
+               href="?status=delivered">Delivered ({{ status_counts.delivered }})</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_status == 'cancelled' %}active{% endif %}"
+               href="?status=cancelled">Cancelled ({{ status_counts.cancelled }})</a>
+        </li>
+    </ul>
+
+    <!-- Search Bar -->
+    <form method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Search by Order ID, Customer Name, or Phone"
+                           value="{{ search_query }}">
+                    {% if current_status %}
+                    <input type="hidden" name="status" value="{{ current_status }}">
+                    {% endif %}
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
             </div>
-         </div>
+        </div>
+    </form>
 
-         <div class="row">
-            <div class="col-md-8">
-               <!-- Order Information -->
-               <div class="card mb-4">
-                  <div class="card-header">
-                     <h5>Order Information</h5>
-                  </div>
-                  <div class="card-body">
-                     <div class="row order-detail-row">
-                        <div class="col-md-3"><strong>Order ID:</strong></div>
-                        <div class="col-md-9">ORD-10234</div>
-                     </div>
-                     <div class="row order-detail-row">
-                        <div class="col-md-3"><strong>Order Date:</strong></div>
-                        <div class="col-md-9">May 1, 2025 - 14:30</div>
-                     </div>
-                     <div class="row order-detail-row">
-                        <div class="col-md-3"><strong>Status:</strong></div>
-                        <div class="col-md-9">
-                           <span class="status-badge status-processing">Processing</span>
-                        </div>
-                     </div>
-                     <div class="row order-detail-row">
-                        <div class="col-md-3"><strong>Payment Method:</strong></div>
-                        <div class="col-md-9">Credit Card (Visa **** 1234)</div>
-                     </div>
-                     <div class="row order-detail-row">
-                        <div class="col-md-3"><strong>Total Amount:</strong></div>
-                        <div class="col-md-9">$180.00</div>
-                     </div>
-                  </div>
-               </div>
-
-               <!-- Order Items -->
-               <div class="card mb-4">
-                  <div class="card-header">
-                     <h5>Order Items</h5>
-                  </div>
-                  <div class="card-body">
-                     <div class="order-items">
-                        <!-- Item 1 -->
-                        <div class="order-item">
-                           <div class="row">
-                              <div class="col-md-2">
-                                 <img src="{% static 'images/shoes-img1.png' %}" alt="Men Sports Shoes" class="img-fluid">
-                              </div>
-                              <div class="col-md-6">
-                                 <h5>Men Sports Running Shoes</h5>
-                                 <p>Size: 43 | Color: Red | SKU: MS-2023-RED</p>
-                              </div>
-                              <div class="col-md-2 text-center">
-                                 <span>1 × $90.00</span>
-                              </div>
-                              <div class="col-md-2 text-right">
-                                 <strong>$90.00</strong>
-                              </div>
-                           </div>
-                        </div>
-
-                        <!-- Item 2 -->
-                        <div class="order-item">
-                           <div class="row">
-                              <div class="col-md-2">
-                                 <img src="{% static 'images/shoes-img2.png' %}" alt="Men Sports Shoes" class="img-fluid">
-                              </div>
-                              <div class="col-md-6">
-                                 <h5>Men Classic Sports Shoes</h5>
-                                 <p>Size: 42 | Color: Black | SKU: MS-2024-BLK</p>
-                              </div>
-                              <div class="col-md-2 text-center">
-                                 <span>1 × $90.00</span>
-                              </div>
-                              <div class="col-md-2 text-right">
-                                 <strong>$90.00</strong>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-
-                     <!-- Order summary -->
-                     <div class="row mt-4">
-                        <div class="col-md-8 text-right">
-                           <p>Subtotal:</p>
-                           <p>Shipping:</p>
-                           <h5>Total:</h5>
-                        </div>
-                        <div class="col-md-4 text-right">
-                           <p>$180.00</p>
-                           <p>$0.00</p>
-                           <h5>$180.00</h5>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+    <!-- Orders Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in page_obj %}
+                        <tr>
+                            <td><strong>#{{ order.orderid }}</strong></td>
+                            <td>{{ order.username }}</td>
+                            <td>{{ order.phnno }}</td>
+                            <td>{{ order.created_at|date:"d M Y" }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if order.status == 'delivered' %}bg-success
+                                    {% elif order.status == 'cancelled' %}bg-danger
+                                    {% elif order.status == 'shipped' %}bg-info
+                                    {% elif order.status == 'confirmed' %}bg-primary
+                                    {% elif order.status == 'processing' %}bg-warning
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ order.status|upper }}
+                                </span>
+                            </td>
+                            <td>{{ order.status_updated_at|date:"d M Y, h:i A" }}</td>
+                            <td>
+                                <a href="{% url 'admin_order_detail' order.orderid %}"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">No orders found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
-            <div class="col-md-4">
-               <!-- Customer Information -->
-               <div class="card mb-4">
-                  <div class="card-header">
-                     <h5>Customer Information</h5>
-                  </div>
-                  <div class="card-body">
-                     <p><strong>Name:</strong> John Doe</p>
-                     <p><strong>Email:</strong> john.doe@example.com</p>
-                     <p><strong>Phone:</strong> +1 (555) 123-4567</p>
-                     <p><strong>Account:</strong> Registered Customer</p>
-                  </div>
-               </div>
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
+                    </li>
+                    {% endif %}
 
-               <!-- Shipping Information -->
-               <div class="card mb-4">
-                  <div class="card-header">
-                     <h5>Shipping Address</h5>
-                  </div>
-                  <div class="card-body">
-                     <p>John Doe</p>
-                     <p>123 Main Street</p>
-                     <p>Apt 4B</p>
-                     <p>New York, NY 10001</p>
-                     <p>United States</p>
-                  </div>
-               </div>
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
 
-               <!-- Update Order Status -->
-               <div class="card mb-4">
-                  <div class="card-header">
-                     <h5>Update Order Status</h5>
-                  </div>
-                  <div class="card-body">
-                     <form id="update-status-form">
-                        <div class="form-group mb-3">
-                           <label for="orderStatus">Select Status:</label>
-                           <select class="form-control status-dropdown" id="orderStatus">
-                              <option value="pending">Pending</option>
-                              <option value="processing" selected>Processing</option>
-                              <option value="packing">Packing</option>
-                              <option value="shipped">Shipped</option>
-                              <option value="delivered">Delivered</option>
-                              <option value="cancelled">Cancelled</option>
-                           </select>
-                        </div>
-                        <div class="form-group mb-3">
-                           <label for="statusNote">Add Note (Optional):</label>
-                           <textarea class="form-control" id="statusNote" rows="3"></textarea>
-                        </div>
-                        <button type="submit" class="update-btn btn-block">Update Status</button>
-                     </form>
-                  </div>
-               </div>
-
-               <!-- Order Timeline -->
-               <div class="card">
-                  <div class="card-header">
-                     <h5>Order Timeline</h5>
-                  </div>
-                  <div class="card-body">
-                     <ul class="timeline">
-                        <li class="timeline-item">
-                           <div class="timeline-marker"></div>
-                           <div class="timeline-content">
-                              <h6 class="timeline-title">Order Processing</h6>
-                              <p>May 1, 2025 - 15:30</p>
-                              <p>Order has been processed and payment verified</p>
-                           </div>
-                        </li>
-                        <li class="timeline-item">
-                           <div class="timeline-marker"></div>
-                           <div class="timeline-content">
-                              <h6 class="timeline-title">Order Placed</h6>
-                              <p>May 1, 2025 - 14:30</p>
-                              <p>Order was placed by customer</p>
-                           </div>
-                        </li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <!-- Include footer -->
-      {% include 'admin/footer.html' %}
-
-      <!-- Javascript files-->
-      <script src="{% static 'js/jquery.min.js' %}"></script>
-      <script src="{% static 'js/popper.min.js' %}"></script>
-      <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-      <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
-      <script src="{% static 'js/plugin.js' %}"></script>
-      <!-- sidebar -->
-      <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-      <script src="{% static 'js/custom.js' %}"></script>
-
-      <!-- Admin specific JavaScript -->
-      <script>
-         $(document).ready(function(){
-            // Update status form submission
-            $("#update-status-form").submit(function(e){
-               e.preventDefault();
-
-               const status = $("#orderStatus").val();
-               const note = $("#statusNote").val();
-
-               // Show loading state
-               $(".update-btn").text("Updating...").attr("disabled", true);
-
-               // Simulate AJAX request (replace with actual AJAX in production)
-               setTimeout(function(){
-                  // Success message (in production, only show after successful AJAX)
-                  alert("Order status updated successfully to: " + status);
-
-                  // Update the status badge
-                  $(".status-badge")
-                     .removeClass()
-                     .addClass("status-badge status-" + status)
-                     .text(status.charAt(0).toUpperCase() + status.slice(1));
-
-                  // Add new timeline entry
-                  const now = new Date();
-                  const dateStr = now.toLocaleDateString('en-US', {
-                     month: 'short',
-                     day: 'numeric',
-                     year: 'numeric',
-                     hour: '2-digit',
-                     minute: '2-digit'
-                  });
-
-                  const timelineEntry = `
-                     <li class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                           <h6 class="timeline-title">Status Changed to ${status.charAt(0).toUpperCase() + status.slice(1)}</h6>
-                           <p>${dateStr}</p>
-                           ${note ? `<p>${note}</p>` : ''}
-                        </div>
-                     </li>
-                  `;
-
-                  $(".timeline").prepend(timelineEntry);
-
-                  // Reset form
-                  $("#statusNote").val("");
-                  $(".update-btn").text("Update Status").attr("disabled", false);
-               }, 1000);
-            });
-         });
-      </script>
-   </body>
-</html>
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

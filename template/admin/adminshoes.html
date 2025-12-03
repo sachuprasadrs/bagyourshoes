@@ -47,68 +47,7 @@
     </div>
     <div class="layout_padding gallery_section">
     	<div class="container">
-    		<div class="row">
-    			<div class="col-sm-4">
-    				<div class="best_shoes">
-    					<p class="best_text">Best Shoes </p>
-    					<div class="shoes_icon"><img src="{% static 'images/shoes-img4.png' %}"></div>
-    					<div class="star_text">
-    						<div class="left_part">
-    							<ul>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    					</ul>
-    						</div>
-    						<div class="right_part">
-    							<div class="shoes_price">$ <span style="color: #ff4e5b;">60</span></div>
-    						</div>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm-4">
-    				<div class="best_shoes">
-    					<p class="best_text">Best Shoes </p>
-    					<div class="shoes_icon"><img src="{% static 'images/shoes-img5.png' %}"></div>
-    					<div class="star_text">
-    						<div class="left_part">
-    							<ul>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    					</ul>
-    						</div>
-    						<div class="right_part">
-    							<div class="shoes_price">$ <span style="color: #ff4e5b;">400</span></div>
-    						</div>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm-4">
-    				<div class="best_shoes">
-    					<p class="best_text">Best Shoes </p>
-    					<div class="shoes_icon"><img src="{% static 'images/shoes-img6.png' %}"></div>
-    					<div class="star_text">
-    						<div class="left_part">
-    							<ul>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    						<li><a href="#"><img src="{% static 'images/star-icon.png' %}"></a></li>
-    	    					</ul>
-    						</div>
-    						<div class="right_part">
-    							<div class="shoes_price">$ <span style="color: #ff4e5b;">50</span></div>
-    						</div>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
+
 
 				<!-- CASUAL SHOES SECTION -->
 				<h2 class="category-title mt-4 mb-3">Casual Shoes</h2>
@@ -134,12 +73,10 @@
 							</div>
 							<div class="mt-3 text-center">
 								<!-- In the casual_shoes loop -->
-								<a href="{% url 'editshoes' 'casual' shoe.id %}" class="btn btn-sm btn-primary">Edit</a>
-								<a href="{% url 'delete_shoe' 'casual' shoe.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+								<a href="{% url 'editshoes' 'casual' shoe.shoe_id %}" class="btn btn-sm btn-primary">Edit</a>
+								<a href="{% url 'delete_shoe' 'casual' shoe.shoe_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
 
-								<!-- In the sports_shoes loop -->
-								<a href="{% url 'editshoes' 'sports' shoe.id %}" class="btn btn-sm btn-primary">Edit</a>
-								<a href="{% url 'delete_shoe' 'sports' shoe.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+
 							</div>
 						</div>
 					</div>
@@ -170,50 +107,16 @@
 								</div>
 							</div>
 							<div class="mt-3 text-center">
-								<a href="{% url 'editshoes' shoe.id %}" class="btn btn-sm btn-primary">Edit</a>
-								<a href="{% url 'delete_shoe' shoe.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+								<a href="{% url 'editshoes' 'sports' shoe.boot_id %}" class="btn btn-sm btn-primary">Edit</a>
+								<a href="{% url 'delete_shoe' 'sports' shoe.boot_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
 							</div>
+
 						</div>
 					</div>
 					{% empty %}
 					<p class="col-12 text-muted">No sports shoes found.</p>
 					{% endfor %}
 				</div>
-
-				<!-- PAGINATION -->
-				<div class="row">
-					<div class="col text-center mt-4">
-						<div class="pagination">
-							{% if casual_page.has_previous %}
-								<a href="?casual_page={{ casual_page.previous_page_number }}">Previous</a>
-							{% endif %}
-
-							<span>Page {{ casual_page.number }} of {{ casual_page.paginator.num_pages }}</span>
-
-							{% if casual_page.has_next %}
-								<a href="?casual_page={{ casual_page.next_page_number }}">View More</a>
-							{% endif %}
-						</div>
-
-						<div class="pagination mt-2">
-							{% if sports_page.has_previous %}
-								<a href="?sports_page={{ sports_page.previous_page_number }}">Previous</a>
-							{% endif %}
-
-							<span>Page {{ sports_page.number }} of {{ sports_page.paginator.num_pages }}</span>
-
-							{% if sports_page.has_next %}
-								<a href="?sports_page={{ sports_page.next_page_number }}">View More</a>
-							{% endif %}
-						</div>
-					</div>
-				</div>
-
-
-
-    		<div class="buy_now_bt">
-    			<button class="buy_text">Buy Now</button>
-    		</div>
     	</div>
     </div>
    	<!-- Admin Home end -->

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">My Orders</h2>
+    
+    {% if orders_with_items %}
+    {% for order_data in orders_with_items %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <strong>Order #{{ order_data.order.orderid }}</strong> - {{ order_data.order.created_at|date:"d M Y" }}
+                </div>
+                <div class="col-md-4 text-end">
+                    <span class="badge 
+                        {% if order_data.order.status == 'delivered' %}bg-success
+                        {% elif order_data.order.status == 'cancelled' %}bg-danger
+                        {% elif order_data.order.status == 'shipped' %}bg-info
+                        {% else %}bg-warning{% endif %}">
+                        {{ order_data.order.status|upper }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Size</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order_data.items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.size }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>₹{{ item.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-2">
+                <a href="{% url 'track_order' %}" class="btn btn-sm btn-primary">Track Order</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="alert alert-info">
+        You have no orders yet. <a href="{% url 'indexed' %}">Start shopping!</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

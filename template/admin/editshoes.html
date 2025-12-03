@@ -1,81 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Shoe | Admin Panel</title>
-
-    <!-- Bootstrap + Font Awesome -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Edit Product - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="main-layout">
+<body>
+    {% include 'admin/header.html' %}
 
-    <!-- Page Header -->
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">Edit Shoe</h2>
-        <div class="card p-4 shadow-sm">
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-edit"></i> Edit Product</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Messages -->
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
 
-                <!-- Shoe Name -->
-                <div class="form-group">
-                    <label for="name"><i class="fas fa-shoe-prints text-primary"></i> Shoe Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ shoe.name }}" required>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Product Name *</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                       value="{{ shoe.name }}" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="size" class="form-label">Size *</label>
+                                    <input type="text" class="form-control" id="size" name="size"
+                                           value="{{ shoe.size }}"
+                                           placeholder="e.g., 8,9,10 or S,M,L" required>
+                                    <small class="text-muted">Comma-separated values</small>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="quantity" class="form-label">Quantity *</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity"
+                                           value="{{ shoe.quantity }}" min="0" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label">Price (₹) *</label>
+                                    <input type="number" class="form-control" id="price" name="price"
+                                           value="{{ shoe.price }}" step="0.01" min="0" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">Category *</label>
+                                    <select class="form-select" id="category" name="category" required>
+                                        <option value="casual" {% if shoe.category == 'casual' %}selected{% endif %}>
+                                            Casual Shoes
+                                        </option>
+                                        <option value="sports" {% if shoe.category == 'sports' %}selected{% endif %}>
+                                            Racing Boots
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description"
+                                          rows="3">{{ shoe.description }}</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Product Image</label>
+                                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                <small class="text-muted">Leave empty to keep current image</small>
+
+                                {% if shoe.image %}
+                                <div class="mt-2">
+                                    <p class="mb-1"><strong>Current Image:</strong></p>
+                                    <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}"
+                                         class="img-thumbnail" style="max-height: 150px;">
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="bestseller"
+                                       name="bestseller" {% if shoe.bestseller %}checked{% endif %}>
+                                <label class="form-check-label" for="bestseller">
+                                    Mark as Bestseller
+                                </label>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'adminshoes' %}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-
-                <!-- Description -->
-                <div class="form-group">
-                    <label for="description"><i class="fas fa-align-left text-info"></i> Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" required>{{ shoe.description }}</textarea>
-                </div>
-
-                <!-- Price -->
-                <div class="form-group">
-                    <label for="price"><i class="fas fa-tag text-success"></i> Price</label>
-                    <input type="number" class="form-control" id="price" name="price" value="{{ shoe.price }}" required>
-                </div>
-
-                <!-- Category -->
-                <div class="form-group">
-                    <label for="category"><i class="fas fa-list text-warning"></i> Category</label>
-                    <select class="form-control" id="category" name="category" required>
-                        <option value="">-- Select Category --</option>
-                        <option value="sports" {% if shoe.category == 'sports' %}selected{% endif %}>Sports</option>
-                        <option value="casual" {% if shoe.category == 'casual' %}selected{% endif %}>Casual</option>
-                        <option value="formal" {% if shoe.category == 'formal' %}selected{% endif %}>Formal</option>
-                        <option value="boots" {% if shoe.category == 'boots' %}selected{% endif %}>Boots</option>
-                    </select>
-                </div>
-
-                <!-- Size -->
-                <div class="form-group">
-                    <label for="size"><i class="fas fa-ruler-combined text-danger"></i> Size</label>
-                    <input type="text" class="form-control" id="size" name="size" value="{{ shoe.size }}" required>
-                </div>
-
-                <!-- Existing Image -->
-                {% if shoe.image %}
-                <div class="form-group">
-                    <label>Current Image:</label><br>
-                    <img src="{{ shoe.image.url }}" alt="Shoe Image" style="max-width: 150px;" class="img-thumbnail">
-                </div>
-                {% endif %}
-
-                <!-- New Image Upload -->
-                <div class="form-group">
-                    <label for="image"><i class="fas fa-image text-secondary"></i> Change Image</label>
-                    <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-success mt-3"><i class="fas fa-save"></i> Save Changes</button>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

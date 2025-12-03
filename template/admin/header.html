@@ -1,42 +1,111 @@
 {% load static %}
-<!-- header section start -->
-<div class="header_section header_main">
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-3">
-				<div class="logo"><a href="#"><img src="{% static 'images/logo.png' %}"></a></div>
-			</div>
-			<div class="col-sm-9">
-				<nav class="navbar navbar-expand-lg navbar-light bg-light">
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-						aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-						<div class="navbar-nav">
-							<a class="nav-item nav-link" href="../adminhome">Dashboard</a>
-							<a class="nav-item nav-link" href="../ADshoes">Shoes</a>
-							<a class="nav-item nav-link" href="../ADsports">Racing Boots</a>
-							<a class="nav-item nav-link" href="../userdetails">User Details</a>
-							<a class="nav-item nav-link" href="../ADcollection">Collection</a>
-							<form class="form-inline nav-item d-flex align-items-center ml-2" method="get" action="{% url 'search' %}">
-								<input type="text" name="query" class="form-control form-control-sm mr-1" placeholder="Search" style="width: 120px;">
-								<button type="submit" class="btn btn-link p-0">
-									<img src="{% static 'images/search_icon.png' %}" alt="Search" style="height: 25px;">
-								</button>
-							</form>
+<!-- Admin header section start -->
+<div class="header_section admin_header_main" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="logo">
+                    <a href="{% url 'adminhome' %}" style="color: #fff; font-size: 30px; font-weight: bold; text-decoration: none;">
+                        <i class="fas fa-cog"></i> Admin Panel
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <nav class="navbar navbar-expand-lg navbar-dark">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="adminNavbar">
+                        <div class="navbar-nav align-items-center" style="font-size: 20px">
 
-								  {% if request.session.admin %}
-									<span class="nav-item nav-link text-muted">Hello, {{ request.session.admin }}</span>
-									<a class="nav-item nav-link" href="../logout">Logout</a>
-								  {% else %}
-									<a class="nav-item nav-link" href="../login">Login</a>
-								  {% endif %}
-						</div>
-					</div>
-				</nav>
-			</div>
-		</div>
-	</div>
+                            <!-- ✅ Products Dropdown -->
+                            <div class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="productsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Products
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="productsDropdown">
+                                    <a class="dropdown-item" href="{% url 'adminshoes' %}">All Products</a>
+                                    <a class="dropdown-item" href="{% url 'addshoes' %}">Add Product</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{% url 'ad_shoes' %}">Casual Shoes</a>
+                                    <a class="dropdown-item" href="{% url 'ad_sports' %}">Racing Boots</a>
+                                </div>
+                            </div>
+
+                            <a class="nav-item nav-link text-white" href="{% url 'admin_manage_orders' %}">Orders</a>
+                            <a class="nav-item nav-link text-white" href="{% url 'userdetails' %}">Users</a>
+                            <a class="nav-item nav-link text-white" href="{% url 'ad_search' %}">Search</a>
+
+                            <!-- ✅ Admin user dropdown -->
+                            <div class="nav-item dropdown ml-auto">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="adminUserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-user-shield"></i> Admin
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="adminUserDropdown">
+                                    <a class="dropdown-item" href="{% url 'indexed' %}" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i> View Site
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- header section end -->
+<!-- Admin header section end -->
+
+<style>
+/* Admin header specific styles */
+.admin_header_main .navbar-nav .nav-link {
+    padding: 0.75rem 1rem !important;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    min-height: 40px;
+    display: flex !important;
+    align-items: center;
+    text-decoration: none;
+}
+
+.admin_header_main .navbar-nav .nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    transform: translateY(-1px);
+}
+
+.admin_header_main .dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    border: 1px solid #333;
+}
+
+.admin_header_main .dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s;
+}
+
+.admin_header_main .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.admin_header_main .logo a:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}
+
+@media (max-width: 768px) {
+    .admin_header_main .navbar-nav .nav-link {
+        padding: 0.5rem 0.75rem !important;
+        margin: 0.1rem 0;
+        min-height: 44px;
+    }
+    .admin_header_main .navbar-nav {
+        width: 100%;
+    }
+}
+</style>
