@@ -18,41 +18,36 @@ from django.utils import timezone
 import razorpay
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.hashers import make_password, check_password
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.conf import settings
 
 # Initialize Razorpay client
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
+# Create your views here.
 
 
 def parse_wishlist_itemid(itemid):
-    """
-    Parse wishlist itemid (composite: 'shoe_1' or legacy: '1')
-    Returns: (product_type, product_id, product_object) or (None, None, None)
-    """
-    parts = itemid.split('_', 1)
-    if len(parts) == 2:
-        item_type, item_id = parts
-        try:
-            if item_type == 'shoe':
-                return ('shoes', item_id, Shoes.objects.get(shoe_id=item_id))
-            elif item_type == 'boot':
-                return ('boots', item_id, Boots.objects.get(boot_id=item_id))
-        except (Shoes.DoesNotExist, Boots.DoesNotExist):
-            pass
-    # Legacy fallback
+    """Parse wishlist itemid and return product type, id, and object."""
     try:
-        return ('shoes', itemid, Shoes.objects.get(shoe_id=itemid))
+        if itemid.startswith('shoe_'):
+            # Extract numeric ID from 'shoe_1' -> 1
+            numeric_id = int(itemid.split('_')[1])
+            return ('shoes', itemid, Shoes.objects.get(shoe_id=numeric_id))
+        elif itemid.startswith('boot_'):
+            # Extract numeric ID from 'boot_1' -> 1
+            numeric_id = int(itemid.split('_')[1])
+            return ('boots', itemid, Boots.objects.get(boot_id=numeric_id))
+        else:
+            raise ValueError(f"Unknown itemid format: {itemid}")
+    except (IndexError, ValueError) as e:
+        print(f"Error parsing itemid '{itemid}': {e}")
+        return (None, itemid, None)
     except Shoes.DoesNotExist:
-        try:
-            return ('boots', itemid, Boots.objects.get(boot_id=itemid))
-        except Boots.DoesNotExist:
-            return (None, None, None)
+        print(f"Shoe with ID from '{itemid}' not found")
+        return ('shoes', itemid, None)
+    except Boots.DoesNotExist:
+        print(f"Boot with ID from '{itemid}' not found")
+        return ('boots', itemid, None)
 
-
-# Create your views here.
 
 def passforgot(request):
     """Display forgot password form and handle password reset requests"""
@@ -150,7 +145,6 @@ def passreset(request, token):
                 messages.error(request, 'Password must be at least 6 characters long.')
                 return render(request, 'passreset.html', {'token': token})
 
-            # UPDATED: Hash the password before saving
             user = reset_token.user
             user.password = make_password(password)  # Hash the password
             user.save()
@@ -360,7 +354,6 @@ def editshoes(request, category, shoe_id):
         except Exception as e:
             messages.error(request, f"Error updating product: {str(e)}")
             print(f"Edit shoe error: {e}")
-            import traceback
             traceback.print_exc()
             return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
 
@@ -378,11 +371,56 @@ def userdetails(request):
 
 
 def adminhome(request):
-    if 'admin' in request.session:
-        print(request.session['admin'])
-        return render(request, 'admin/adminhome.html')
-    else:
-        return redirect(login)
+    # Check if admin is logged in
+    if 'admin' not in request.session:
+        return redirect('login')
+
+    # Get statistics
+    total_orders = OrderDetails.objects.count()
+    total_products = Shoes.objects.count() + Boots.objects.count()
+    total_users = UserDetails.objects.count()
+    pending_orders = OrderDetails.objects.filter(status='pending').count()
+    confirmed_orders = OrderDetails.objects.filter(status='confirmed').count()
+    shipped_orders = OrderDetails.objects.filter(status='shipped').count()
+    delivered_orders = OrderDetails.objects.filter(status='delivered').count()
+    cancelled_orders = OrderDetails.objects.filter(status='cancelled').count()
+
+    # Get low stock products (less than 5 items)
+    low_stock_shoes = Shoes.objects.filter(quantity__lt=5)
+    low_stock_boots = Boots.objects.filter(quantity__lt=5)
+
+    low_stock_products = []
+    for shoe in low_stock_shoes:
+        low_stock_products.append({
+            'name': shoe.name,
+            'category': shoe.category,
+            'quantity': shoe.quantity,
+            'type': 'casual',
+            'id': shoe.shoe_id
+        })
+    for boot in low_stock_boots:
+        low_stock_products.append({
+            'name': boot.name,
+            'category': boot.category,
+            'quantity': boot.quantity,
+            'type': 'sports',
+            'id': boot.boot_id
+        })
+
+    context = {
+        'total_orders': total_orders,
+        'total_products': total_products,
+        'total_users': total_users,
+        'pending_orders': pending_orders,
+        'confirmed_orders': confirmed_orders,
+        'shipped_orders': shipped_orders,
+        'delivered_orders': delivered_orders,
+        'cancelled_orders': cancelled_orders,
+        'low_stock_products': low_stock_products,
+    }
+
+    return render(request, 'admin/adminhome.html', context)
+
 
 
 def adminshoes(request):
@@ -594,7 +632,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@csrf_exempt  # Add this decorator
+@csrf_exempt
 @require_POST  # Ensure only POST requests
 def add_to_cart(request, product_type, product_id):
     try:
@@ -1037,7 +1075,6 @@ def cart(request):
             return redirect('login')
         except Exception as e:
             print(f"Unexpected error in cart view: {e}")
-            import traceback
             traceback.print_exc()
             messages.error(request, "An error occurred while loading your cart.")
             return redirect('indexed')
@@ -1115,6 +1152,7 @@ def cart(request):
     return render(request, 'cart.html', context)
 
 
+
 def wishlist(request):
     """
     Standalone wishlist page view
@@ -1129,31 +1167,27 @@ def wishlist(request):
             wishlist_data_queryset = Wishlist.objects.filter(user_details=user)
 
             for wishlist_item in wishlist_data_queryset:
-                product = None
-                product_type = None
-                product_id = None
-
-                # Parse composite itemid using helper function
                 product_type, product_id, product = parse_wishlist_itemid(wishlist_item.itemid)
 
-                if not product:
+                # Skip if parsing failed or product not found
+                if product is None:
+                    print(f"Skipping invalid wishlist item: {wishlist_item.itemid}")
                     continue
 
-                if product:
-                    wishlist_items_display.append({
-                        'id': wishlist_item.pk,
-                        'product_obj': product,
-                        'name': product.name,
-                        'image_url': product.image.url if product.image else '',
-                        'price': product.price,
-                        'category': getattr(product, 'category', 'N/A'),
-                        'product_type': product_type,
-                        'product_id': product_id
-                    })
+                # Add to display list
+                wishlist_items_display.append({
+                    'id': wishlist_item.pk,
+                    'product_obj': product,
+                    'name': product.name,
+                    'image_url': product.image.url if product.image else '',
+                    'price': product.price,
+                    'category': getattr(product, 'category', 'N/A'),
+                    'product_type': product_type,
+                    'product_id': product_id
+                })
 
         except Exception as e:
             messages.error(request, f"Error loading wishlist: {e}")
-            import traceback
             traceback.print_exc()
 
     # Guest user wishlist
@@ -1166,11 +1200,17 @@ def wishlist(request):
             product_type = item_dict.get('product_type')
 
             try:
+                numeric_id = int(item_id) if isinstance(item_id, str) and item_id.isdigit() else item_id
+
                 if product_type == 'shoes':
-                    product = Shoes.objects.get(shoe_id=item_id)
+                    product = Shoes.objects.get(shoe_id=numeric_id)
                 elif product_type == 'boots':
-                    product = Boots.objects.get(boot_id=item_id)
+                    product = Boots.objects.get(boot_id=numeric_id)
             except (Shoes.DoesNotExist, Boots.DoesNotExist):
+                print(f"Guest wishlist: Product not found - {product_type}:{item_id}")
+                continue
+            except (ValueError, TypeError):
+                print(f"Guest wishlist: Invalid item_id format - {item_id}")
                 continue
 
             if product:
@@ -1204,26 +1244,64 @@ def update_cart_quantity(request, cart_id):
                 if new_quantity > 0:
                     cart_item.quantity = new_quantity
                     cart_item.save()
-                    return JsonResponse({'success': True, 'message': 'Cart updated successfully'})
+
+                    # ✅ CALCULATE CART TOTAL
+                    cart_total = 0
+                    all_cart_items = Cart.objects.filter(user_details=user)
+                    for item in all_cart_items:
+                        cart_total += item.price * item.quantity
+
+                    # ✅ RETURN PRICE AND CART_TOTAL
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'Cart updated successfully',
+                        'price': float(cart_item.price),
+                        'cart_total': float(cart_total)
+                    })
                 else:
                     cart_item.delete()
-                    return JsonResponse({'success': True, 'message': 'Item removed from cart'})
+
+                    # Calculate cart total after deletion
+                    cart_total = 0
+                    all_cart_items = Cart.objects.filter(user_details=user)
+                    for item in all_cart_items:
+                        cart_total += item.price * item.quantity
+
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'Item removed from cart',
+                        'cart_total': float(cart_total)
+                    })
 
             # For guest users
             else:
                 guest_cart = request.session.get('guest_cart', [])
+                cart_total = 0
+                item_price = 0
+
                 for i, item in enumerate(guest_cart):
-                    # For guest users, `cart_id` is the `itemid`
                     if item.get('itemid') == str(cart_id):
+                        item_price = float(item.get('price', 0))
                         if new_quantity > 0:
                             guest_cart[i]['quantity'] = new_quantity
                         else:
                             del guest_cart[i]
                         break
 
+                # Calculate new total
+                for item in guest_cart:
+                    cart_total += float(item.get('price', 0)) * int(item.get('quantity', 0))
+
                 request.session['guest_cart'] = guest_cart
                 request.session.modified = True
-                return JsonResponse({'success': True, 'message': 'Cart updated successfully'})
+
+                # ✅ RETURN PRICE AND CART_TOTAL
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Cart updated successfully',
+                    'price': item_price,
+                    'cart_total': cart_total
+                })
 
         except ValueError:
             return JsonResponse({'error': 'Invalid quantity'}, status=400)
@@ -1268,6 +1346,7 @@ def checkout_page(request):
         messages.info(request, "Please log in to checkout.")
         return redirect('login')
 
+    payment_method = request.GET.get('payment_method', '')
     cart_items_display = []
     total_price = 0
 
@@ -1319,6 +1398,7 @@ def checkout_page(request):
     context = {
         'cart_items': cart_items_display,
         'total_price': total_price,
+        'payment_method': payment_method,
         'user': user
     }
     return render(request, 'checkout.html', context)
@@ -1354,11 +1434,10 @@ def payment(request):
                 messages.error(request, 'Your cart is empty.')
                 return redirect('cart')
 
-            # ✅ Create order - OrderDetails uses username, useraddress (NO underscores)
             order = OrderDetails.objects.create(
                 user=user,
-                username=user.name,           # ✅ NO underscore
-                useraddress=address,          # ✅ NO underscore
+                username=user.name,
+                useraddress=address,
                 phnno=request.POST.get('phone', user.phoneno if user.phoneno else 'N/A'),
                 pincode=request.POST.get('pincode', user.pincode if user.pincode else 'N/A'),
                 status='pending'
@@ -1378,13 +1457,12 @@ def payment(request):
                     object_id = cart_item.itemid
 
                 if product:
-                    # ✅ Create MyOrders entry - MyOrders uses user_name, user_address (WITH underscores)
                     order_item = MyOrders.objects.create(
                         order=order,
                         content_type=content_type,
                         object_id=object_id,
-                        user_name=user.name,          # ✅ WITH underscore
-                        user_address=address,         # ✅ WITH underscore
+                        user_name=user.name,
+                        user_address=address,
                         phno=request.POST.get('phone', user.phoneno if user.phoneno else 'N/A'),
                         pincode=request.POST.get('pincode', user.pincode if user.pincode else 'N/A'),
                         quantity=cart_item.quantity,
@@ -1583,7 +1661,6 @@ def admin_manage_orders(request):
         orders = orders.filter(status=status_filter)
 
     if search_query:
-        from django.db.models import Q
         orders = orders.filter(
             Q(orderid__icontains=search_query) |
             Q(username__icontains=search_query) |
@@ -1662,7 +1739,6 @@ def ad_search(request):
 
     # Only search if query is not empty
     if query:
-        from django.db.models import Q
         shoes_results = Shoes.objects.filter(
             Q(name__icontains=query) |
             Q(category__icontains=query)
@@ -1677,3 +1753,5 @@ def ad_search(request):
         'shoes_results': shoes_results,
         'boots_results': boots_results
     })
+
+

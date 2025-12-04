@@ -577,9 +577,7 @@
 
       <!-- Javascript files -->
       <script src="{% static 'js/jquery.min.js' %}"></script>
-      <script src="{% static 'js/popper.min.js' %}"></script>
       <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-      <script src="{% static 'js/jquery-3.0.0.min.js' %}"></script>
       <script src="{% static 'js/plugin.js' %}"></script>
       <script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
       <script src="{% static 'js/custom.js' %}"></script>
@@ -589,24 +587,31 @@
       <script>
          $(document).ready(function(){
 
-         // ==================== HELPER FUNCTIONS (Defined First) ====================
+         // ==================== HELPER FUNCTIONS ====================
+
+         function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+               const cookies = document.cookie.split(';');
+               for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                     break;
+                  }
+               }
+            }
+            return cookieValue;
+         }
 
          function showNotification(message, type) {
-            const notification = $('<div class="alert-notification"></div>')
-               .text(message)
-               .addClass(type === 'error' ? 'alert-error' : 'alert-success');
-
-            $('body').append(notification);
-
-            setTimeout(function() {
-               notification.addClass('show');
-            }, 100);
+            var $notification = $('#notification');
+            $notification.text(message);
+            $notification.removeClass('success error').addClass(type);
+            $notification.addClass('show');
 
             setTimeout(function() {
-               notification.removeClass('show');
-               setTimeout(function() {
-                  notification.remove();
-               }, 300);
+               $notification.removeClass('show');
             }, 3000);
          }
 
@@ -630,207 +635,196 @@
             });
          }
 
-         /* ORIGINAL getCookie - Now defined at top
-function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-               const cookies = document.cookie.split(';');
-               for (let i = 0; i < cookies.length; i++) {
-                  const cookie = cookies[i].trim();
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                     break;
-                  }
-               }
+         // ==================== CART OPERATIONS ====================
+
+         // Fancybox initialization
+         $(".fancybox").fancybox({
+            openEffect: "none",
+            closeEffect: "none"
+         });
+
+         // Update quantity in cart
+         $('.update-qty-btn').on('click', function(e) {
+            e.preventDefault();
+            var $button = $(this);
+            var itemId = $button.data('item-id');
+            var $quantityInput = $button.siblings('input[name="quantity"]');
+            var quantity = parseInt($quantityInput.val());
+
+            if (quantity < 1) {
+               showNotification('Quantity must be at least 1', 'error');
+               return;
             }
-            return cookieValue;
-         }
-*/
 
-         // ==================== END HELPER FUNCTIONS ====================
+            $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
 
-            // Fancybox initialization
-            $(".fancybox").fancybox({
-               openEffect: "none",
-               closeEffect: "none"
-            });
-
-            // Update quantity in cart
-            $('.update-qty-btn').on('click', function(e) {
-               e.preventDefault();
-               var $button = $(this);
-               var itemId = $button.data('item-id');
-               var $quantityInput = $button.siblings('input[name="quantity"]');
-               var quantity = parseInt($quantityInput.val());
-
-               if (quantity < 1) {
-                  showNotification('Quantity must be at least 1', 'error');
-                  return;
+            $.ajax({
+               url: '/update-cart-quantity/' + itemId + '/',
+               method: 'POST',
+               data: {
+                  quantity: quantity,
+                  csrfmiddlewaretoken: getCookie('csrftoken')
+               },
+               success: function(response) {
+                  if (response.success) {
+                     var subtotal = (response.price * quantity).toFixed(2);
+                     $('#cart-item-' + itemId + ' .item-subtotal').text('₹' + subtotal);
+                     $('#cart-subtotal').text('₹' + response.cart_total.toFixed(2));
+                     $('#cart-total').text('₹' + response.cart_total.toFixed(2));
+                     showNotification(response.message || 'Cart updated successfully', 'success');
+                  } else {
+                     showNotification(response.error || 'Failed to update cart', 'error');
+                  }
+               },
+               error: function(xhr) {
+                  var errorMsg = 'Error updating cart';
+                  try {
+                     var response = JSON.parse(xhr.responseText);
+                     errorMsg = response.error || errorMsg;
+                  } catch(e) {}
+                  showNotification(errorMsg, 'error');
+               },
+               complete: function() {
+                  $button.prop('disabled', false).html('<i class="fa fa-refresh"></i> Update');
                }
-
-               $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
-
-               $.ajax({
-                  url: '/update-cart/' + itemId + '/',
-                  method: 'POST',
-                  data: {
-                     quantity: quantity,
-                     csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val() || getCookie('csrftoken')
-                  },
-                  success: function(response) {
-                     if (response.success) {
-                        var subtotal = (response.price * quantity).toFixed(2);
-                        $('#cart-item-' + itemId + ' .item-subtotal').text('₹' + subtotal);
-                        $('#cart-subtotal').text('₹' + response.cart_total.toFixed(2));
-                        $('#cart-total').text('₹' + response.cart_total.toFixed(2));
-                        showNotification(response.message || 'Cart updated successfully', 'success');
-                     } else {
-                        showNotification(response.error || 'Failed to update cart', 'error');
-                     }
-                  },
-                  error: function(xhr) {
-                     var errorMsg = 'Error updating cart';
-                     try {
-                        var response = JSON.parse(xhr.responseText);
-                        errorMsg = response.error || errorMsg;
-                     } catch(e) {}
-                     showNotification(errorMsg, 'error');
-                  },
-                  complete: function() {
-                     $button.prop('disabled', false).html('<i class="fa fa-refresh"></i> Update');
-                  }
-               });
-            });
-
-            // Remove item from cart
-            $('.remove-item-btn').on('click', function(e) {
-               e.preventDefault();
-               var $button = $(this);
-               var itemId = $button.data('item-id');
-
-               if (!confirm('Remove this item from cart?')) {
-                  return;
-               }
-
-               $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
-
-               $.ajax({
-                  url: '/remove-from-cart/' + itemId + '/',
-                  method: 'POST',
-                  data: {
-                     csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val() || getCookie('csrftoken')
-                  },
-                  success: function(response) {
-                     if (response.success) {
-                        $('#cart-item-' + itemId).fadeOut(300, function() {
-                           $(this).remove();
-                           $('#cart-subtotal').text('₹' + response.cart_total.toFixed(2));
-                           $('#cart-total').text('₹' + response.cart_total.toFixed(2));
-                           if (response.cart_total === 0) {
-                              location.reload();
-                           }
-                        });
-                        showNotification(response.message || 'Item removed from cart', 'success');
-                     } else {
-                        showNotification(response.error || 'Failed to remove item', 'error');
-                        $button.prop('disabled', false).html('<i class="fa fa-trash"></i>');
-                     }
-                  },
-                  error: function(xhr) {
-                     showNotification('Error removing item', 'error');
-                     $button.prop('disabled', false).html('<i class="fa fa-trash"></i>');
-                  }
-               });
-            });
-
-            // Move to wishlist from cart
-            $('.move-to-wishlist-btn').on('click', function(e) {
-               e.preventDefault();
-               var $button = $(this);
-               var itemId = $button.data('item-id');
-               var productType = $button.data('product-type');
-               var productId = $button.data('product-id');
-
-               $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
-
-               // First add to wishlist
-               $.ajax({
-                  url: '/add-to-wishlist/' + productType + '/' + productId + '/',
-                  method: 'POST',
-                  data: {
-                     csrfmiddlewaretoken: getCookie('csrftoken')
-                  },
-                  success: function(response) {
-                     if (response.success) {
-                        // Then remove from cart
-                        $.ajax({
-                           url: '/remove-from-cart/' + itemId + '/',
-                           method: 'POST',
-                           data: {
-                              csrfmiddlewaretoken: getCookie('csrftoken')
-                           },
-                           success: function(res) {
-                              showNotification('Moved to wishlist successfully!', 'success');
-                              setTimeout(function() {
-                                 location.reload();
-                              }, 1000);
-                           }
-                        });
-                     } else {
-                        showNotification(response.error || 'Failed to move to wishlist', 'error');
-                        $button.prop('disabled', false).html('<i class="fa fa-heart"></i>');
-                     }
-                  },
-                  error: function() {
-                     showNotification('Error moving to wishlist', 'error');
-                     $button.prop('disabled', false).html('<i class="fa fa-heart"></i>');
-                  }
-               });
-            });
-
-            // Remove from wishlist
-            $('.remove-wishlist-btn').on('click', function(e) {
-               e.preventDefault();
-               var $button = $(this);
-               var itemId = $button.data('item-id');
-               var productType = $button.data('product-type');
-               var productId = $button.data('product-id');
-
-               if (!confirm('Remove this item from wishlist?')) {
-                  return;
-               }
-
-               $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
-
-               $.ajax({
-                  url: '/remove-from-wishlist/' + productType + '/' + productId + '/',
-                  method: 'POST',
-                  data: {
-                     csrfmiddlewaretoken: getCookie('csrftoken')
-                  },
-                  success: function(response) {
-                     if (response.success) {
-                        $('#wishlist-item-' + itemId).fadeOut(300, function() {
-                           $(this).remove();
-                           if ($('.wishlist-item-card').length === 0) {
-                              location.reload();
-                           }
-                        });
-                        showNotification(response.message || 'Item removed from wishlist', 'success');
-                     } else {
-                        showNotification(response.error || 'Failed to remove item', 'error');
-                        $button.prop('disabled', false).html('<i class="fa fa-trash"></i> Remove');
-                     }
-                  },
-                  error: function() {
-                     showNotification('Error removing item', 'error');
-                     $button.prop('disabled', false).html('<i class="fa fa-trash"></i> Remove');
-                  }
-               });
             });
          });
 
-         // Proceed to checkout
+         // Remove item from cart
+         $('.remove-item-btn').on('click', function(e) {
+            e.preventDefault();
+            var $button = $(this);
+            var itemId = $button.data('item-id');
+
+            if (!confirm('Remove this item from cart?')) {
+               return;
+            }
+
+            $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+
+            $.ajax({
+               url: '/remove-from-cart/' + itemId + '/',
+               method: 'POST',
+               data: {
+                  csrfmiddlewaretoken: getCookie('csrftoken')
+               },
+               success: function(response) {
+                  if (response.success) {
+                     $('#cart-item-' + itemId).fadeOut(300, function() {
+                        $(this).remove();
+                        if (response.cart_total !== undefined) {
+                           $('#cart-subtotal').text('₹' + response.cart_total.toFixed(2));
+                           $('#cart-total').text('₹' + response.cart_total.toFixed(2));
+                        }
+                        if (response.cart_total === 0 || $('.cart-table tbody tr').length === 0) {
+                           location.reload();
+                        }
+                     });
+                     showNotification(response.message || 'Item removed from cart', 'success');
+                  } else {
+                     showNotification(response.error || 'Failed to remove item', 'error');
+                     $button.prop('disabled', false).html('<i class="fa fa-trash"></i>');
+                  }
+               },
+               error: function(xhr) {
+                  showNotification('Error removing item', 'error');
+                  $button.prop('disabled', false).html('<i class="fa fa-trash"></i>');
+               }
+            });
+         });
+
+         // Move to wishlist from cart
+         $('.move-to-wishlist-btn').on('click', function(e) {
+            e.preventDefault();
+            var $button = $(this);
+            var itemId = $button.data('item-id');
+            var productType = $button.data('product-type');
+            var productId = $button.data('product-id');
+
+            $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+
+            // First add to wishlist
+            $.ajax({
+               url: '/add-to-wishlist/' + productType + '/' + productId + '/',
+               method: 'POST',
+               data: {
+                  csrfmiddlewaretoken: getCookie('csrftoken')
+               },
+               success: function(response) {
+                  if (response.success) {
+                     // Then remove from cart
+                     $.ajax({
+                        url: '/remove-from-cart/' + itemId + '/',
+                        method: 'POST',
+                        data: {
+                           csrfmiddlewaretoken: getCookie('csrftoken')
+                        },
+                        success: function(res) {
+                           showNotification('Moved to wishlist successfully!', 'success');
+                           setTimeout(function() {
+                              location.reload();
+                           }, 1000);
+                        }
+                     });
+                  } else {
+                     showNotification(response.error || 'Failed to move to wishlist', 'error');
+                     $button.prop('disabled', false).html('<i class="fa fa-heart"></i>');
+                  }
+               },
+               error: function() {
+                  showNotification('Error moving to wishlist', 'error');
+                  $button.prop('disabled', false).html('<i class="fa fa-heart"></i>');
+               }
+            });
+         });
+
+         // ==================== WISHLIST OPERATIONS ====================
+
+         // Remove from wishlist
+         $('.remove-wishlist-btn').on('click', function(e) {
+            e.preventDefault();
+            var $button = $(this);
+            var itemId = $button.data('item-id');
+            var productType = $button.data('product-type');
+            var productId = $button.data('product-id');
+
+            if (!confirm('Remove this item from wishlist?')) {
+               return;
+            }
+
+            $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+
+            $.ajax({
+               url: '/remove-from-wishlist/' + productType + '/' + productId + '/',
+               method: 'POST',
+               data: {
+                  csrfmiddlewaretoken: getCookie('csrftoken')
+               },
+               success: function(response) {
+                  if (response.success) {
+                     $('#wishlist-item-' + itemId).fadeOut(300, function() {
+                        $(this).remove();
+                        if ($('.wishlist-item-card').length === 0) {
+                           location.reload();
+                        }
+                     });
+                     showNotification(response.message || 'Item removed from wishlist', 'success');
+                  } else {
+                     showNotification(response.error || 'Failed to remove item', 'error');
+                     $button.prop('disabled', false).html('<i class="fa fa-trash"></i> Remove');
+                  }
+               },
+               error: function() {
+                  showNotification('Error removing item', 'error');
+                  $button.prop('disabled', false).html('<i class="fa fa-trash"></i> Remove');
+               }
+            });
+         });
+
+         });
+
+         // ==================== CHECKOUT FUNCTION ====================
+
          function proceedToCheckout() {
             var paymentMethod = $('input[name="payment_method"]:checked').val();
 
@@ -839,14 +833,14 @@ function getCookie(name) {
                return;
             }
 
+            // Pass payment method as URL parameter
             if (paymentMethod === 'COD') {
-               window.location.href = "{% url 'checkout_page' %}";
+               window.location.href = "{% url 'checkout_page' %}?payment_method=COD";
             } else if (paymentMethod === 'Online') {
-               window.location.href = "{% url 'payment' %}";
+               window.location.href = "{% url 'payment' %}?payment_method=Online";
             }
          }
 
-         // Helper functions
          function showNotification(message, type) {
             var $notification = $('#notification');
             $notification.text(message);
@@ -857,26 +851,7 @@ function getCookie(name) {
                $notification.removeClass('show');
             }, 3000);
          }
-
-         /* ORIGINAL getCookie - Now defined at top
-function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-               const cookies = document.cookie.split(';');
-               for (let i = 0; i < cookies.length; i++) {
-                  const cookie = cookies[i].trim();
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                     break;
-                  }
-               }
-            }
-            return cookieValue;
-         }
-*/
       </script>
-
-      <!-- Unified Shop Script - Handles Add to Cart from Wishlist -->
       <script src="{% static 'js/shop.js' %}"></script>
    </body>
 </html>

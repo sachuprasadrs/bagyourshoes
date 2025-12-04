@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bdd998a3-4b24-4d0f-a5ad-640544c46863" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../app/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/../db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/../debug.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template/admin/adminhome.html" beforeDir="false" afterPath="$PROJECT_DIR$/../template/admin/adminhome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template/admin/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/../template/admin/header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/../template/cart.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/../template/header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../template/wishlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/../template/wishlist.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="36NdyW8CaTYdIpsyo2u25EZE3DT" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/Apps/PycharmProj/bagyourshoe/media",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-a101402ee41c-968fe969f28a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.28238.29" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bdd998a3-4b24-4d0f-a5ad-640544c46863" name="Changes" comment="" />
+      <created>1764851218601</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764851218601</updated>
+      <workItem from="1764851229707" duration="31000" />
+    </task>
+    <servers />
+  </component>
+</project>
