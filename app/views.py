@@ -32,19 +32,24 @@ logger = logging.getLogger(__name__)
 
 def parse_wishlist_itemid(itemid):
     """Parse wishlist itemid and return product type, id, and object."""
+
     try:
         if itemid.startswith('shoe_'):
             numeric_id = int(itemid.split('_')[1])
-            return ('shoes', itemid, Shoes.objects.get(shoe_id=numeric_id))
+            # Return numeric_id as the second argument, not itemid string
+            return ('shoes', numeric_id, Shoes.objects.get(shoe_id=numeric_id))
         elif itemid.startswith('boot_'):
             numeric_id = int(itemid.split('_')[1])
-            return ('boots', itemid, Boots.objects.get(boot_id=numeric_id))
+            # Return numeric_id as the second argument, not itemid string
+            return ('boots', numeric_id, Boots.objects.get(boot_id=numeric_id))
         else:
             # Fallback for old/simple numeric IDs if any
-            return (None, itemid, None)
+            # Assuming if it's just a number, it's a shoe
+            numeric_id = int(itemid)
+            return ('shoes', numeric_id, Shoes.objects.get(shoe_id=numeric_id))
     except (IndexError, ValueError, Shoes.DoesNotExist, Boots.DoesNotExist) as e:
         print(f"Error parsing itemid '{itemid}': {e}")
-        return (None, itemid, None)
+        return (None, None, None)
 
 
 # --- Auth Views ---
@@ -378,37 +383,48 @@ def add_to_cart_v2(request, product_type, product_id):
 def add_to_cart_from_wishlist(request, product_type, product_id):
     """Moves item from wishlist to cart"""
     # 1. Reuse existing add_to_cart logic
-    response = add_to_cart_v2(request, product_type, product_id)
-    response_data = json.loads(response.content)
+    # We pass the request directly because it contains the POST data (size, qty)
+    try:
+        response = add_to_cart_v2(request, product_type, product_id)
 
-    # 2. If successful, remove from wishlist
-    if response.status_code == 200 and response_data.get('success'):
-        try:
-            # We need to find which wishlist item to remove
-            # Since wishlist items might be guests or users, we use the remove logic
-            # However, remove logic needs a specific ID (PK or string ID)
-            # The frontend calls this via form, so we check if there's a specific wishlist_id passed
-            # If not, we try to find it by product info
-
-            if 'userid' in request.session:
-                user = UserDetails.objects.get(userid=request.session['userid'])
-                # Construct composite ID that was likely used in wishlist
+        # Check if response is valid JSON and successful
+        if response.status_code == 200:
+            response_data = json.loads(response.content)
+            if response_data.get('success'):
+                # 2. If successful, remove from wishlist
                 norm_type = 'shoe' if product_type in ['shoe', 'shoes'] else 'boot'
                 composite_id = f"{norm_type}_{product_id}"
-                Wishlist.objects.filter(user_details=user, itemid=composite_id).delete()
+
+                if 'userid' in request.session:
+                    user = UserDetails.objects.get(userid=request.session['userid'])
+                    # Try deleting by composite ID first
+                    deleted_count, _ = Wishlist.objects.filter(user_details=user, itemid=composite_id).delete()
+
+                    # Fallback: if user added it via a legacy method where itemid might be just the number
+                    if deleted_count == 0:
+                        Wishlist.objects.filter(user_details=user, itemid=str(product_id),
+                                                product_type=norm_type).delete()
+
+                else:
+                    # Guest remove
+                    guest_wishlist = request.session.get('guest_wishlist', [])
+                    # Remove item that matches composite ID or just ID
+                    new_list = [
+                        i for i in guest_wishlist
+                        if i.get('itemid') != composite_id and str(i.get('itemid')) != str(product_id)
+                    ]
+                    request.session['guest_wishlist'] = new_list
+                    request.session.modified = True
+
+                return JsonResponse({'success': True, 'message': 'Moved to cart successfully'})
             else:
-                # Guest remove
-                norm_type = 'shoe' if product_type in ['shoe', 'shoes'] else 'boot'
-                composite_id = f"{norm_type}_{product_id}"
-                guest_wishlist = request.session.get('guest_wishlist', [])
-                # Remove item that matches
-                request.session['guest_wishlist'] = [i for i in guest_wishlist if i.get('itemid') != composite_id]
-                request.session.modified = True
+                # Pass through the error from add_to_cart
+                return response
+        return response
 
-        except Exception as e:
-            print(f"Error removing from wishlist after move: {e}")
-
-    return response
+    except Exception as e:
+        print(f"Error moving from wishlist: {e}")
+        return JsonResponse({'error': 'Failed to move item to cart'}, status=500)
 
 
 @csrf_exempt

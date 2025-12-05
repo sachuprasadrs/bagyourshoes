@@ -358,17 +358,15 @@
                 e.preventDefault();
                 var $form = $(this);
                 var $btn = $form.find('.btn-add-cart');
-
                 var productType = $form.data('product-type');
                 var productId = $form.data('product-id');
-                var itemId = $form.data('item-id'); // Wishlist Item ID
+                var itemId = $form.data('item-id');
                 var formData = new FormData(this);
                 formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
 
                 $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Adding...');
 
                 $.ajax({
-                    // This matches the new URL pattern we created
                     url: '/add-to-cart-from-wishlist/' + productType + '/' + productId + '/',
                     method: 'POST',
                     data: formData,
@@ -377,7 +375,6 @@
                     success: function(resp) {
                         if (resp.success) {
                             showNotification('Moved to Cart Successfully!', 'success');
-                            // Remove from wishlist UI
                             $('#wishlist-item-' + itemId).fadeOut(300, function(){
                                 $(this).remove();
                                 if($('.wishlist-item-card').length === 0) location.reload();
@@ -387,7 +384,7 @@
                             $btn.prop('disabled', false).html('<i class="fa fa-shopping-cart"></i> Add to Cart');
                         }
                     },
-                    error: function(err) {
+                    error: function() {
                         showNotification('Error processing request', 'error');
                         $btn.prop('disabled', false).html('<i class="fa fa-shopping-cart"></i> Add to Cart');
                     }

@@ -15025,3 +15025,166 @@ D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
 Watching for file changes with StatReloader
 D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
 Watching for file changes with StatReloader
+"GET /wishlist/ HTTP/1.1" 200 21319
+"GET /media/shoes/shoes3_Vjii4D3.png HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8429
+"GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 1834
+"GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 1849
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8429
+"GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 1834
+"GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 1849
+"POST /remove-from-wishlist/17/ HTTP/1.1" 200 53
+"GET /wishlist/ HTTP/1.1" 200 19922
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8429
+"GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 1834
+"GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 1849
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8429
+"GET /static/js/popper.min.js.map HTTP/1.1" 404 1819
+"GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 1834
+"GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 1849
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8429
+"GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 1834
+"GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 1849
+"POST /add-to-wishlist/shoe/2/ HTTP/1.1" 200 49
+"POST /remove-from-cart/16/ HTTP/1.1" 200 17
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /media/boots/shoes1_w24l6w1.png HTTP/1.1" 304 0
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /cart/ HTTP/1.1" 200 24774
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+Not Found: /add-to-cart-from-wishlist/shoes/shoe_2/
+"POST /add-to-cart-from-wishlist/shoes/shoe_2/ HTTP/1.1" 404 8403
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 8429
+"GET /static/js/bootstrap.bundle.min.js.map HTTP/1.1" 404 1849
+"GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 1834
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
