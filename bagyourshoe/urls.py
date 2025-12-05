@@ -9,16 +9,15 @@ from app import views
 
 urlpatterns = [
     # Django's built-in admin site (for superuser)
-    path('django-admin/', admin.site.urls),  # ✅ CHANGED from 'admin/' to 'django-admin/'
-
+    path('django-admin/', admin.site.urls),
 
     # Public Site URLs
-    path('', views.indexed, name='indexed'),  # ✅ Added root path
+    path('', views.indexed, name='indexed'),
     path('indexed/', views.indexed, name='indexed'),
     path('collection/', views.collection, name='collection'),
     path('contact/', views.contact, name='contact'),
     path('shoes/', views.shoes, name='shoes'),
-    path('boots/', views.sports, name='boots'),  # ✅ FIXED - should call sports view
+    path('boots/', views.sports, name='boots'),
     path('sports/', views.sports, name='sports'),
     path('allboots/', views.all_boots, name='all_boots'),
     path('allshoes/', views.all_shoes, name='all_shoes'),
@@ -45,11 +44,18 @@ urlpatterns = [
     path('my-orders/', views.my_orders, name='my_orders'),
 
     # API Endpoints (Cart & Wishlist)
+    # v2 is the main one used
     path('add-to-cart/<str:product_type>/<int:product_id>/', views.add_to_cart_v2, name='add_to_cart'),
+
+    # NEW: Move from wishlist to cart endpoint (matches JS call)
+    path('add-to-cart-from-wishlist/<str:product_type>/<int:product_id>/', views.add_to_cart_from_wishlist, name='add_to_cart_from_wishlist'),
+
     path('add-to-wishlist/<str:product_type>/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
     path('update-cart-quantity/<int:cart_id>/', views.update_cart_quantity, name='update_cart_quantity'),
     path('remove-from-cart/<int:cart_id>/', views.remove_from_cart, name='remove_from_cart'),
-    path('remove-from-wishlist/<int:wishlist_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
+
+    # FIXED: Accepts string IDs for guest users (e.g., 'shoe_1')
+    path('remove-from-wishlist/<str:wishlist_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
 
     # ADMIN PANEL URLs
     path('adminhome/', views.adminhome, name='adminhome'),

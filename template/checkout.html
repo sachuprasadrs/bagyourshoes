@@ -362,14 +362,14 @@
                                 name="address"
                                 required
                                 placeholder="Enter your complete shipping address including street, city, state, and postal code"
-                            ></textarea>
+                            >{{ user.address|default:'' }}</textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="payment_method">Payment Method *</label>
                             <select id="payment_method" name="payment_method" required>
-                                <option value="cod">Cash on Delivery (COD)</option>
-                                <option value="razorpay">Online Payment (Razorpay)</option>
+                                <option value="cod" {% if payment_method == 'cod' %}selected{% endif %}>Cash on Delivery (COD)</option>
+                                <option value="razorpay" {% if payment_method == 'razorpay' %}selected{% endif %}>Online Payment (Razorpay)</option>
                             </select>
                         </div>
 

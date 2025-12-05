@@ -18,167 +18,97 @@ from django.utils import timezone
 import razorpay
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.hashers import make_password, check_password
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+import logging
 
 # Initialize Razorpay client
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+logger = logging.getLogger(__name__)
 
-# Create your views here.
 
+# --- Helper Functions ---
 
 def parse_wishlist_itemid(itemid):
     """Parse wishlist itemid and return product type, id, and object."""
     try:
         if itemid.startswith('shoe_'):
-            # Extract numeric ID from 'shoe_1' -> 1
             numeric_id = int(itemid.split('_')[1])
             return ('shoes', itemid, Shoes.objects.get(shoe_id=numeric_id))
         elif itemid.startswith('boot_'):
-            # Extract numeric ID from 'boot_1' -> 1
             numeric_id = int(itemid.split('_')[1])
             return ('boots', itemid, Boots.objects.get(boot_id=numeric_id))
         else:
-            raise ValueError(f"Unknown itemid format: {itemid}")
-    except (IndexError, ValueError) as e:
+            # Fallback for old/simple numeric IDs if any
+            return (None, itemid, None)
+    except (IndexError, ValueError, Shoes.DoesNotExist, Boots.DoesNotExist) as e:
         print(f"Error parsing itemid '{itemid}': {e}")
         return (None, itemid, None)
-    except Shoes.DoesNotExist:
-        print(f"Shoe with ID from '{itemid}' not found")
-        return ('shoes', itemid, None)
-    except Boots.DoesNotExist:
-        print(f"Boot with ID from '{itemid}' not found")
-        return ('boots', itemid, None)
 
+
+# --- Auth Views ---
 
 def passforgot(request):
-    """Display forgot password form and handle password reset requests"""
     if request.method == 'POST':
         email = request.POST.get('email', '').strip()
-
         if not email:
             messages.error(request, "Please enter your email address.")
             return render(request, 'passforgot.html')
-
         try:
             user = UserDetails.objects.get(email__iexact=email)
-
-            # Delete any existing tokens for this user
             PasswordResetToken.objects.filter(user=user, is_used=False).delete()
-
-            # Create new reset token
             reset_token = PasswordResetToken.objects.create(user=user)
-
-            # Build reset URL
-            current_site = get_current_site(request)
-            reset_url = request.build_absolute_uri(
-                reverse('passreset', kwargs={'token': reset_token.token})
-            )
-
-            # Prepare email content
+            reset_url = request.build_absolute_uri(reverse('passreset', kwargs={'token': reset_token.token}))
             subject = 'Password Reset Request - Shoe Store'
-            message = f"""
-Hello {user.name},
-
-You have requested to reset your password. Please click the link below to reset your password:
-
-{reset_url}
-
-This link will expire in 1 hour.
-
-If you did not request this password reset, please ignore this email.
-
-Best regards,
-Shoe Store Team
-            """
-
-            # Send email
-            try:
-                send_mail(
-                    subject,
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=False,
-                )
-                messages.success(request,
-                                 "Password reset instructions have been sent to your email address.")
-                return redirect('login')
-
-            except Exception as e:
-                messages.error(request,
-                               "Failed to send reset email. Please try again later.")
-                print(f"Email sending error: {e}")
-
-        except UserDetails.DoesNotExist:
-            messages.success(request,
-                             "If an account with this email exists, password reset instructions have been sent.")
+            message = f"Click to reset: {reset_url}"
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+            messages.success(request, "Password reset instructions sent.")
             return redirect('login')
-
+        except UserDetails.DoesNotExist:
+            messages.success(request, "If an account exists, instructions have been sent.")
+            return redirect('login')
         except Exception as e:
-            messages.error(request, "An error occurred. Please try again.")
+            messages.error(request, "An error occurred.")
             print(f"Forgot password error: {e}")
-
     return render(request, 'passforgot.html')
 
 
 def passreset(request, token):
-    """Handle password reset with token - UPDATED WITH PASSWORD HASHING"""
     try:
         reset_token = PasswordResetToken.objects.get(token=token, is_used=False)
-
         if reset_token.is_expired():
-            messages.error(request, 'Password reset link has expired. Please request a new one.')
+            messages.error(request, 'Link expired.')
             return redirect('passforgot')
-
         if request.method == 'POST':
             password = request.POST.get('password', '').strip()
-            confirm_password = request.POST.get('confirm_password', '').strip()
-
-            if not password or not confirm_password:
-                messages.error(request, 'Please fill in all fields.')
-                return render(request, 'passreset.html', {'token': token})
-
-            if password != confirm_password:
+            confirm = request.POST.get('confirm_password', '').strip()
+            if password != confirm:
                 messages.error(request, 'Passwords do not match.')
                 return render(request, 'passreset.html', {'token': token})
-
             if len(password) < 6:
-                messages.error(request, 'Password must be at least 6 characters long.')
+                messages.error(request, 'Password too short.')
                 return render(request, 'passreset.html', {'token': token})
-
             user = reset_token.user
-            user.password = make_password(password)  # Hash the password
+            user.password = make_password(password)
             user.save()
-
-            # Mark token as used
             reset_token.is_used = True
             reset_token.save()
-
-            messages.success(request, 'Password reset successful! Please log in with your new password.')
+            messages.success(request, 'Password reset successful.')
             return redirect('login')
-
-        return render(request, 'passreset.html', {'token': token, 'user': reset_token.user})
-
+        return render(request, 'passreset.html', {'token': token})
     except PasswordResetToken.DoesNotExist:
-        messages.error(request, 'Invalid or expired password reset link.')
-        return redirect('passforgot')
-    except Exception as e:
-        messages.error(request, 'An error occurred. Please try again.')
-        print(f'Reset password error: {e}')
+        messages.error(request, 'Invalid link.')
         return redirect('passforgot')
 
 
 def login(request):
-    """User login with hashed password support"""
     if request.method == 'POST':
         u = request.POST['username'].strip()
         p = request.POST['password'].strip()
-
         try:
             data = UserDetails.objects.get(name__iexact=u)
-
-            # Check if password is hashed or plain text
             if data.password.startswith('pbkdf2_'):
-                # Password is hashed, use check_password
                 if check_password(p, data.password):
                     request.session['username'] = data.name
                     request.session['userid'] = data.userid
@@ -186,1572 +116,626 @@ def login(request):
                 else:
                     messages.error(request, 'Wrong password')
             else:
-                # Password is plain text (old users)
                 if data.password == p:
-                    # Migrate to hashed password on login
                     data.password = make_password(p)
                     data.save()
-
                     request.session['username'] = data.name
                     request.session['userid'] = data.userid
                     return redirect('indexed')
                 else:
                     messages.error(request, 'Wrong password')
-
         except UserDetails.DoesNotExist:
-            # Admin login (plain text is OK for admin)
             if u == 'admin' and p == 'admin123':
                 request.session['admin'] = u
                 return redirect('adminhome')
             else:
                 messages.error(request, 'User not found')
-        except Exception as e:
-            messages.error(request, f'Unexpected error: {e}')
-
     return render(request, 'login.html')
 
 
 def userreg(request):
-    """User registration with hashed passwords"""
     if request.method == 'POST':
         name = request.POST.get('username')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         password = request.POST.get('password')
-
-        # Validate inputs
-        if not all([name, email, phone, password]):
-            messages.error(request, 'Please fill in all fields.')
-            return render(request, 'userreg.html')
-
-        # Check if user already exists
         if UserDetails.objects.filter(email__iexact=email).exists():
             messages.error(request, 'Email already registered.')
             return render(request, 'userreg.html')
-
-        # Hash the password before saving
-        hashed_password = make_password(password)
-
-        UserDetails.objects.create(
-            name=name,
-            email=email,
-            phoneno=phone,
-            password=hashed_password  # Save hashed password
-        )
-
+        UserDetails.objects.create(name=name, email=email, phoneno=phone, password=make_password(password))
         messages.success(request, 'Registration successful! Please login.')
         return redirect('login')
-
     return render(request, 'userreg.html')
 
 
 def logout(request):
-    if 'username' in request.session or 'admin' in request.session:
-        request.session.flush()
+    request.session.flush()
     return redirect('login')
 
 
+# --- Product & Admin Views ---
+
 def addshoes(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        size = request.POST.get('size')
-        quantity = request.POST.get('quantity')
-        price = request.POST.get('price')
-        description = request.POST.get('description')
         category = request.POST.get('category')
-        bestseller = request.POST.get('bestseller') == 'on'
-        image = request.FILES.get('image')
-
+        data = {
+            'name': request.POST.get('name'),
+            'size': request.POST.get('size'),
+            'quantity': request.POST.get('quantity'),
+            'price': request.POST.get('price'),
+            'description': request.POST.get('description'),
+            'bestseller': request.POST.get('bestseller') == 'on',
+            'image': request.FILES.get('image'),
+            'category': category
+        }
         if category == 'casual':
-            Shoes.objects.create(name=name, size=size, quantity=quantity, price=price, description=description,
-                                 image=image, bestseller=bestseller, category=category)
-            messages.success(request, "Shoe added to casual shoes successfully.")
+            Shoes.objects.create(**data)
         elif category == 'sports':
-            Boots.objects.create(name=name, size=size, quantity=quantity, price=price, description=description,
-                                 image=image, bestseller=bestseller, category=category)
-            messages.success(request, "Shoe added to sports boots successfully.")
-        else:
-            messages.error(request, "Invalid category selected.")
+            Boots.objects.create(**data)
+        messages.success(request, "Shoe added successfully.")
         return redirect('addshoes')
     return render(request, 'admin/addshoes.html')
 
 
 def editshoes(request, category, shoe_id):
-    """Edit shoes/boots with proper validation"""
     if 'admin' not in request.session:
         return redirect('login')
 
-    # Get the correct product based on category
     if category == 'casual':
         shoe = get_object_or_404(Shoes, shoe_id=shoe_id)
     elif category == 'sports':
         shoe = get_object_or_404(Boots, boot_id=shoe_id)
     else:
-        messages.error(request, "Invalid category.")
         return redirect('adminshoes')
 
     if request.method == 'POST':
-        try:
-            # Get all form data with validation
-            name = request.POST.get('name', '').strip()
-            size = request.POST.get('size', '').strip()
-            quantity = request.POST.get('quantity', '').strip()
-            price = request.POST.get('price', '').strip()
-            description = request.POST.get('description', '').strip()
-            bestseller = request.POST.get('bestseller') == 'on'
-            new_category = request.POST.get('category', category)
+        shoe.name = request.POST.get('name')
+        shoe.size = request.POST.get('size')
+        shoe.quantity = request.POST.get('quantity')
+        shoe.price = request.POST.get('price')
+        shoe.description = request.POST.get('description')
+        shoe.bestseller = request.POST.get('bestseller') == 'on'
+        shoe.category = request.POST.get('category', category)
+        if request.FILES.get('image'):
+            shoe.image = request.FILES.get('image')
+        shoe.save()
+        messages.success(request, "Product updated.")
+        return redirect('adminshoes')
 
-            # Validate required fields
-            if not name:
-                messages.error(request, "Product name is required.")
-                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
-
-            if not quantity:
-                messages.error(request, "Quantity is required.")
-                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
-
-            if not price:
-                messages.error(request, "Price is required.")
-                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
-
-            # Convert to proper types with validation
-            try:
-                quantity = int(quantity)
-                if quantity < 0:
-                    messages.error(request, "Quantity cannot be negative.")
-                    return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
-            except ValueError:
-                messages.error(request, "Invalid quantity value.")
-                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
-
-            try:
-                price = float(price)
-                if price < 0:
-                    messages.error(request, "Price cannot be negative.")
-                    return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
-            except ValueError:
-                messages.error(request, "Invalid price value.")
-                return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
-
-            # Update the product
-            shoe.name = name
-            shoe.size = size
-            shoe.quantity = quantity
-            shoe.price = price
-            shoe.description = description
-            shoe.bestseller = bestseller
-            shoe.category = new_category
-
-            # Handle image upload (only if new image provided)
-            if request.FILES.get('image'):
-                shoe.image = request.FILES.get('image')
-
-            shoe.save()
-
-            messages.success(request, f"{category.title()} product updated successfully.")
-            return redirect('adminshoes')
-
-        except Exception as e:
-            messages.error(request, f"Error updating product: {str(e)}")
-            print(f"Edit shoe error: {e}")
-            traceback.print_exc()
-            return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
-
-    # GET request - show form
-    context = {
-        'shoe': shoe,
-        'category': category
-    }
-    return render(request, 'admin/editshoes.html', context)
-
-
-def userdetails(request):
-    users = UserDetails.objects.all()
-    return render(request, 'admin/userdetails.html', {'users': users})
-
-
-def adminhome(request):
-    # Check if admin is logged in
-    if 'admin' not in request.session:
-        return redirect('login')
-
-    # Get statistics
-    total_orders = OrderDetails.objects.count()
-    total_products = Shoes.objects.count() + Boots.objects.count()
-    total_users = UserDetails.objects.count()
-    pending_orders = OrderDetails.objects.filter(status='pending').count()
-    confirmed_orders = OrderDetails.objects.filter(status='confirmed').count()
-    shipped_orders = OrderDetails.objects.filter(status='shipped').count()
-    delivered_orders = OrderDetails.objects.filter(status='delivered').count()
-    cancelled_orders = OrderDetails.objects.filter(status='cancelled').count()
-
-    # Get low stock products (less than 5 items)
-    low_stock_shoes = Shoes.objects.filter(quantity__lt=5)
-    low_stock_boots = Boots.objects.filter(quantity__lt=5)
-
-    low_stock_products = []
-    for shoe in low_stock_shoes:
-        low_stock_products.append({
-            'name': shoe.name,
-            'category': shoe.category,
-            'quantity': shoe.quantity,
-            'type': 'casual',
-            'id': shoe.shoe_id
-        })
-    for boot in low_stock_boots:
-        low_stock_products.append({
-            'name': boot.name,
-            'category': boot.category,
-            'quantity': boot.quantity,
-            'type': 'sports',
-            'id': boot.boot_id
-        })
-
-    context = {
-        'total_orders': total_orders,
-        'total_products': total_products,
-        'total_users': total_users,
-        'pending_orders': pending_orders,
-        'confirmed_orders': confirmed_orders,
-        'shipped_orders': shipped_orders,
-        'delivered_orders': delivered_orders,
-        'cancelled_orders': cancelled_orders,
-        'low_stock_products': low_stock_products,
-    }
-
-    return render(request, 'admin/adminhome.html', context)
-
-
-
-def adminshoes(request):
-    """Admin shoes view with search functionality"""
-    if 'admin' not in request.session:
-        return redirect('login')
-
-    # Get search query
-    search_query = request.GET.get('search', '').strip()
-
-    # Base querysets
-    casualshoes = Shoes.objects.all().order_by('-shoe_id')
-    sportsshoes = Boots.objects.all().order_by('-boot_id')
-
-    # Apply search filter if query exists
-    if search_query:
-        from django.db.models import Q
-        casualshoes = casualshoes.filter(
-            Q(name__icontains=search_query) |
-            Q(category__icontains=search_query) |
-            Q(description__icontains=search_query)
-        )
-        sportsshoes = sportsshoes.filter(
-            Q(name__icontains=search_query) |
-            Q(category__icontains=search_query) |
-            Q(description__icontains=search_query)
-        )
-
-    context = {
-        'casualshoes': casualshoes,
-        'sportsshoes': sportsshoes,
-        'search_query': search_query,
-    }
-    return render(request, 'admin/adminshoes.html', context)
-
-
-def orderdetails(request, order_id):
-    order = get_object_or_404(OrderDetails, pk=order_id)
-    customer = order.user
-    items = MyOrders.objects.filter(order=order)
-
-    # Calculate total amount and prepare items with subtotals
-    total_amount = 0
-    items_with_subtotal = []
-    for item in items:
-        subtotal = item.price * item.quantity
-        total_amount += subtotal
-        items_with_subtotal.append({
-            'product_name': item.product.name if item.product else 'Unknown Product',
-            'quantity': item.quantity,
-            'price': item.price,
-            'subtotal': subtotal
-        })
-
-    if request.method == 'POST':
-        new_status = request.POST.get('status')
-        note = request.POST.get('note', '')
-        if new_status:
-            order.status = new_status
-            order.status_note = note
-            order.status_updated_at = timezone.now()
-            order.save()
-            messages.success(request, f'Order status updated to {new_status.capitalize()}.')
-            return redirect('admin_order_detail', order_id=order_id)
-
-    context = {
-        'order': order,
-        'customer': customer,
-        'items': items_with_subtotal,
-        'total_amount': total_amount,
-    }
-    return render(request, 'admin/order_detail.html', context)
-
-
-def track_order(request):
-    """Track order by order ID"""
-    if 'userid' not in request.session:
-        messages.info(request, 'Please log in to track your orders.')
-        return redirect('login')
-
-    user = get_object_or_404(UserDetails, userid=request.session['userid'])
-    order = None
-    order_items = []
-
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id', '').strip()
-
-        if order_id:
-            try:
-                # Get order for this user only
-                order = OrderDetails.objects.get(orderid=order_id, user=user)
-                order_items = MyOrders.objects.filter(order=order)
-
-                if not order_items:
-                    messages.warning(request, 'No items found for this order.')
-            except OrderDetails.DoesNotExist:
-                messages.error(request, 'Order not found or does not belong to you.')
-        else:
-            messages.error(request, 'Please enter an order ID.')
-
-    # Get all user orders for display
-    user_orders = OrderDetails.objects.filter(user=user).order_by('-created_at')
-
-    context = {
-        'order': order,
-        'order_items': order_items,
-        'user_orders': user_orders,
-        'user': user
-    }
-
-    return render(request, 'track_order.html', context)
-
-
-def my_orders(request):
-    """View all orders for logged-in user"""
-    if 'userid' not in request.session:
-        messages.info(request, 'Please log in to view your orders.')
-        return redirect('login')
-
-    user = get_object_or_404(UserDetails, userid=request.session['userid'])
-    orders = OrderDetails.objects.filter(user=user).order_by('-created_at')
-
-    # Get items for each order
-    orders_with_items = []
-    for order in orders:
-        items = MyOrders.objects.filter(order=order)
-        orders_with_items.append({
-            'order': order,
-            'items': items
-        })
-
-    context = {
-        'orders_with_items': orders_with_items,
-        'user': user
-    }
-
-    return render(request, 'my_orders.html', context)
+    return render(request, 'admin/editshoes.html', {'shoe': shoe, 'category': category})
 
 
 def delete_shoes(request, category, shoe_id):
     if category == 'casual':
-        shoe = get_object_or_404(Shoes, shoe_id=shoe_id)
+        get_object_or_404(Shoes, shoe_id=shoe_id).delete()
     else:
-        shoe = get_object_or_404(Boots, boot_id=shoe_id)
-
-    if request.method == "POST" or request.method == "GET":
-        shoe.delete()
-        messages.success(request, f"{category.title()} Shoe deleted successfully.")
+        get_object_or_404(Boots, boot_id=shoe_id).delete()
+    messages.success(request, "Deleted successfully.")
     return redirect('adminshoes')
 
 
-def indexed(request):
-    return render(request, 'index.html')
+def adminshoes(request):
+    if 'admin' not in request.session: return redirect('login')
+    search = request.GET.get('search', '').strip()
+    casual = Shoes.objects.all().order_by('-shoe_id')
+    sports = Boots.objects.all().order_by('-boot_id')
+    if search:
+        casual = casual.filter(Q(name__icontains=search) | Q(category__icontains=search))
+        sports = sports.filter(Q(name__icontains=search) | Q(category__icontains=search))
+    return render(request, 'admin/adminshoes.html',
+                  {'casualshoes': casual, 'sportsshoes': sports, 'search_query': search})
 
 
-def collection(request):
-    latest_shoes = Shoes.objects.all().order_by('-shoe_id')[:2]
-    return render(request, 'collection.html', {'shoes': latest_shoes})
+def adminhome(request):
+    if 'admin' not in request.session: return redirect('login')
+    context = {
+        'total_orders': OrderDetails.objects.count(),
+        'total_products': Shoes.objects.count() + Boots.objects.count(),
+        'total_users': UserDetails.objects.count(),
+        'pending_orders': OrderDetails.objects.filter(status='pending').count(),
+    }
+    return render(request, 'admin/adminhome.html', context)
+
+
+def userdetails(request):
+    return render(request, 'admin/userdetails.html', {'users': UserDetails.objects.all()})
+
+
+def orderdetails(request, order_id):
+    order = get_object_or_404(OrderDetails, pk=order_id)
+    items = MyOrders.objects.filter(order=order)
+    if request.method == 'POST':
+        order.status = request.POST.get('status')
+        order.status_note = request.POST.get('note')
+        order.save()
+        messages.success(request, 'Status updated.')
+        return redirect('admin_order_detail', order_id=order_id)
+    return render(request, 'admin/order_detail.html', {'order': order, 'items': items})
+
+
+def admin_manage_orders(request):
+    if 'admin' not in request.session: return redirect('login')
+    orders = OrderDetails.objects.all().order_by('-created_at')
+    status = request.GET.get('status')
+    if status: orders = orders.filter(status=status)
+    paginator = Paginator(orders, 20)
+    return render(request, 'admin/manage_orders.html', {'page_obj': paginator.get_page(request.GET.get('page'))})
+
+
+# --- Public Views ---
+
+def indexed(request): return render(request, 'index.html')
+
+
+def collection(request): return render(request, 'collection.html',
+                                       {'shoes': Shoes.objects.all().order_by('-shoe_id')[:2]})
+
+
+def contact(request): return render(request, 'contact.html', {'store': ContactUs.objects.first()})
+
+
+def sports(request): return render(request, 'racing boots.html',
+                                   {'boots': Boots.objects.all().order_by('-boot_id')[:6]})
+
+
+def all_boots(request): return render(request, 'all_boots.html', {'boots': Boots.objects.all().order_by('-boot_id')})
+
+
+def shoes(request): return render(request, 'shoes.html',
+                                  {'shoes': Shoes.objects.all().order_by('-shoe_id')[:6], 'product_type': 'shoes'})
+
+
+def all_shoes(request): return render(request, 'all_shoes.html', {'shoes': Shoes.objects.all().order_by('-shoe_id')})
+
+
+def profile(request): return render(request, 'profile.html')
+
+
+def myorder(request): return render(request, 'myorder.html')
 
 
 def search(request):
     query = request.GET.get('query', '')
-    shoes_results = Shoes.objects.filter(name__icontains=query)
-    boots_results = Boots.objects.filter(name__icontains=query)
     return render(request, 'search.html', {
         'query': query,
-        'shoes_results': shoes_results,
-        'boots_results': boots_results,
+        'shoes_results': Shoes.objects.filter(name__icontains=query),
+        'boots_results': Boots.objects.filter(name__icontains=query)
     })
 
 
-def contact(request):
-    store_details = ContactUs.objects.first()
-    return render(request, 'contact.html', {'store': store_details})
-
-
-def sports(request):
-    boots = Boots.objects.all().order_by('-boot_id')[:6]
-    return render(request, 'racing boots.html', {'boots': boots})
-
-
-def all_boots(request):
-    boots = Boots.objects.all().order_by('-boot_id')
-    return render(request, 'all_boots.html', {'boots': boots})
-
-
-def shoes(request):
-    shoes = Shoes.objects.all().order_by('-shoe_id')[:6]
-    return render(request, 'shoes.html', {
-        'shoes': shoes,
-        'product_type': 'shoes'
-    })
-
-
-def all_shoes(request):
-    shoes = Shoes.objects.all().order_by('-shoe_id')
-    return render(request, 'all_shoes.html', {'shoes': shoes})
-
-
-def profile(request):
-    return render(request, 'profile.html')
-
-
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-import logging
-
-# Add logging to help debug
-logger = logging.getLogger(__name__)
-
+# --- Cart & Wishlist Logic ---
 
 @csrf_exempt
-@require_POST  # Ensure only POST requests
-def add_to_cart(request, product_type, product_id):
+@require_POST
+def add_to_cart_v2(request, product_type, product_id):
+    """Unified add to cart logic"""
     try:
-        # Log the request for debugging
-        logger.info(f"Add to cart request: product_type={product_type}, product_id={product_id}")
-        logger.info(f"POST data: {request.POST}")
-        logger.info(f"User session: {request.session.get('userid', 'No user')}")
-
-        # Get and validate inputs
-        try:
-            quantity = int(request.POST.get('quantity', 1))
-            if quantity <= 0:
-                return JsonResponse({'error': 'Quantity must be greater than 0'}, status=400)
-        except (ValueError, TypeError):
-            return JsonResponse({'error': 'Invalid quantity value'}, status=400)
-
+        quantity = int(request.POST.get('quantity', 1))
         size = request.POST.get('size', '').strip()
-        if not size:
-            return JsonResponse({'error': 'Please select a size'}, status=400)
+        if not size: return JsonResponse({'error': 'Please select a size'}, status=400)
 
-        # Determine product model and get product
-        product = None
-        model_class = None
-
-        if product_type == 'shoes':
-            try:
-                product = Shoes.objects.get(shoe_id=product_id)
-                model_class = 'shoe'  # This must match your Cart model choices
-            except Shoes.DoesNotExist:
-                return JsonResponse({'error': 'Product not found'}, status=404)
-
-        elif product_type == 'boots':
-            try:
-                product = Boots.objects.get(boot_id=product_id)
-                model_class = 'boot'  # This must match your Cart model choices
-            except Boots.DoesNotExist:
-                return JsonResponse({'error': 'Product not found'}, status=404)
+        # Get Product
+        if product_type in ['shoe', 'shoes']:
+            product = Shoes.objects.get(shoe_id=product_id)
+            model_class = 'shoe'
+        elif product_type in ['boot', 'boots']:
+            product = Boots.objects.get(boot_id=product_id)
+            model_class = 'boot'
         else:
             return JsonResponse({'error': 'Invalid product type'}, status=400)
 
-        # Check stock availability
         if product.quantity < quantity:
-            return JsonResponse({
-                'error': f'Insufficient stock. Only {product.quantity} items available'
-            }, status=400)
+            return JsonResponse({'error': 'Insufficient stock'}, status=400)
 
-        # Handle logged-in users
-        if 'userid' in request.session:
-            try:
-                user = UserDetails.objects.get(userid=request.session['userid'])
-                logger.info(f"Found user: {user.name}")
-
-                # Check for existing cart item
-                existing_cart_item = Cart.objects.filter(
-                    user_details=user,
-                    itemid=str(product_id),
-                    size=size,
-                    product_type=model_class
-                ).first()
-
-                if existing_cart_item:
-                    # Update existing item
-                    new_total_quantity = existing_cart_item.quantity + quantity
-                    if new_total_quantity > product.quantity:
-                        return JsonResponse({
-                            'error': f'Total quantity would exceed available stock ({product.quantity})'
-                        }, status=400)
-
-                    existing_cart_item.quantity = new_total_quantity
-                    existing_cart_item.save()
-                    logger.info(f"Updated existing cart item: {existing_cart_item.id}")
-                else:
-                    # Create new cart item
-                    cart_item = Cart.objects.create(
-                        user_details=user,
-                        itemid=str(product_id),
-                        price=product.price,
-                        quantity=quantity,
-                        size=size,
-                        image=product.image,
-                        product_type=model_class
-                    )
-                    logger.info(f"Created new cart item: {cart_item.id}")
-
-            except UserDetails.DoesNotExist:
-                logger.error(f"User not found with userid: {request.session['userid']}")
-                return JsonResponse({'error': 'User session expired'}, status=401)
-
-        # Handle guest users
-        else:
-            logger.info("Processing guest user cart")
-            guest_cart = request.session.get('guest_cart', [])
-
-            # Find existing item
-            item_found = False
-            for item in guest_cart:
-                if (str(item.get('itemid')) == str(product_id) and
-                        item.get('product_type') == model_class and
-                        item.get('size') == size):
-
-                    new_total_quantity = item['quantity'] + quantity
-                    if new_total_quantity > product.quantity:
-                        return JsonResponse({
-                            'error': f'Total quantity would exceed available stock ({product.quantity})'
-                        }, status=400)
-
-                    item['quantity'] = new_total_quantity
-                    item_found = True
-                    logger.info(f"Updated guest cart item: {product_id}")
-                    break
-
-            if not item_found:
-                # Add new item to guest cart
-                new_item = {
-                    'itemid': str(product_id),
-                    'price': float(product.price),
-                    'quantity': quantity,
-                    'size': size,
-                    'image_url': product.image.url if product.image else '',
-                    'product_type': model_class,
-                    'name': product.name
-                }
-                guest_cart.append(new_item)
-                logger.info(f"Added new guest cart item: {product_id}")
-
-            # Save updated cart to session
-            request.session['guest_cart'] = guest_cart
-            request.session.modified = True
-
-        return JsonResponse({
-            'success': True,
-            'message': 'Item added to cart successfully',
-            'product_name': product.name,
-            'quantity_added': quantity
-        })
-
-    except Exception as e:
-        logger.error(f"Unexpected error in add_to_cart: {str(e)}", exc_info=True)
-        return JsonResponse({
-            'error': f'An unexpected error occurred: {str(e)}'
-        }, status=500)
-
-
-def get_cart_count(request):
-    count = 0
-    if 'userid' in request.session:
-        user = UserDetails.objects.get(userid=request.session['userid'])
-        count = Cart.objects.filter(user_details=user).count()
-    else:
-        guest_cart = request.session.get('guest_cart', [])
-        count = len(guest_cart)
-
-    return JsonResponse({'count': count})
-
-
-# Alternative version with better error handling
-def add_to_cart_v2(request, product_type, product_id):
-    """Improved version with detailed error logging"""
-
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Only POST method allowed'}, status=405)
-
-    # Validate inputs step by step
-    errors = []
-
-    # Validate quantity
-    quantity_str = request.POST.get('quantity', '1')
-    try:
-        quantity = int(quantity_str)
-        if quantity <= 0:
-            errors.append('Quantity must be greater than 0')
-    except (ValueError, TypeError):
-        errors.append(f'Invalid quantity: {quantity_str}')
-        quantity = 1  # fallback
-
-    # Validate size
-    size = request.POST.get('size', '').strip()
-    if not size:
-        errors.append('Size is required')
-
-    # Validate product type and get product
-    product = None
-    model_class = None
-
-    if product_type not in ['shoes', 'boots']:
-        errors.append(f'Invalid product type: {product_type}')
-    else:
-        try:
-            if product_type == 'shoes':
-                product = Shoes.objects.get(shoe_id=product_id)
-                model_class = 'shoe'
-            else:  # boots
-                product = Boots.objects.get(boot_id=product_id)
-                model_class = 'boot'
-        except (Shoes.DoesNotExist, Boots.DoesNotExist):
-            errors.append(f'Product not found: {product_type} with ID {product_id}')
-
-    # Return validation errors if any
-    if errors:
-        return JsonResponse({
-            'error': 'Validation failed',
-            'details': errors
-        }, status=400)
-
-    # Check stock
-    if product.quantity < quantity:
-        return JsonResponse({
-            'error': f'Insufficient stock. Available: {product.quantity}, Requested: {quantity}'
-        }, status=400)
-
-    try:
-        # Process cart addition
+        # Logged in User
         if 'userid' in request.session:
             user = UserDetails.objects.get(userid=request.session['userid'])
-
-            existing_item = Cart.objects.filter(
+            cart_item, created = Cart.objects.get_or_create(
                 user_details=user,
                 itemid=str(product_id),
                 size=size,
-                product_type=model_class
-            ).first()
+                product_type=model_class,
+                defaults={'price': product.price, 'quantity': 0, 'image': product.image}
+            )
+            if cart_item.quantity + quantity > product.quantity:
+                return JsonResponse({'error': 'Exceeds stock limits'}, status=400)
 
-            if existing_item:
-                if existing_item.quantity + quantity > product.quantity:
-                    return JsonResponse({
-                        'error': f'Would exceed stock limit. Current in cart: {existing_item.quantity}, Stock: {product.quantity}'
-                    }, status=400)
-                existing_item.quantity += quantity
-                existing_item.save()
-                action = 'updated'
-            else:
-                Cart.objects.create(
-                    user_details=user,
-                    itemid=str(product_id),
-                    price=product.price,
-                    quantity=quantity,
-                    size=size,
-                    image=product.image,
-                    product_type=model_class
-                )
-                action = 'added'
+            cart_item.quantity += quantity
+            cart_item.save()
+            return JsonResponse({'success': True, 'message': 'Added to cart'})
 
-        else:  # Guest user
+        # Guest User
+        else:
             guest_cart = request.session.get('guest_cart', [])
-
-            existing_item = None
             for item in guest_cart:
                 if (str(item.get('itemid')) == str(product_id) and
                         item.get('product_type') == model_class and
                         item.get('size') == size):
-                    existing_item = item
-                    break
+                    if item['quantity'] + quantity > product.quantity:
+                        return JsonResponse({'error': 'Exceeds stock limits'}, status=400)
+                    item['quantity'] += quantity
+                    request.session['guest_cart'] = guest_cart
+                    return JsonResponse({'success': True, 'message': 'Cart updated'})
 
-            if existing_item:
-                if existing_item['quantity'] + quantity > product.quantity:
-                    return JsonResponse({
-                        'error': f'Would exceed stock limit. Current in cart: {existing_item["quantity"]}, Stock: {product.quantity}'
-                    }, status=400)
-                existing_item['quantity'] += quantity
-                action = 'updated'
-            else:
-                guest_cart.append({
-                    'itemid': str(product_id),
-                    'price': float(product.price),
-                    'quantity': quantity,
-                    'size': size,
-                    'image_url': product.image.url if product.image else '',
-                    'product_type': model_class,
-                    'name': product.name
-                })
-                action = 'added'
-
-            request.session['guest_cart'] = guest_cart
-            request.session.modified = True
-
-        return JsonResponse({
-            'success': True,
-            'message': f'Item {action} successfully',
-            'product_name': product.name,
-            'action': action,
-            'quantity': quantity
-        })
-
-    except Exception as e:
-        return JsonResponse({
-            'error': f'Database error: {str(e)}'
-        }, status=500)
-
-
-def add_to_wishlist(request, product_type, product_id):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-    try:
-        # Normalize product_type
-        if product_type in ['shoe', 'shoes']:
-            product = get_object_or_404(Shoes, shoe_id=product_id)
-            normalized_type = 'shoe'
-        elif product_type in ['boot', 'boots']:
-            product = get_object_or_404(Boots, boot_id=product_id)
-            normalized_type = 'boot'
-        else:
-            return JsonResponse({'error': 'Invalid product type'}, status=400)
-
-        # Composite key
-        composite_itemid = f"{normalized_type}_{product_id}"
-
-        if 'userid' in request.session:
-            user = get_object_or_404(UserDetails, userid=request.session['userid'])
-            existing = Wishlist.objects.filter(itemid=composite_itemid, user_details=user).first()
-
-            if existing:
-                return JsonResponse({'success': True, 'message': 'Item already in wishlist', 'action': 'exists'})
-            else:
-                Wishlist.objects.create(
-                    user_details=user, itemid=composite_itemid,
-                    price=product.price, size=product.size, image=product.image
-                )
-                return JsonResponse({'success': True, 'message': 'Item added to wishlist', 'action': 'added'})
-        else:
-            guest_wishlist = request.session.get('guest_wishlist', [])
-            if any(item['itemid'] == composite_itemid for item in guest_wishlist):
-                return JsonResponse({'success': True, 'message': 'Item already in wishlist', 'action': 'exists'})
-
-            guest_wishlist.append({
-                'itemid': composite_itemid, 'price': float(product.price),
-                'size': product.size, 'image_url': product.image.url,
-                'product_type': normalized_type, 'name': product.name
+            guest_cart.append({
+                'itemid': str(product_id),
+                'price': float(product.price),
+                'quantity': quantity,
+                'size': size,
+                'image_url': product.image.url if product.image else '',
+                'product_type': model_class,
+                'name': product.name
             })
-            request.session['guest_wishlist'] = guest_wishlist
-            request.session.modified = True
-            return JsonResponse({'success': True, 'message': 'Item added to wishlist', 'action': 'added'})
+            request.session['guest_cart'] = guest_cart
+            return JsonResponse({'success': True, 'message': 'Added to cart'})
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-def cart(request):
-    """
-    Cart view with integrated wishlist tab support
-    Displays both cart items and wishlist items for tabbed interface
-    """
-    cart_items_display = []
-    wishlist_items_display = []
-    total_price = 0
 
-    # ==================== CART ITEMS ====================
-    # Logged-in user cart
-    if 'userid' in request.session:
+@csrf_exempt
+@require_POST
+def add_to_cart_from_wishlist(request, product_type, product_id):
+    """Moves item from wishlist to cart"""
+    # 1. Reuse existing add_to_cart logic
+    response = add_to_cart_v2(request, product_type, product_id)
+    response_data = json.loads(response.content)
+
+    # 2. If successful, remove from wishlist
+    if response.status_code == 200 and response_data.get('success'):
         try:
-            user = UserDetails.objects.get(userid=request.session['userid'])
-            cart_data_queryset = Cart.objects.filter(user_details=user).select_related('user_details')
+            # We need to find which wishlist item to remove
+            # Since wishlist items might be guests or users, we use the remove logic
+            # However, remove logic needs a specific ID (PK or string ID)
+            # The frontend calls this via form, so we check if there's a specific wishlist_id passed
+            # If not, we try to find it by product info
 
-            if not cart_data_queryset.exists():
-                print("No cart items found for user")
+            if 'userid' in request.session:
+                user = UserDetails.objects.get(userid=request.session['userid'])
+                # Construct composite ID that was likely used in wishlist
+                norm_type = 'shoe' if product_type in ['shoe', 'shoes'] else 'boot'
+                composite_id = f"{norm_type}_{product_id}"
+                Wishlist.objects.filter(user_details=user, itemid=composite_id).delete()
+            else:
+                # Guest remove
+                norm_type = 'shoe' if product_type in ['shoe', 'shoes'] else 'boot'
+                composite_id = f"{norm_type}_{product_id}"
+                guest_wishlist = request.session.get('guest_wishlist', [])
+                # Remove item that matches
+                request.session['guest_wishlist'] = [i for i in guest_wishlist if i.get('itemid') != composite_id]
+                request.session.modified = True
 
-            cart_items_list = list(cart_data_queryset)
-
-            for cart_item in cart_items_list:
-                product = None
-                try:
-                    product_type = getattr(cart_item, 'product_type', None)
-
-                    if not product_type:
-                        print(f"Warning: Cart item {cart_item.id} has no product_type")
-                        continue
-
-                    if product_type == 'shoe':
-                        try:
-                            product = Shoes.objects.get(shoe_id=cart_item.itemid)
-                        except Shoes.DoesNotExist:
-                            print(f"Shoe with ID {cart_item.itemid} not found")
-                            continue
-                    elif product_type == 'boot':
-                        try:
-                            product = Boots.objects.get(boot_id=cart_item.itemid)
-                        except Boots.DoesNotExist:
-                            print(f"Boot with ID {cart_item.itemid} not found")
-                            continue
-                    else:
-                        print(f"Unknown product_type: {product_type}")
-                        continue
-
-                except Exception as e:
-                    print(f"Error processing cart item {cart_item.id}: {e}")
-                    continue
-
-                if product:
-                    try:
-                        subtotal = cart_item.price * cart_item.quantity
-                        total_price += subtotal
-                        cart_items_display.append({
-                            'id': cart_item.pk,
-                            'product_obj': product,
-                            'name': product.name,
-                            'image_url': product.image.url if product.image else '',
-                            'price': product.price,
-                            'quantity': cart_item.quantity,
-                            'size': cart_item.size,
-                            'subtotal': subtotal,
-                            'product_type': product_type,
-                            'product_id': cart_item.itemid
-                        })
-                    except Exception as e:
-                        print(f"Error calculating subtotal for item {cart_item.id}: {e}")
-                        continue
-
-            # ==================== WISHLIST ITEMS (for logged-in user) ====================
-            try:
-                wishlist_data_queryset = Wishlist.objects.filter(user_details=user)
-
-                for wishlist_item in wishlist_data_queryset:
-                    product = None
-                    product_type = None
-                    product_id = None
-
-                    # Parse composite itemid using helper function
-                    product_type, product_id, product = parse_wishlist_itemid(wishlist_item.itemid)
-
-                    if not product:
-                        continue
-
-                    if product:
-                        wishlist_items_display.append({
-                            'id': wishlist_item.pk,
-                            'product_obj': product,
-                            'name': product.name,
-                            'image_url': product.image.url if product.image else '',
-                            'price': product.price,
-                            'category': product.category,
-                            'product_type': product_type,
-                            'product_id': product_id
-                        })
-
-            except Exception as e:
-                print(f"Error loading wishlist in cart view: {e}")
-
-        except UserDetails.DoesNotExist:
-            messages.error(request, "Session expired. Please log in again.")
-            request.session.flush()
-            return redirect('login')
         except Exception as e:
-            print(f"Unexpected error in cart view: {e}")
-            traceback.print_exc()
-            messages.error(request, "An error occurred while loading your cart.")
-            return redirect('indexed')
+            print(f"Error removing from wishlist after move: {e}")
 
-    # ==================== GUEST USER CART ====================
-    else:
-        session_cart = request.session.get('guest_cart', [])
-        for item_dict in session_cart:
-            item_id = item_dict.get('itemid')
-            product = None
-            product_type = item_dict.get('product_type')
+    return response
 
-            try:
-                if product_type == 'shoe':
-                    product = Shoes.objects.get(shoe_id=item_id)
-                elif product_type == 'boot':
-                    product = Boots.objects.get(boot_id=item_id)
-            except (Shoes.DoesNotExist, Boots.DoesNotExist):
-                continue
 
-            if product:
-                item_price = item_dict.get('price', 0)
-                item_quantity = item_dict.get('quantity', 0)
-                subtotal = item_price * item_quantity
-                total_price += subtotal
-                cart_items_display.append({
-                    'id': item_id,
-                    'product_obj': product,
-                    'name': item_dict.get('name'),
-                    'image_url': item_dict.get('image_url'),
-                    'price': item_price,
-                    'quantity': item_quantity,
-                    'size': item_dict.get('size', 'N/A'),
-                    'subtotal': subtotal,
-                    'product_type': product_type,
-                    'product_id': item_id
-                })
+@csrf_exempt
+def remove_from_wishlist(request, wishlist_id):
+    """Handles removing from wishlist for both DB PK (int) and Guest ID (str)"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid method'}, status=400)
 
-        if not cart_items_display and 'guest_cart' in request.session:
-            del request.session['guest_cart']
+    try:
+        # Logged in User - wishlist_id is likely an integer PK
+        if 'userid' in request.session:
+            user = get_object_or_404(UserDetails, userid=request.session['userid'])
+            # Since URL might pass a string like 'shoe_1' if the template logic was mixed up,
+            # try to see if it's digit
+            if str(wishlist_id).isdigit():
+                Wishlist.objects.filter(pk=wishlist_id, user_details=user).delete()
+            else:
+                # If it's a string like 'shoe_1', delete by itemid
+                Wishlist.objects.filter(itemid=str(wishlist_id), user_details=user).delete()
+
+            return JsonResponse({'success': True, 'message': 'Removed from wishlist'})
+
+        # Guest User - wishlist_id is 'shoe_1' etc.
+        else:
+            guest_wishlist = request.session.get('guest_wishlist', [])
+            # Filter out the item
+            new_list = [item for item in guest_wishlist if item.get('itemid') != str(wishlist_id)]
+            request.session['guest_wishlist'] = new_list
             request.session.modified = True
+            return JsonResponse({'success': True, 'message': 'Removed from wishlist'})
 
-        # ==================== GUEST USER WISHLIST ====================
-        session_wishlist = request.session.get('guest_wishlist', [])
-        for item_dict in session_wishlist:
-            item_id = item_dict.get('itemid')
-            product = None
-            product_type = item_dict.get('product_type')
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
+
+def add_to_wishlist(request, product_type, product_id):
+    if request.method != 'POST': return JsonResponse({'error': 'POST required'}, status=400)
+    try:
+        if product_type in ['shoe', 'shoes']:
+            product = get_object_or_404(Shoes, shoe_id=product_id)
+            norm_type = 'shoe'
+        else:
+            product = get_object_or_404(Boots, boot_id=product_id)
+            norm_type = 'boot'
+
+        composite_id = f"{norm_type}_{product_id}"
+
+        if 'userid' in request.session:
+            user = UserDetails.objects.get(userid=request.session['userid'])
+            if not Wishlist.objects.filter(user_details=user, itemid=composite_id).exists():
+                Wishlist.objects.create(user_details=user, itemid=composite_id, price=product.price, size=product.size,
+                                        image=product.image)
+        else:
+            guest_list = request.session.get('guest_wishlist', [])
+            if not any(i['itemid'] == composite_id for i in guest_list):
+                guest_list.append({
+                    'itemid': composite_id, 'price': float(product.price),
+                    'size': product.size, 'image_url': product.image.url,
+                    'product_type': norm_type, 'name': product.name
+                })
+                request.session['guest_wishlist'] = guest_list
+        return JsonResponse({'success': True, 'message': 'Added to wishlist'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+def cart(request):
+    """Cart view with Wishlist"""
+    cart_items, wishlist_items = [], []
+    total = 0
+
+    if 'userid' in request.session:
+        user = UserDetails.objects.get(userid=request.session['userid'])
+        # Load Cart
+        for c in Cart.objects.filter(user_details=user):
             try:
-                if product_type == 'shoes':
-                    product = Shoes.objects.get(shoe_id=item_id)
-                elif product_type == 'boots':
-                    product = Boots.objects.get(boot_id=item_id)
-            except (Shoes.DoesNotExist, Boots.DoesNotExist):
+                prod = Shoes.objects.get(shoe_id=c.itemid) if c.product_type == 'shoe' else Boots.objects.get(
+                    boot_id=c.itemid)
+                sub = c.price * c.quantity
+                total += sub
+                cart_items.append({
+                    'id': c.pk, 'name': prod.name, 'image_url': prod.image.url,
+                    'price': prod.price, 'quantity': c.quantity, 'size': c.size,
+                    'subtotal': sub, 'product_type': c.product_type, 'product_id': c.itemid
+                })
+            except:
                 continue
 
-            if product:
-                wishlist_items_display.append({
-                    'id': item_id,
-                    'product_obj': product,
-                    'name': item_dict.get('name'),
-                    'image_url': item_dict.get('image_url'),
-                    'price': item_dict.get('price', 0),
-                    'category': getattr(product, 'category', 'N/A'),
-                    'product_type': product_type,
-                    'product_id': item_id
+        # Load Wishlist
+        for w in Wishlist.objects.filter(user_details=user):
+            ptype, pid, prod = parse_wishlist_itemid(w.itemid)
+            if prod:
+                wishlist_items.append({
+                    'id': w.pk, 'name': prod.name, 'image_url': prod.image.url,
+                    'price': prod.price, 'category': prod.category,
+                    'product_type': ptype, 'product_id': pid
                 })
+    else:
+        # Guest Cart
+        guest_cart = request.session.get('guest_cart', [])
+        for i in guest_cart:
+            sub = i['price'] * i['quantity']
+            total += sub
+            cart_items.append({
+                'id': i['itemid'], 'name': i['name'], 'image_url': i['image_url'],
+                'price': i['price'], 'quantity': i['quantity'], 'size': i['size'],
+                'subtotal': sub, 'product_type': i['product_type'], 'product_id': i['itemid']
+            })
 
-    context = {
-        'cart_items': cart_items_display,
-        'total_amount': total_price,  # Changed from total_price to match template
-        'wishlist_items': wishlist_items_display,  # Added for tabbed interface
-    }
-    return render(request, 'cart.html', context)
+        # Guest Wishlist
+        guest_wish = request.session.get('guest_wishlist', [])
+        for i in guest_wish:
+            wishlist_items.append({
+                'id': i['itemid'], 'name': i['name'], 'image_url': i['image_url'],
+                'price': i['price'], 'category': 'General',
+                'product_type': i['product_type'], 'product_id': i['itemid'].split('_')[1]
+            })
 
+    return render(request, 'cart.html',
+                  {'cart_items': cart_items, 'total_amount': total, 'wishlist_items': wishlist_items})
 
 
 def wishlist(request):
-    """
-    Standalone wishlist page view
-    Provides dedicated wishlist access at /wishlist/ URL
-    """
-    wishlist_items_display = []
-
-    # Logged-in user wishlist
+    """Standalone wishlist view"""
+    items = []
     if 'userid' in request.session:
-        try:
-            user = get_object_or_404(UserDetails, userid=request.session['userid'])
-            wishlist_data_queryset = Wishlist.objects.filter(user_details=user)
-
-            for wishlist_item in wishlist_data_queryset:
-                product_type, product_id, product = parse_wishlist_itemid(wishlist_item.itemid)
-
-                # Skip if parsing failed or product not found
-                if product is None:
-                    print(f"Skipping invalid wishlist item: {wishlist_item.itemid}")
-                    continue
-
-                # Add to display list
-                wishlist_items_display.append({
-                    'id': wishlist_item.pk,
-                    'product_obj': product,
-                    'name': product.name,
-                    'image_url': product.image.url if product.image else '',
-                    'price': product.price,
-                    'category': getattr(product, 'category', 'N/A'),
-                    'product_type': product_type,
-                    'product_id': product_id
+        user = UserDetails.objects.get(userid=request.session['userid'])
+        for w in Wishlist.objects.filter(user_details=user):
+            ptype, pid, prod = parse_wishlist_itemid(w.itemid)
+            if prod:
+                items.append({
+                    'id': w.pk, 'name': prod.name, 'image_url': prod.image.url,
+                    'price': prod.price, 'category': prod.category,
+                    'product_type': ptype, 'product_id': pid
                 })
-
-        except Exception as e:
-            messages.error(request, f"Error loading wishlist: {e}")
-            traceback.print_exc()
-
-    # Guest user wishlist
     else:
-        session_wishlist = request.session.get('guest_wishlist', [])
+        for i in request.session.get('guest_wishlist', []):
+            # Parse the itemid to extract numeric ID
+            item_id_str = str(i['itemid'])
+            if '_' in item_id_str:
+                numeric_id = int(item_id_str.split('_')[1])
+            else:
+                numeric_id = int(item_id_str)
 
-        for item_dict in session_wishlist:
-            item_id = item_dict.get('itemid')
-            product = None
-            product_type = item_dict.get('product_type')
-
-            try:
-                numeric_id = int(item_id) if isinstance(item_id, str) and item_id.isdigit() else item_id
-
-                if product_type == 'shoes':
-                    product = Shoes.objects.get(shoe_id=numeric_id)
-                elif product_type == 'boots':
-                    product = Boots.objects.get(boot_id=numeric_id)
-            except (Shoes.DoesNotExist, Boots.DoesNotExist):
-                print(f"Guest wishlist: Product not found - {product_type}:{item_id}")
-                continue
-            except (ValueError, TypeError):
-                print(f"Guest wishlist: Invalid item_id format - {item_id}")
-                continue
-
-            if product:
-                wishlist_items_display.append({
-                    'id': item_id,
-                    'product_obj': product,
-                    'name': item_dict.get('name'),
-                    'image_url': item_dict.get('image_url'),
-                    'price': item_dict.get('price', 0),
-                    'category': getattr(product, 'category', 'N/A'),
-                    'product_type': product_type,
-                    'product_id': item_id
-                })
-
-    context = {
-        'wishlist_items': wishlist_items_display,
-    }
-    return render(request, 'wishlist.html', context)
+            items.append({
+                'id': i['itemid'],  # Keep full ID for removal
+                'name': i['name'],
+                'imageurl': i['imageurl'],
+                'price': i['price'],
+                'category': 'General',
+                'producttype': i['producttype'],
+                'productid': numeric_id  # Use JUST the number
+            })
+    return render(request, 'wishlist.html', {'wishlist_items': items})
 
 
 def update_cart_quantity(request, cart_id):
-    if request.method == 'POST':
-        try:
-            new_quantity = int(request.POST.get('quantity', 1))
+    if request.method != 'POST': return JsonResponse({'error': 'POST required'}, status=400)
+    qty = int(request.POST.get('quantity', 1))
 
-            # For logged-in users
-            if 'userid' in request.session:
-                user = get_object_or_404(UserDetails, userid=request.session['userid'])
-                cart_item = get_object_or_404(Cart, pk=cart_id, user_details=user)
+    if 'userid' in request.session:
+        cart_item = get_object_or_404(Cart, pk=cart_id, user_details__userid=request.session['userid'])
+        if qty > 0:
+            cart_item.quantity = qty
+            cart_item.save()
+        else:
+            cart_item.delete()
 
-                if new_quantity > 0:
-                    cart_item.quantity = new_quantity
-                    cart_item.save()
-
-                    # ✅ CALCULATE CART TOTAL
-                    cart_total = 0
-                    all_cart_items = Cart.objects.filter(user_details=user)
-                    for item in all_cart_items:
-                        cart_total += item.price * item.quantity
-
-                    # ✅ RETURN PRICE AND CART_TOTAL
-                    return JsonResponse({
-                        'success': True,
-                        'message': 'Cart updated successfully',
-                        'price': float(cart_item.price),
-                        'cart_total': float(cart_total)
-                    })
+        # Recalculate total
+        total = sum(i.price * i.quantity for i in Cart.objects.filter(user_details__userid=request.session['userid']))
+        return JsonResponse({'success': True, 'cart_total': float(total), 'price': float(cart_item.price)})
+    else:
+        cart = request.session.get('guest_cart', [])
+        total = 0
+        item_price = 0
+        for i, item in enumerate(cart):
+            if str(item['itemid']) == str(cart_id):
+                item_price = item['price']
+                if qty > 0:
+                    cart[i]['quantity'] = qty
                 else:
-                    cart_item.delete()
+                    del cart[i]
+                break
 
-                    # Calculate cart total after deletion
-                    cart_total = 0
-                    all_cart_items = Cart.objects.filter(user_details=user)
-                    for item in all_cart_items:
-                        cart_total += item.price * item.quantity
-
-                    return JsonResponse({
-                        'success': True,
-                        'message': 'Item removed from cart',
-                        'cart_total': float(cart_total)
-                    })
-
-            # For guest users
-            else:
-                guest_cart = request.session.get('guest_cart', [])
-                cart_total = 0
-                item_price = 0
-
-                for i, item in enumerate(guest_cart):
-                    if item.get('itemid') == str(cart_id):
-                        item_price = float(item.get('price', 0))
-                        if new_quantity > 0:
-                            guest_cart[i]['quantity'] = new_quantity
-                        else:
-                            del guest_cart[i]
-                        break
-
-                # Calculate new total
-                for item in guest_cart:
-                    cart_total += float(item.get('price', 0)) * int(item.get('quantity', 0))
-
-                request.session['guest_cart'] = guest_cart
-                request.session.modified = True
-
-                # ✅ RETURN PRICE AND CART_TOTAL
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Cart updated successfully',
-                    'price': item_price,
-                    'cart_total': cart_total
-                })
-
-        except ValueError:
-            return JsonResponse({'error': 'Invalid quantity'}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+        total = sum(i['price'] * i['quantity'] for i in cart)
+        request.session['guest_cart'] = cart
+        return JsonResponse({'success': True, 'cart_total': total, 'price': item_price})
 
 
 def remove_from_cart(request, cart_id):
-    if request.method == 'POST':
-        try:
-            # For logged-in users
-            if 'userid' in request.session:
-                user = get_object_or_404(UserDetails, userid=request.session['userid'])
-                cart_item = get_object_or_404(Cart, pk=cart_id, user_details=user)
-                cart_item.delete()
-                return JsonResponse({'success': True, 'message': 'Item removed from cart'})
-
-            # For guest users
-            else:
-                guest_cart = request.session.get('guest_cart', [])
-                for i, item in enumerate(guest_cart):
-                    # For guest user, the 'cart_id' is the 'itemid'
-                    if item['itemid'] == str(cart_id):
-                        del guest_cart[i]
-                        break
-
-                request.session['guest_cart'] = guest_cart
-                request.session.modified = True
-                return JsonResponse({'success': True, 'message': 'Item removed from cart'})
-
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+    if request.method != 'POST': return JsonResponse({'error': 'POST required'}, status=400)
+    if 'userid' in request.session:
+        Cart.objects.filter(pk=cart_id, user_details__userid=request.session['userid']).delete()
+    else:
+        cart = request.session.get('guest_cart', [])
+        request.session['guest_cart'] = [i for i in cart if str(i['itemid']) != str(cart_id)]
+    return JsonResponse({'success': True})
 
 
 def checkout_page(request):
-    # Check if user is authenticated - redirect to login if not
-    if 'userid' not in request.session:
-        messages.info(request, "Please log in to checkout.")
-        return redirect('login')
+    if 'userid' not in request.session: return redirect('login')
 
-    payment_method = request.GET.get('payment_method', '')
-    cart_items_display = []
-    total_price = 0
+    # Get payment method from GET params (passed from cart)
+    payment_method = request.GET.get('payment_method', 'cod')  # Default to COD if not set
 
-    try:
-        user = UserDetails.objects.get(userid=request.session['userid'])
-        cart_data_queryset = Cart.objects.filter(user_details=user)
+    user = UserDetails.objects.get(userid=request.session['userid'])
+    cart_items = Cart.objects.filter(user_details=user)
+    if not cart_items: return redirect('cart')
 
-        # If cart is empty, redirect to cart page
-        if not cart_data_queryset.exists():
-            messages.info(request, "Your cart is empty. Please add items before checkout.")
-            return redirect('cart')
-
-        for cart_item in cart_data_queryset:
-            product = None
-            try:
-                # Use product_type to determine the model
-                if cart_item.product_type == 'shoe':
-                    product = Shoes.objects.get(shoe_id=cart_item.itemid)
-                elif cart_item.product_type == 'boot':
-                    product = Boots.objects.get(boot_id=cart_item.itemid)
-            except (Shoes.DoesNotExist, Boots.DoesNotExist):
-                continue
-
-            if product:
-                subtotal = cart_item.price * cart_item.quantity
-                total_price += subtotal
-                cart_items_display.append({
-                    'id': cart_item.pk,
-                    'product_obj': product,
-                    'name': product.name,
-                    'image_url': product.image.url if product.image else '',
-                    'price': product.price,
-                    'quantity': cart_item.quantity,
-                    'size': cart_item.size,
-                    'subtotal': subtotal,
-                    'product_type': 'shoes' if cart_item.product_type == 'shoe' else 'boots',
-                    'product_id': cart_item.itemid
-                })
-
-
-    except UserDetails.DoesNotExist:
-        messages.error(request, "Session expired. Please log in again.")
-        request.session.flush()
-        return redirect('login')
-    except Exception as e:
-        messages.error(request, f"An error occurred: {str(e)}")
-        return redirect('cart')
+    total = sum(i.price * i.quantity for i in cart_items)
+    display_items = []
+    for c in cart_items:
+        try:
+            prod = Shoes.objects.get(shoe_id=c.itemid) if c.product_type == 'shoe' else Boots.objects.get(
+                boot_id=c.itemid)
+            display_items.append({
+                'name': prod.name, 'image_url': prod.image.url,
+                'price': c.price, 'quantity': c.quantity, 'size': c.size,
+                'subtotal': c.price * c.quantity
+            })
+        except:
+            continue
 
     context = {
-        'cart_items': cart_items_display,
-        'total_price': total_price,
-        'payment_method': payment_method,
+        'cart_items': display_items,
+        'total_price': total,
+        'payment_method': payment_method,  # Pass to template
         'user': user
     }
     return render(request, 'checkout.html', context)
 
 
 def payment(request):
-    """Handle payment and send order confirmation email"""
-    if 'userid' not in request.session:
-        messages.info(request, 'Please log in to complete your purchase.')
-        return redirect('login')
-
+    if 'userid' not in request.session: return redirect('login')
     if request.method == 'POST':
-        try:
-            total_amount = float(request.POST.get('total_amount', 0))
-            payment_method = request.POST.get('payment_method', 'cod')
-            address = request.POST.get('address', '')
+        total = float(request.POST.get('total_amount', 0))
+        method = request.POST.get('payment_method', 'cod')
+        address = request.POST.get('address')
 
-            if total_amount <= 0:
-                messages.error(request, 'Invalid cart amount.')
-                return redirect('cart')
+        user = UserDetails.objects.get(userid=request.session['userid'])
+        cart_items = Cart.objects.filter(user_details=user)
 
-            if not address.strip():
-                messages.error(request, 'Shipping address is required.')
-                return redirect('checkout_page')
+        order = OrderDetails.objects.create(
+            user=user, username=user.name, useraddress=address,
+            phnno=user.phoneno or '', pincode=user.pincode or '',
+            status='pending'
+        )
 
-            # Get user
-            user = get_object_or_404(UserDetails, userid=request.session['userid'])
+        items_list = []
+        for c in cart_items:
+            # Determine content type and object
+            if c.product_type == 'shoe':
+                ct = ContentType.objects.get_for_model(Shoes)
+                prod = Shoes.objects.get(shoe_id=c.itemid)
+            else:
+                ct = ContentType.objects.get_for_model(Boots)
+                prod = Boots.objects.get(boot_id=c.itemid)
 
-            # Get cart items
-            cart_data_queryset = Cart.objects.filter(user_details=user)
-
-            if not cart_data_queryset.exists():
-                messages.error(request, 'Your cart is empty.')
-                return redirect('cart')
-
-            order = OrderDetails.objects.create(
-                user=user,
-                username=user.name,
-                useraddress=address,
-                phnno=request.POST.get('phone', user.phoneno if user.phoneno else 'N/A'),
-                pincode=request.POST.get('pincode', user.pincode if user.pincode else 'N/A'),
-                status='pending'
+            MyOrders.objects.create(
+                order=order, content_type=ct, object_id=c.itemid,
+                user_name=user.name, user_address=address,
+                phno=user.phoneno or '', pincode=user.pincode or '',
+                quantity=c.quantity, size=c.size, price=c.price
             )
 
-            # Create order items
-            order_items = []
-            for cart_item in cart_data_queryset:
-                product = None
-                if cart_item.product_type == 'shoe':
-                    product = Shoes.objects.get(shoe_id=cart_item.itemid)
-                    content_type = ContentType.objects.get_for_model(Shoes)
-                    object_id = cart_item.itemid
-                elif cart_item.product_type == 'boot':
-                    product = Boots.objects.get(boot_id=cart_item.itemid)
-                    content_type = ContentType.objects.get_for_model(Boots)
-                    object_id = cart_item.itemid
+            if prod.quantity >= c.quantity:
+                prod.quantity -= c.quantity
+                prod.save()
 
-                if product:
-                    order_item = MyOrders.objects.create(
-                        order=order,
-                        content_type=content_type,
-                        object_id=object_id,
-                        user_name=user.name,
-                        user_address=address,
-                        phno=request.POST.get('phone', user.phoneno if user.phoneno else 'N/A'),
-                        pincode=request.POST.get('pincode', user.pincode if user.pincode else 'N/A'),
-                        quantity=cart_item.quantity,
-                        size=cart_item.size,
-                        price=cart_item.price
-                    )
-                    order_items.append(order_item)
-
-                    # Reduce product quantity
-                    if product.quantity >= cart_item.quantity:
-                        product.quantity -= cart_item.quantity
-                        product.save()
-
-            # Handle COD payment
-            if payment_method == 'cod':
-                # Update order status
-                order.status = 'confirmed'
-                order.save()
-
-                # Clear cart
-                cart_data_queryset.delete()
-
-                # Send order confirmation email
-                try:
-                    subject = f"Order Confirmation - Order #{order.orderid}"
-                    html_message = render_to_string('order_confirmation_email.html', {
-                        'user': user,
-                        'order': order,
-                        'items': order_items,
-                    })
-                    send_mail(
-                        subject=subject,
-                        message='',
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[user.email],
-                        html_message=html_message,
-                        fail_silently=True,
-                    )
-                    print(f"✅ Order confirmation email sent to {user.email}")
-                    messages.info(request, f'Order confirmation sent to {user.email}')
-                except Exception as e:
-                    print(f"❌ Failed to send order confirmation email: {e}")
-
-                # Clear pending order from session
-                if 'pending_order_id' in request.session:
-                    del request.session['pending_order_id']
-
-                context = {
-                    'total_amount': total_amount,
-                    'payment_method': payment_method,
-                    'address': address,
-                    'order_id': order.orderid
-                }
-
-                messages.success(request, 'Order placed successfully! You will pay cash on delivery.')
-                return render(request, 'payment.html', context)
-
-            # Handle Razorpay payment
-            elif payment_method == 'razorpay':
-                try:
-                    razorpay_order = razorpay_client.order.create({
-                        'amount': int(total_amount * 100),
-                        'currency': 'INR',
-                        'payment_capture': 1
-                    })
-
-                    # Store order_id in session for Razorpay callback
-                    request.session['pending_order_id'] = order.orderid
-
-                    context = {
-                        'razorpay_key': settings.RAZORPAY_KEY_ID,
-                        'razorpay_amount': int(total_amount * 100),
-                        'payment': razorpay_order,
-                        'total_amount': total_amount,
-                        'payment_method': payment_method,
-                        'address': address,
-                        'user': user,
-                        'order_id': order.orderid
-                    }
-
-                    return render(request, 'payment.html', context)
-
-                except Exception as e:
-                    messages.error(request, 'Failed to initialize payment gateway. Please try again.')
-                    print(f'Razorpay error: {e}')
-                    order.delete()
-                    return redirect('checkout_page')
-
-        except UserDetails.DoesNotExist:
-            messages.error(request, 'User session expired. Please log in again.')
-            request.session.flush()
-            return redirect('login')
-        except ValueError as e:
-            messages.error(request, 'Invalid amount provided.')
-            return redirect('checkout_page')
-        except Exception as e:
-            messages.error(request, f'An error occurred during payment: {str(e)}')
-            print(f'Payment error: {e}')
-            traceback.print_exc()
-            return redirect('checkout_page')
+        if method == 'cod':
+            order.status = 'confirmed'
+            order.save()
+            cart_items.delete()
+            messages.success(request, "Order Placed Successfully!")
+            return render(request, 'payment.html',
+                          {'total_amount': total, 'payment_method': 'cod', 'order_id': order.orderid})
+        elif method == 'razorpay':
+            rz_order = razorpay_client.order.create(
+                {'amount': int(total * 100), 'currency': 'INR', 'payment_capture': 1})
+            request.session['pending_order_id'] = order.orderid
+            return render(request, 'payment.html', {
+                'razorpay_key': settings.RAZORPAY_KEY_ID, 'razorpay_amount': int(total * 100),
+                'payment': rz_order, 'total_amount': total, 'payment_method': 'razorpay',
+                'user': user, 'order_id': order.orderid
+            })
 
     return redirect('checkout_page')
 
 
+@csrf_exempt
 def payment_success(request):
-    """Handle successful payment callback - Clear cart here for Razorpay"""
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-
         try:
-            order = get_object_or_404(OrderDetails, orderid=order_id)
-
-            # Update order status to confirmed
+            order = OrderDetails.objects.get(orderid=order_id)
             order.status = 'confirmed'
             order.save()
-
-            # NOW clear the cart after successful payment
             if 'userid' in request.session:
-                user = get_object_or_404(UserDetails, userid=request.session['userid'])
-                Cart.objects.filter(user_details=user).delete()
-
-            # Clear pending order from session
-            if 'pending_order_id' in request.session:
-                del request.session['pending_order_id']
-
-            # Send confirmation email
-            try:
-                subject = 'Order Confirmation - Shoe Store'
-                message = render_to_string('order_confirmation_email.html', {
-                    'user': order.user,
-                    'order': order,
-                    'items': MyOrders.objects.filter(order=order)
-                })
-                send_mail(
-                    subject,
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [order.user.email] if order.user else [settings.DEFAULT_FROM_EMAIL],
-                    fail_silently=True
-                )
-            except Exception as e:
-                print(f"Email sending error: {e}")
-
-            messages.success(request, "Payment successful! Order confirmation has been sent to your email.")
+                Cart.objects.filter(user_details__userid=request.session['userid']).delete()
+            messages.success(request, "Payment Successful!")
             return redirect('myorder')
-
-        except OrderDetails.DoesNotExist:
-            messages.error(request, "Invalid order.")
+        except:
             return redirect('cart')
-
     return redirect('myorder')
 
 
-def remove_from_wishlist(request, wishlist_id):
-    if request.method == 'POST':
-        try:
-            # For logged-in users
-            if 'userid' in request.session:
-                user = get_object_or_404(UserDetails, userid=request.session['userid'])
-                wishlist_item = get_object_or_404(Wishlist, pk=wishlist_id, user_details=user)
-                wishlist_item.delete()
-                return JsonResponse({'success': True, 'message': 'Item removed from wishlist'})
-
-            # For guest users
-            else:
-                guest_wishlist = request.session.get('guest_wishlist', [])
-                for i, item in enumerate(guest_wishlist):
-                    # For guest user, the 'wishlist_id' is the 'itemid'
-                    if item['itemid'] == str(wishlist_id):
-                        del guest_wishlist[i]
-                        break
-
-                request.session['guest_wishlist'] = guest_wishlist
-                request.session.modified = True
-                return JsonResponse({'success': True, 'message': 'Item removed from wishlist'})
-
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+def track_order(request):
+    """Simple track order view"""
+    if 'userid' not in request.session: return redirect('login')
+    user = UserDetails.objects.get(userid=request.session['userid'])
+    orders = OrderDetails.objects.filter(user=user).order_by('-created_at')
+    return render(request, 'track_order.html', {'user_orders': orders})
 
 
-def admin_manage_orders(request):
-    """Admin view to manage all orders with filters and search"""
-    if 'admin' not in request.session:
-        return redirect('login')
-
-    # Get filter parameters
-    status_filter = request.GET.get('status', '')
-    search_query = request.GET.get('search', '')
-
-    orders = OrderDetails.objects.all().order_by('-created_at')
-
-    # Apply filters
-    if status_filter:
-        orders = orders.filter(status=status_filter)
-
-    if search_query:
-        orders = orders.filter(
-            Q(orderid__icontains=search_query) |
-            Q(username__icontains=search_query) |
-            Q(phnno__icontains=search_query)
-        )
-
-    # Calculate total for each order
-    orders_with_totals = []
-    for order in orders:
-        items = MyOrders.objects.filter(order=order)
-        total = sum(item.price * item.quantity for item in items)
-        order.calculated_total = total  # Add calculated total to order object
-        orders_with_totals.append(order)
-
-    # Pagination
-    paginator = Paginator(orders_with_totals, 20)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    # Get status counts
-    status_counts = {
-        'all': OrderDetails.objects.count(),
-        'pending': OrderDetails.objects.filter(status='pending').count(),
-        'confirmed': OrderDetails.objects.filter(status='confirmed').count(),
-        'processing': OrderDetails.objects.filter(status='processing').count(),
-        'shipped': OrderDetails.objects.filter(status='shipped').count(),
-        'delivered': OrderDetails.objects.filter(status='delivered').count(),
-        'cancelled': OrderDetails.objects.filter(status='cancelled').count(),
-    }
-
-    context = {
-        'page_obj': page_obj,
-        'status_counts': status_counts,
-        'current_status': status_filter,
-        'search_query': search_query,
-    }
-
-    return render(request, 'admin/manage_orders.html', context)
+def my_orders(request):
+    """Same as track_order essentially"""
+    return track_order(request)
 
 
-def myorder(request):
-    return render(request, 'myorder.html')
+# Admin extra views
+def ad_collection(request): return render(request, 'admin/ADcollection.html', {'shoes': Shoes.objects.all()[:2]})
 
 
-def ad_collection(request):
-    if 'admin' not in request.session:
-        return redirect('login')
-    latest_shoes = Shoes.objects.all().order_by('-shoe_id')[:2]
-    return render(request, 'admin/ADcollection.html', {'shoes': latest_shoes})
+def ad_shoes(request): return render(request, 'admin/ADshoes.html', {'shoes': Shoes.objects.all()})
 
 
-def ad_shoes(request):
-    if 'admin' not in request.session:
-        return redirect('login')
-    shoes = Shoes.objects.all().order_by('-shoe_id')
-    return render(request, 'admin/ADshoes.html', {'shoes': shoes})
+def ad_sports(request): return render(request, 'admin/ADracing boots.html', {'boots': Boots.objects.all()})
 
 
-def ad_sports(request):
-    if 'admin' not in request.session:
-        return redirect('login')
-    boots = Boots.objects.all().order_by('-boot_id')
-    return render(request, 'admin/ADracing boots.html', {'boots': boots})
-
-
-def ad_search(request):
-    """Admin search view with empty query handling"""
-    if 'admin' not in request.session:
-        return redirect('login')
-
-    query = request.GET.get('query', '').strip()
-
-    # Initialize empty results
-    shoes_results = []
-    boots_results = []
-
-    # Only search if query is not empty
-    if query:
-        shoes_results = Shoes.objects.filter(
-            Q(name__icontains=query) |
-            Q(category__icontains=query)
-        )
-        boots_results = Boots.objects.filter(
-            Q(name__icontains=query) |
-            Q(category__icontains=query)
-        )
-
-    return render(request, 'admin/ADsearch.html', {
-        'query': query,
-        'shoes_results': shoes_results,
-        'boots_results': boots_results
-    })
-
-
+def ad_search(request): return render(request, 'admin/ADsearch.html')
