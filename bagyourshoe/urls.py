@@ -41,7 +41,6 @@ urlpatterns = [
 
     # User Order Tracking
     path('track-order/', views.track_order, name='track_order'),
-    path('my-orders/', views.my_orders, name='my_orders'),
 
     # API Endpoints (Cart & Wishlist)
     # v2 is the main one used

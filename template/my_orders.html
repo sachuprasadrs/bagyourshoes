@@ -1,62 +1,126 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Orders - BagYourShoe</title>
 
-{% block content %}
-<div class="container my-5">
-    <h2 class="mb-4">My Orders</h2>
-    
-    {% if orders_with_items %}
-    {% for order_data in orders_with_items %}
-    <div class="card mb-3">
-        <div class="card-header">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <strong>Order #{{ order_data.order.orderid }}</strong> - {{ order_data.order.created_at|date:"d M Y" }}
-                </div>
-                <div class="col-md-4 text-end">
-                    <span class="badge 
-                        {% if order_data.order.status == 'delivered' %}bg-success
-                        {% elif order_data.order.status == 'cancelled' %}bg-danger
-                        {% elif order_data.order.status == 'shipped' %}bg-info
-                        {% else %}bg-warning{% endif %}">
-                        {{ order_data.order.status|upper }}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <link rel="icon" href="{% static 'images/fevicon.png' %}" type="image/gif" />
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .orders-container {
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f1f1;
+            margin-bottom: 15px;
+        }
+
+        .order-id {
+            font-size: 18px;
+            font-weight: bold;
+            color: #212529;
+        }
+
+        .order-status {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d1ecf1; color: #0c5460; }
+        .status-shipped { background: #cfe2ff; color: #084298; }
+        .status-delivered { background: #d1e7dd; color: #0f5132; }
+        .status-cancelled { background: #f8d7da; color: #842029; }
+
+        .order-info {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .empty-orders i {
+            font-size: 80px;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body class="main-layout">
+    {% include 'header.html' %}
+
+    <div class="container orders-container">
+        <h2>My Orders</h2>
+
+        {% if user_orders %}
+            {% for order in user_orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="order-id">Order #{{ order.order_id }}</div>
+                        <div class="order-info">
+                            Placed on {{ order.created_at|date:"F d, Y" }}
+                        </div>
+                    </div>
+                    <span class="order-status status-{{ order.status|lower }}">
+                        {{ order.status }}
                     </span>
                 </div>
+
+                <div class="order-info">
+                    <strong>Delivery Address:</strong> {{ order.user_address }}
+                </div>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Size</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in order_data.items %}
-                        <tr>
-                            <td>{{ item.product.name }}</td>
-                            <td>{{ item.size }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>₹{{ item.price }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            {% endfor %}
+        {% else %}
+            <div class="empty-orders">
+                <i class="fa fa-inbox"></i>
+                <h3>No Orders Found</h3>
+                <p>You haven't placed any orders yet.</p>
+                <a href="{% url 'indexed' %}" class="btn btn-primary">Start Shopping</a>
             </div>
-            <div class="mt-2">
-                <a href="{% url 'track_order' %}" class="btn btn-sm btn-primary">Track Order</a>
-            </div>
-        </div>
+        {% endif %}
     </div>
-    {% endfor %}
-    {% else %}
-    <div class="alert alert-info">
-        You have no orders yet. <a href="{% url 'indexed' %}">Start shopping!</a>
-    </div>
-    {% endif %}
-</div>
-{% endblock %}
+
+    {% include 'footer.html' %}
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

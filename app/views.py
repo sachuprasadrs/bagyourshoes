@@ -22,6 +22,9 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import logging
+from django.db.models import Sum, F, DecimalField
+from django.db.models.functions import Coalesce
+
 
 # Initialize Razorpay client
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
@@ -249,23 +252,61 @@ def userdetails(request):
 def orderdetails(request, order_id):
     order = get_object_or_404(OrderDetails, pk=order_id)
     items = MyOrders.objects.filter(order=order)
+    total_amount = 0
+    for item in items:
+        subtotal = item.price * item.quantity
+        item.subtotal = subtotal
+        total_amount += subtotal
+
     if request.method == 'POST':
         order.status = request.POST.get('status')
         order.status_note = request.POST.get('note')
         order.save()
         messages.success(request, 'Status updated.')
         return redirect('admin_order_detail', order_id=order_id)
-    return render(request, 'admin/order_detail.html', {'order': order, 'items': items})
+    return render(request, 'admin/order_detail.html', {
+        'order': order,
+        'items': items,
+        'total_amount': total_amount
+    })
 
 
 def admin_manage_orders(request):
     if 'admin' not in request.session: return redirect('login')
-    orders = OrderDetails.objects.all().order_by('-created_at')
+    orders = OrderDetails.objects.annotate(
+        calculated_total=Coalesce(
+            Sum(F('order_items__price') * F('order_items__quantity')),
+            0.0,
+            output_field=DecimalField()
+        )
+    ).order_by('-created_at')
     status = request.GET.get('status')
-    if status: orders = orders.filter(status=status)
+    if status:
+        orders = orders.filter(status=status)
+    search = request.GET.get('search', '').strip()
+    if search:
+        orders = orders.filter(
+            Q(orderid__icontains=search) |
+            Q(username__icontains=search) |
+            Q(user__email__icontains=search)
+        )
+    status_counts = {
+        'all': OrderDetails.objects.count(),
+        'pending': OrderDetails.objects.filter(status='pending').count(),
+        'confirmed': OrderDetails.objects.filter(status='confirmed').count(),
+        'processing': OrderDetails.objects.filter(status='processing').count(),
+        'shipped': OrderDetails.objects.filter(status='shipped').count(),
+        'delivered': OrderDetails.objects.filter(status='delivered').count(),
+        'cancelled': OrderDetails.objects.filter(status='cancelled').count(),
+    }
     paginator = Paginator(orders, 20)
-    return render(request, 'admin/manage_orders.html', {'page_obj': paginator.get_page(request.GET.get('page'))})
-
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'admin/manage_orders.html', {
+        'page_obj': page_obj,
+        'status_counts': status_counts,
+        'current_status': status,
+        'search_query': search
+    })
 
 # --- Public Views ---
 
@@ -659,20 +700,38 @@ def checkout_page(request):
 
 def payment(request):
     if 'userid' not in request.session: return redirect('login')
+
     if request.method == 'POST':
         total = float(request.POST.get('total_amount', 0))
         method = request.POST.get('payment_method', 'cod')
+
+        # 1. Get Address and Pincode from the form
         address = request.POST.get('address')
+        pincode = request.POST.get('pincode')
 
         user = UserDetails.objects.get(userid=request.session['userid'])
+
+        # 2. Update the UserDetails database with new info
+        # This saves the address/pincode to the user's profile permanently
+        if address:
+            user.address = address
+        if pincode:
+            user.pincode = pincode
+        user.save()
+
+        # 3. Create the Order using these details
         cart_items = Cart.objects.filter(user_details=user)
 
         order = OrderDetails.objects.create(
-            user=user, username=user.name, useraddress=address,
-            phnno=user.phoneno or '', pincode=user.pincode or '',
+            user=user,
+            username=user.name,
+            useraddress=address,
+            phnno=user.phoneno or '',
+            pincode=pincode,  # Use the pincode from the form
             status='pending'
         )
 
+        # ... (Rest of the logic remains the same) ...
         items_list = []
         for c in cart_items:
             # Determine content type and object
@@ -686,7 +745,7 @@ def payment(request):
             MyOrders.objects.create(
                 order=order, content_type=ct, object_id=c.itemid,
                 user_name=user.name, user_address=address,
-                phno=user.phoneno or '', pincode=user.pincode or '',
+                phno=user.phoneno or '', pincode=pincode,  # Updated to use form pincode
                 quantity=c.quantity, size=c.size, price=c.price
             )
 
@@ -713,7 +772,6 @@ def payment(request):
 
     return redirect('checkout_page')
 
-
 @csrf_exempt
 def payment_success(request):
     if request.method == 'POST':
@@ -725,10 +783,10 @@ def payment_success(request):
             if 'userid' in request.session:
                 Cart.objects.filter(user_details__userid=request.session['userid']).delete()
             messages.success(request, "Payment Successful!")
-            return redirect('myorder')
+            return redirect('myor_ders')
         except:
             return redirect('cart')
-    return redirect('myorder')
+    return redirect('my_orders')
 
 
 def track_order(request):
@@ -739,9 +797,6 @@ def track_order(request):
     return render(request, 'track_order.html', {'user_orders': orders})
 
 
-def my_orders(request):
-    """Same as track_order essentially"""
-    return track_order(request)
 
 
 # Admin extra views

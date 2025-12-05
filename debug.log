@@ -15188,3 +15188,649 @@ Not Found: /.well-known/appspecific/com.chrome.devtools.json
 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 1834
 D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
 Watching for file changes with StatReloader
+"GET /cart/ HTTP/1.1" 200 24769
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"POST /add-to-cart-from-wishlist/shoes/2/ HTTP/1.1" 200 58
+"GET /cart/ HTTP/1.1" 200 24908
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /contact/ HTTP/1.1" 200 13728
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /cart/ HTTP/1.1" 200 24908
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /checkout/?payment_method=razorpay HTTP/1.1" 200 22916
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"POST /payment/ HTTP/1.1" 200 23736
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/fevicon.png HTTP/1.1" 404 1813
+"POST /success/ HTTP/1.1" 302 0
+"GET /myorder/ HTTP/1.1" 200 17520
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /cart/ HTTP/1.1" 200 17006
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /contact/ HTTP/1.1" 200 13728
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /shoes/ HTTP/1.1" 200 19802
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"POST /add-to-wishlist/shoes/2/ HTTP/1.1" 200 49
+"POST /add-to-cart/shoes/2/ HTTP/1.1" 200 45
+"GET /sports/ HTTP/1.1" 200 22009
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /add-to-cart/boots/3/ HTTP/1.1" 200 45
+"POST /add-to-wishlist/boots/2/ HTTP/1.1" 200 49
+"GET /cart/ HTTP/1.1" 200 26579
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"POST /add-to-wishlist/shoe/2/ HTTP/1.1" 200 49
+"POST /remove-from-cart/20/ HTTP/1.1" 200 17
+"GET /cart/ HTTP/1.1" 200 24709
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /add-to-wishlist/boot/3/ HTTP/1.1" 200 49
+"POST /remove-from-cart/21/ HTTP/1.1" 200 17
+"GET /cart/ HTTP/1.1" 200 22173
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /add-to-cart-from-wishlist/shoes/2/ HTTP/1.1" 200 58
+"GET /cart/ HTTP/1.1" 200 24705
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /cart/ HTTP/1.1" 200 24705
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /cart/ HTTP/1.1" 200 24705
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /contact/ HTTP/1.1" 200 13728
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /search/?query= HTTP/1.1" 200 25312
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /search/?query= HTTP/1.1" 200 25312
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /search/?query= HTTP/1.1" 200 25312
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /search/?query=jap HTTP/1.1" 200 25356
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /search/?query=bl HTTP/1.1" 200 19520
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /cart/ HTTP/1.1" 200 24705
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /checkout/?payment_method=razorpay HTTP/1.1" 200 21883
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+Internal Server Error: /payment/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connection.py", line 565, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 292, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 719, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TimeoutError: [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\util\retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\util\util.py", line 39, in reraise
+    raise value
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 536, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 367, in _raise_timeout
+    raise ReadTimeoutError(
+        self, url, f"Read timed out. (read timeout={timeout_value})"
+    ) from err
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.razorpay.com', port=443): Read timed out. (read timeout=None)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 705, in payment
+    rz_order = razorpay_client.order.create(
+        {'amount': int(total * 100), 'currency': 'INR', 'payment_capture': 1})
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\razorpay\resources\order.py", line 71, in create
+    return self.post_url(url, data, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\razorpay\resources\base.py", line 20, in post_url
+    return self.client.post(url, data, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\razorpay\client.py", line 252, in post
+    return self.request('post', path, data=data, **options)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\razorpay\client.py", line 182, in request
+    response = getattr(self.session, method)(url, auth=auth_to_use,
+                                             verify=self.cert_path,
+                                             **options)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\adapters.py", line 690, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.razorpay.com', port=443): Read timed out. (read timeout=None)
+"POST /payment/ HTTP/1.1" 500 192768
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 8318
+"GET /checkout/?payment_method=razorpay HTTP/1.1" 200 21883
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /checkout/?payment_method=razorpay HTTP/1.1" 200 21883
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"POST /payment/ HTTP/1.1" 200 23733
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/fevicon.png HTTP/1.1" 404 1813
+"POST /success/ HTTP/1.1" 302 0
+"GET /myorder/ HTTP/1.1" 200 17520
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /checkout/?payment_method=razorpay HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 20545
+"GET /cart/ HTTP/1.1" 200 20363
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /add-to-cart-from-wishlist/boots/2/ HTTP/1.1" 200 58
+"GET /cart/ HTTP/1.1" 200 22895
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /checkout/?payment_method=razorpay HTTP/1.1" 200 21883
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /cart/ HTTP/1.1" 200 22895
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /checkout/?payment_method=razorpay HTTP/1.1" 200 21883
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+Internal Server Error: /payment/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connection.py", line 565, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 1430, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 292, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 719, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\sachu\AppData\Local\Programs\Python\Python313\Lib\ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TimeoutError: [WinError 10060] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\util\retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\util\util.py", line 39, in reraise
+    raise value
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 536, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\urllib3\connectionpool.py", line 367, in _raise_timeout
+    raise ReadTimeoutError(
+        self, url, f"Read timed out. (read timeout={timeout_value})"
+    ) from err
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.razorpay.com', port=443): Read timed out. (read timeout=None)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 705, in payment
+    rz_order = razorpay_client.order.create(
+        {'amount': int(total * 100), 'currency': 'INR', 'payment_capture': 1})
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\razorpay\resources\order.py", line 71, in create
+    return self.post_url(url, data, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\razorpay\resources\base.py", line 20, in post_url
+    return self.client.post(url, data, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\razorpay\client.py", line 252, in post
+    return self.request('post', path, data=data, **options)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\razorpay\client.py", line 182, in request
+    response = getattr(self.session, method)(url, auth=auth_to_use,
+                                             verify=self.cert_path,
+                                             **options)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\requests\adapters.py", line 690, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.razorpay.com', port=443): Read timed out. (read timeout=None)
+- Broken pipe from ('127.0.0.1', 61335)
+"POST /payment/ HTTP/1.1" 200 23732
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/images/fevicon.png HTTP/1.1" 404 1813
+"POST /success/ HTTP/1.1" 302 0
+"GET /myorder/ HTTP/1.1" 200 17520
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /cart/ HTTP/1.1" 200 18735
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /cart/ HTTP/1.1" 200 18553
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /cart/ HTTP/1.1" 200 18553
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /shoes/ HTTP/1.1" 200 19802
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"POST /add-to-cart/shoes/2/ HTTP/1.1" 200 45
+"POST /add-to-wishlist/shoes/2/ HTTP/1.1" 200 49
+"GET /allshoes/ HTTP/1.1" 200 19282
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /shoes/ HTTP/1.1" 200 19802
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /sports/ HTTP/1.1" 200 22009
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /cart/ HTTP/1.1" 200 24705
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /checkout/?payment_method=cod HTTP/1.1" 200 21883
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"POST /payment/ HTTP/1.1" 200 23732
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/fevicon.png HTTP/1.1" 404 1813
+"POST /success/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 20545
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /track-order/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+Not Found: /track_order/
+"GET /track_order/ HTTP/1.1" 404 8321
+"GET /cart/ HTTP/1.1" 200 20363
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /track-order/ HTTP/1.1" 200 13407
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /my-orders/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /track-order/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"POST /track-order/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /track-order/ HTTP/1.1" 200 13407
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /track-order/ HTTP/1.1" 200 13407
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /track-order/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 13407
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /my-orders/ HTTP/1.1" 200 43008
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /cart/ HTTP/1.1" 200 20363
+"GET /payment/ HTTP/1.1" 302 0
+"GET /checkout/ HTTP/1.1" 302 0
+"GET /cart/ HTTP/1.1" 200 20363
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /my-orders/ HTTP/1.1" 200 43008
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /track-order/ HTTP/1.1" 200 43008
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /track-order/ HTTP/1.1" 200 42914
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /track-order/ HTTP/1.1" 200 42914
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /cart/ HTTP/1.1" 200 20269
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /track-order/ HTTP/1.1" 200 42914
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /logout/ HTTP/1.1" 302 0
+"GET /login/ HTTP/1.1" 200 11809
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/images/fevicon.png'%20%%7D HTTP/1.1" 404 1846
+"POST /login/ HTTP/1.1" 302 0
+"GET /adminhome/ HTTP/1.1" 200 13479
+"GET /manage-orders/ HTTP/1.1" 200 34072
+"GET /order-detail/27/ HTTP/1.1" 200 11770
+"GET /manage-orders/ HTTP/1.1" 200 34072
+"GET /manage-orders/?search=27 HTTP/1.1" 200 34072
+"GET /manage-orders/?search=26 HTTP/1.1" 200 34072
+"GET /manage-orders/?search=26 HTTP/1.1" 200 34072
+"GET /manage-orders/?status=pending HTTP/1.1" 200 30787
+"GET /manage-orders/?status=pending HTTP/1.1" 200 30787
+"GET /manage-orders/?status=confirmed HTTP/1.1" 200 15463
+"GET /manage-orders/?status=processing HTTP/1.1" 200 10717
+"GET /manage-orders/?status=shipped HTTP/1.1" 200 10715
+"GET /manage-orders/?status=delivered HTTP/1.1" 200 10719
+"GET /manage-orders/?status=cancelled HTTP/1.1" 200 10719
+"GET /manage-orders/?status=pending HTTP/1.1" 200 30787
+"GET /manage-orders/ HTTP/1.1" 200 34072
+"GET /adminhome/ HTTP/1.1" 200 13479
+"GET /adminhome/ HTTP/1.1" 200 13479
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /addshoes/ HTTP/1.1" 200 4104
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /ADshoes/ HTTP/1.1" 200 19992
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /ADsports/ HTTP/1.1" 200 21469
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /addshoes/ HTTP/1.1" 200 4104
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /ADshoes/ HTTP/1.1" 200 19992
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /addshoes/ HTTP/1.1" 200 4104
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /manage-orders/ HTTP/1.1" 200 34072
+"GET /userdetails/ HTTP/1.1" 200 15708
+"GET /indexed/ HTTP/1.1" 200 15021
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /login/ HTTP/1.1" 200 11809
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"POST /login/ HTTP/1.1" 302 0
+"GET /adminhome/ HTTP/1.1" 200 13479
+"GET /adminhome/ HTTP/1.1" 200 13479
+"GET /adminhome/ HTTP/1.1" 200 13479
+"GET /manage-orders/ HTTP/1.1" 200 34072
+"GET /order-detail/27/ HTTP/1.1" 200 11770
+"GET /order-detail/27/ HTTP/1.1" 200 11770
+"GET /manage-orders/ HTTP/1.1" 200 34072
+"GET /userdetails/ HTTP/1.1" 200 15708
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /manage-orders/ HTTP/1.1" 200 34072
+"GET /order-detail/27/ HTTP/1.1" 200 11770
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /manage-orders/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 274, in admin_manage_orders
+    calculated_total=Coalesce(
+                     ^^^^^^^^
+NameError: name 'Coalesce' is not defined
+"GET /manage-orders/ HTTP/1.1" 500 66112
+Internal Server Error: /manage-orders/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 274, in admin_manage_orders
+    calculated_total=Coalesce(
+                     ^^^^^^^^
+NameError: name 'Coalesce' is not defined
+"GET /manage-orders/ HTTP/1.1" 500 65975
+Internal Server Error: /manage-orders/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 274, in admin_manage_orders
+    calculated_total=Coalesce(
+                     ^^^^^^^^
+NameError: name 'Coalesce' is not defined
+"GET /manage-orders/ HTTP/1.1" 500 66112
+Internal Server Error: /manage-orders/
+Traceback (most recent call last):
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "D:\Apps\PycharmProj\bagyourshoe\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Apps\PycharmProj\bagyourshoe\app\views.py", line 274, in admin_manage_orders
+    calculated_total=Coalesce(
+                     ^^^^^^^^
+NameError: name 'Coalesce' is not defined
+"GET /manage-orders/ HTTP/1.1" 500 65975
+"GET /userdetails/ HTTP/1.1" 200 15708
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /addshoes/ HTTP/1.1" 200 4104
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /ADshoes/ HTTP/1.1" 200 19992
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /ADshoes/ HTTP/1.1" 200 19992
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /ADshoes/ HTTP/1.1" 200 19992
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /ADshoes/ HTTP/1.1" 200 19992
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+- Broken pipe from ('127.0.0.1', 62246)
+"GET /manage-orders/ HTTP/1.1" 200 34234
+"GET /userdetails/ HTTP/1.1" 200 15708
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /addshoes/ HTTP/1.1" 200 4104
+"GET /adminshoes/ HTTP/1.1" 200 13321
+"GET /manage-orders/ HTTP/1.1" 200 34234
+"GET /userdetails/ HTTP/1.1" 200 15708
+"GET /userdetails/ HTTP/1.1" 200 15708
+"GET /userdetails/ HTTP/1.1" 200 15708
+"GET /indexed/ HTTP/1.1" 200 15021
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"GET /login/ HTTP/1.1" 200 11809
+"GET /static/css/owl.theme.default.min.css HTTP/1.1" 404 1846
+"GET /static/images/shop-icon.png HTTP/1.1" 404 1819
+"GET /static/js/owl.carousel.js HTTP/1.1" 404 1813
+"POST /login/ HTTP/1.1" 302 0
+"GET /adminhome/ HTTP/1.1" 200 13479
+D:\Apps\PycharmProj\bagyourshoe\app\views.py changed, reloading.
+Watching for file changes with StatReloader
